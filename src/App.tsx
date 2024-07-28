@@ -5,6 +5,7 @@ const App: React.FC = () => {
   const [answers, setAnswers] = useState<string[]>([]);
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
+
   const multipleChoices = [
     {
       question: "你看到陌生人進電梯時，你會？",
@@ -31,7 +32,6 @@ const App: React.FC = () => {
   };
 
   const handleEnd = () => {
-    // alert("測驗完成！");
     setShowResult(true);
   };
 
@@ -64,15 +64,18 @@ const App: React.FC = () => {
         </button>
       ) : (
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-          <h1 className="text-2xl font-bold mb-4">心理測驗 Result</h1>
+          <h1 className="text-2xl font-bold mb-4">心理測驗</h1>
           <div className="mb-6">
-            {showResult
-              ? answers.map((answer, index) => (
-                  <p key={index} className="mb-2">
-                    {multipleChoices[index].question}：{answer}
-                  </p>
-                ))
-              : multipleChoices[step].options.map((option, index) => (
+            {showResult ? (
+              answers.map((answer, index) => (
+                <p key={index} className="mb-2">
+                  {multipleChoices[index].question}：{answer}
+                </p>
+              ))
+            ) : (
+              <>
+                <p className="text-xl mb-4">{multipleChoices[step].question}</p>
+                {multipleChoices[step].options.map((option, index) => (
                   <button
                     key={index}
                     className="block w-full bg-blue-500 text-white p-2 rounded mb-2"
@@ -81,6 +84,8 @@ const App: React.FC = () => {
                     {option}
                   </button>
                 ))}
+              </>
+            )}
           </div>
           <div className="flex justify-between">
             {!showResult && (
