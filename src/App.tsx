@@ -35,9 +35,9 @@ const App: React.FC = () => {
     setShowResult(true);
   };
 
-  const handleNext = (answer: string) => {
+  const handleNext = (option: string) => {
     const newAnswers = [...answers];
-    newAnswers[step] = answer;
+    newAnswers[step] = option;
     setAnswers(newAnswers);
 
     if (step < multipleChoices.length - 1) {
