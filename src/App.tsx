@@ -29,6 +29,9 @@ const App: React.FC = () => {
 
   const handleStart = () => {
     setStartTest(true);
+    setStep(0);
+    setAnswers([]);
+    setShowResult(false);
   };
 
   const handleEnd = () => {
@@ -50,56 +53,64 @@ const App: React.FC = () => {
   const handleBack = () => {
     if (step > 0) {
       setStep(step - 1);
+    } else {
+      setStartTest(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      {!startTest ? (
-        <button
-          onClick={handleStart}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          開始測驗
-        </button>
-      ) : (
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-          <h1 className="text-2xl font-bold mb-4">心理測驗</h1>
-          <div className="mb-6">
-            {showResult ? (
-              answers.map((answer, index) => (
-                <p key={index} className="mb-2">
-                  {multipleChoices[index].question}：{answer}
-                </p>
-              ))
-            ) : (
-              <>
-                <p className="text-xl mb-4">{multipleChoices[step].question}</p>
-                {multipleChoices[step].options.map((option, index) => (
-                  <button
-                    key={index}
-                    className="block w-full bg-blue-500 text-white p-2 rounded mb-2"
-                    onClick={() => handleNext(option)}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </>
-            )}
+    <div className="min-h-screen bg-amber-100 flex flex-col items-center justify-center">
+      <div className="bg-amber-300 p-8 rounded-lg shadow-lg w-full max-w-96 h-96">
+        {!startTest ? (
+          <div className="flex justify-center items-center h-full">
+            <button
+              onClick={handleStart}
+              className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full"
+            >
+              開始測驗
+            </button>
           </div>
-          <div className="flex justify-between">
-            {!showResult && (
-              <button
-                onClick={handleBack}
-                className="bg-gray-500 text-white p-2 rounded"
-                disabled={step === 0}
-              >
-                回上一題
-              </button>
-            )}
+        ) : (
+          <div className="">
+            <div className="mb-6">
+              {showResult && <p className="text-2xl">測驗結果</p>}
+              {showResult ? (
+                answers.map((answer, index) => (
+                  <p key={index} className="mb-2">
+                    {multipleChoices[index].question}：{answer}
+                  </p>
+                ))
+              ) : (
+                <>
+                  <p className="text-2xl p-2 text-black font-black ">
+                    Q{step + 1}
+                  </p>
+                  <p className="text-xl mb-8 border-r-4 border-b-4 border-t-2 border-l-2 border-black shadow-lg p-4 px-4 rounded-xl bg-emerald-600 text-white">
+                    {multipleChoices[step].question}
+                  </p>
+                  {multipleChoices[step].options.map((option, index) => (
+                    <button
+                      key={index}
+                      className="block w-full border-r-4 border-b-4 border-t-2 border-l-2 border-black drop-shadow-lg bg-white hover:bg-gray-200 text-black font-bold p-2 rounded-full mb-2"
+                      onClick={() => handleNext(option)}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                  <div className="flex justify-end py-4">
+                    <button
+                      onClick={handleBack}
+                      className="bg-yellow-200 hover:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black"
+                    >
+                      回上一題
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
