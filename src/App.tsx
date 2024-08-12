@@ -5,6 +5,7 @@ const App: React.FC = () => {
   const [answers, setAnswers] = useState<string[]>([]);
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
+  const [answerService, setAnswerService] = useState<string>("");
 
   const multipleChoices = [
     {
@@ -15,6 +16,7 @@ const App: React.FC = () => {
         "突然想發個限動",
         "打開手機記憶體快爆卻死不刪的相簿",
       ],
+      services: ["EC2", "Lambda", "DynamoDB", "S3"],
     },
     {
       question: "抵達公司，開會時你正在與團隊討論新的專案，你會有什麼表現？",
@@ -24,6 +26,7 @@ const App: React.FC = () => {
         "擔任溝通橋樑向老闆轉達一切資訊",
         "監督成員的進度掌握團隊狀況",
       ],
+      services: ["ELB", "Cloudwatch", "API gateway", "DynamoDB"],
     },
     {
       question:
@@ -34,6 +37,7 @@ const App: React.FC = () => {
         "向隔壁部門同事打探聚餐的即時資訊",
         "心想有什麼好聚餐的各吃各的不好嗎",
       ],
+      services: ["ELB", "API gateway", "Lambda", "IAM"],
     },
     {
       question: "到了餐廳，大家圍著大圓桌吃飯，這時的你會？",
@@ -43,6 +47,7 @@ const App: React.FC = () => {
         "錄個限動並標註所有在場的人",
         "偷偷觀察大家的言行舉止",
       ],
+      services: ["ELB", "Cloudwatch", "DynamoDB", "EC2"],
     },
     {
       question: "午休還有有10分鐘的空檔，你會做什麼呢？",
@@ -52,6 +57,7 @@ const App: React.FC = () => {
         "打開銀行帳戶，看一下存款",
         "回顧最近的照片和回憶",
       ],
+      services: ["Cloudwatch", "API gateway", "IAM", "S3"],
     },
     {
       question: "週五的晚上，你想要怎麼慶祝這一周的結束？",
@@ -61,6 +67,7 @@ const App: React.FC = () => {
         "睡一個美美的覺，為下一週充電",
         "獨自享受 Me time，避開社交活動",
       ],
+      services: ["ELB", "EC2", "Lambda", "IAM"],
     },
     {
       question: "周末到了，你會怎麼度過這兩天？",
@@ -70,6 +77,7 @@ const App: React.FC = () => {
         "打遊戲打到天亮",
         "整理衣櫃、打掃家裡",
       ],
+      services: ["API gateway", "DynamoDB", "EC2", "S3"],
     },
     {
       question: "外出旅遊時，你會怎樣確保一切順利？",
@@ -79,14 +87,15 @@ const App: React.FC = () => {
         "檢查家裡門窗和保險箱",
         "將民宿和景點地址上傳到 Line 記事本",
       ],
+      services: ["Cloudwatch", "Lambda", "IAM", "S3"],
     },
   ];
 
   useEffect(() => {
     if (showResult) {
-      console.log(answers);
+      calculateResult();
     }
-  }, [answers, showResult]);
+  }, [showResult]);
 
   const handleStart = () => {
     setStartTest(true);
@@ -119,6 +128,41 @@ const App: React.FC = () => {
     }
   };
 
+  const calculateResult = () => {
+    const serviceCounts: Record<string, number> = {
+      EC2: 0,
+      Lambda: 0,
+      DynamoDB: 0,
+      S3: 0,
+      ELB: 0,
+      Cloudwatch: 0,
+      "API gateway": 0,
+      IAM: 0,
+    };
+
+    answers.forEach((answer, index) => {
+      const selectedIndex = multipleChoices[index].options.indexOf(answer);
+      const selectedService = multipleChoices[index].services[selectedIndex];
+      serviceCounts[selectedService]++;
+    });
+
+    // Find the maximum count
+    const maxCount = Math.max(...Object.values(serviceCounts));
+
+    // Find all services that have the maximum count
+    const topServices = Object.keys(serviceCounts).filter(
+      (service) => serviceCounts[service] === maxCount
+    );
+
+    // Randomly select one of the top services
+    const resultService =
+      topServices[Math.floor(Math.random() * topServices.length)];
+
+    console.log("Service counts: ", serviceCounts);
+    console.log("Top services: ", topServices);
+    setAnswerService(resultService);
+  };
+
   return (
     <div className="min-h-screen bg-amber-100 flex flex-col items-center justify-center">
       <div className="bg-amber-300 p-8 rounded-lg shadow-lg w-full max-w-96">
@@ -134,13 +178,19 @@ const App: React.FC = () => {
         ) : (
           <div className="">
             <div className="mb-6">
-              {showResult && <p className="text-2xl">測驗結果</p>}
               {showResult ? (
-                answers.map((answer, index) => (
-                  <p key={index} className="mb-2">
-                    {multipleChoices[index].question}：{answer}
+                <>
+                  <p className="text-2xl">測驗結果</p>
+                  <p>你最像</p>
+                  <p className="text-4xl text-red-500 font-black">
+                    {answerService}
                   </p>
-                ))
+                  {/* {answers.map((answer, index) => (
+                    <p key={index} className="mb-2">
+                      {multipleChoices[index].question}：{answer}
+                    </p>
+                  ))} */}
+                </>
               ) : (
                 <>
                   <p className="text-2xl p-2 text-black font-black ">
