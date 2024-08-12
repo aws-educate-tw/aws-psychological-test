@@ -170,7 +170,7 @@ const App: React.FC = () => {
           <div className="flex justify-center items-center min-h-96">
             <button
               onClick={handleStart}
-              className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full"
+              className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic"
             >
               開始測驗
             </button>
@@ -180,8 +180,8 @@ const App: React.FC = () => {
             <div className="mb-6">
               {showResult ? (
                 <>
-                  <p className="text-2xl">測驗結果</p>
-                  <p>你最像</p>
+                  <p className="text-2xl font-cubic">測驗結果</p>
+                  <p className="font-cubic">你最像</p>
                   <p className="text-4xl text-red-500 font-black">
                     {answerService}
                   </p>
@@ -193,16 +193,16 @@ const App: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <p className="text-2xl p-2 text-black font-black ">
+                  <p className="text-2xl p-2 text-black font-black font-cubic">
                     Q{step + 1}
                   </p>
-                  <p className="text-xl mb-8 border-r-4 border-b-4 border-t-2 border-l-2 border-black shadow-lg p-4 px-4 rounded-xl bg-emerald-600 text-white">
+                  <p className="text-xl mb-8 border-r-4 border-b-4 border-t-2 border-l-2 border-black shadow-lg p-4 px-4 rounded-xl bg-emerald-600 text-white font-cubic">
                     {multipleChoices[step].question}
                   </p>
                   {multipleChoices[step].options.map((option, index) => (
                     <button
                       key={index}
-                      className="block w-full border-r-4 border-b-4 border-t-2 border-l-2 border-black drop-shadow-lg bg-white hover:bg-gray-200 text-black font-bold p-2 rounded-full mb-2"
+                      className="block w-full border-r-4 border-b-4 border-t-2 border-l-2 border-black drop-shadow-lg bg-white hover:bg-gray-200 text-black font-bold p-2 rounded-full mb-2 font-cubic"
                       onClick={() => handleNext(option)}
                     >
                       {option}
@@ -211,7 +211,7 @@ const App: React.FC = () => {
                   <div className="flex justify-end py-4">
                     <button
                       onClick={handleBack}
-                      className="bg-yellow-200 hover:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black"
+                      className="bg-yellow-200 hover:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
                     >
                       回上一題
                     </button>
