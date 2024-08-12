@@ -146,13 +146,21 @@ const App: React.FC = () => {
       serviceCounts[selectedService]++;
     });
 
-    const resultService = Object.keys(serviceCounts).reduce((a, b) =>
-      serviceCounts[a] > serviceCounts[b] ? a : b
+    // Find the maximum count
+    const maxCount = Math.max(...Object.values(serviceCounts));
+
+    // Find all services that have the maximum count
+    const topServices = Object.keys(serviceCounts).filter(
+      (service) => serviceCounts[service] === maxCount
     );
 
-    console.log("Servie counts: ", serviceCounts);
+    // Randomly select one of the top services
+    const resultService =
+      topServices[Math.floor(Math.random() * topServices.length)];
+
+    console.log("Service counts: ", serviceCounts);
+    console.log("Top services: ", topServices);
     setAnswerService(resultService);
-    // alert(`Your predominant AWS service is: ${resultService}`);
   };
 
   return (
