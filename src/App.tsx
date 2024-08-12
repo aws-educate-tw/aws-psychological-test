@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "./ui/navbar";
 
 const App: React.FC = () => {
   const [step, setStep] = useState<number>(0);
@@ -164,63 +165,66 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-amber-100 flex flex-col items-center justify-center">
-      <div className="bg-amber-300 p-8 rounded-lg shadow-lg w-full max-w-96">
-        {!startTest ? (
-          <div className="flex justify-center items-center min-h-96">
-            <button
-              onClick={handleStart}
-              className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full"
-            >
-              開始測驗
-            </button>
-          </div>
-        ) : (
-          <div className="">
-            <div className="mb-6">
-              {showResult ? (
-                <>
-                  <p className="text-2xl">測驗結果</p>
-                  <p>你最像</p>
-                  <p className="text-4xl text-red-500 font-black">
-                    {answerService}
-                  </p>
-                  {/* {answers.map((answer, index) => (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+      <div className="w-full max-w-96 h-screen flex flex-col">
+        <Navbar />
+        <div className="bg-[#FFBD59] p-8 flex-grow">
+          {!startTest ? (
+            <div className="flex justify-center items-center h-full">
+              <button
+                onClick={handleStart}
+                className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic"
+              >
+                開始測驗
+              </button>
+            </div>
+          ) : (
+            <div className="">
+              <div className="mb-6">
+                {showResult ? (
+                  <>
+                    <p className="text-2xl font-cubic">測驗結果</p>
+                    <p className="font-cubic">你最像</p>
+                    <p className="text-4xl text-red-500 font-black">
+                      {answerService}
+                    </p>
+                    {/* {answers.map((answer, index) => (
                     <p key={index} className="mb-2">
                       {multipleChoices[index].question}：{answer}
                     </p>
                   ))} */}
-                </>
-              ) : (
-                <>
-                  <p className="text-2xl p-2 text-black font-black ">
-                    Q{step + 1}
-                  </p>
-                  <p className="text-xl mb-8 border-r-4 border-b-4 border-t-2 border-l-2 border-black shadow-lg p-4 px-4 rounded-xl bg-emerald-600 text-white">
-                    {multipleChoices[step].question}
-                  </p>
-                  {multipleChoices[step].options.map((option, index) => (
-                    <button
-                      key={index}
-                      className="block w-full border-r-4 border-b-4 border-t-2 border-l-2 border-black drop-shadow-lg bg-white hover:bg-gray-200 text-black font-bold p-2 rounded-full mb-2"
-                      onClick={() => handleNext(option)}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                  <div className="flex justify-end py-4">
-                    <button
-                      onClick={handleBack}
-                      className="bg-yellow-200 hover:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black"
-                    >
-                      回上一題
-                    </button>
-                  </div>
-                </>
-              )}
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl p-2 text-black font-black font-cubic">
+                      Q{step + 1}
+                    </p>
+                    <p className="text-xl mb-8 border-r-4 border-b-4 border-t-2 border-l-2 border-black shadow-lg p-4 px-4 rounded-xl bg-emerald-600 text-white font-cubic">
+                      {multipleChoices[step].question}
+                    </p>
+                    {multipleChoices[step].options.map((option, index) => (
+                      <button
+                        key={index}
+                        className="block w-full border-r-4 border-b-4 border-t-2 border-l-2 border-black drop-shadow-lg bg-white hover:bg-gray-200 text-black font-bold p-2 rounded-full mb-2 font-cubic"
+                        onClick={() => handleNext(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                    <div className="flex justify-end py-4">
+                      <button
+                        onClick={handleBack}
+                        className="bg-yellow-200 hover:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
+                      >
+                        回上一題
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
