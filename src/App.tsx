@@ -166,7 +166,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-96 h-screen flex flex-col">
+      <div className="w-full max-w-md h-screen flex flex-col">
         <Navbar />
         <div className="bg-[#FFBD59] p-8 flex-grow">
           {!startTest ? (
@@ -179,7 +179,7 @@ const App: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="">
+            <div>
               <div className="mb-6">
                 {showResult ? (
                   <>
@@ -196,16 +196,18 @@ const App: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <p className="text-2xl p-2 text-black font-black font-cubic">
-                      Q{step + 1}
-                    </p>
-                    <p className="text-xl mb-8 border-r-4 border-b-4 border-t-2 border-l-2 border-black shadow-lg p-4 px-4 rounded-xl bg-emerald-600 text-white font-cubic">
-                      {multipleChoices[step].question}
-                    </p>
+                    <div className="relative shadow-[10px_10px_0_#E15A53]">
+                      <p className="text-2xl text-center p-2 text-black border border-black font-semibold font-cubic bg-[#A6DAD5]">
+                        第 {step + 1} 關
+                      </p>
+                      <p className="text-xl mb-8 border border-x-black border-b-black p-4 px-4 bg-[#FAF5E7] text-black font-cubic">
+                        {multipleChoices[step].question}
+                      </p>
+                    </div>
                     {multipleChoices[step].options.map((option, index) => (
                       <button
                         key={index}
-                        className="block w-full border-r-4 border-b-4 border-t-2 border-l-2 border-black drop-shadow-lg bg-white hover:bg-gray-200 text-black font-bold p-2 rounded-full mb-2 font-cubic"
+                        className="block w-full border border-black bg-[#FAF5E7] hover:bg-[#F3DAB4] text-black font-bold font-cubic p-4 rounded-2xl mb-6"
                         onClick={() => handleNext(option)}
                       >
                         {option}
