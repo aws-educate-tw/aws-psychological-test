@@ -168,15 +168,26 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
       <div className="w-full max-w-md h-screen flex flex-col">
         <Navbar />
-        <div className="bg-[#FFBD59] p-8 flex-grow">
+        <div
+          className="bg-[#FFBD59] p-8 flex-grow bg-cover bg-center relative"
+          style={!startTest ? { backgroundImage: "url('/Sunset.png')" } : {}}
+        >
           {!startTest ? (
-            <div className="flex justify-center items-center h-full">
-              <button
-                onClick={handleStart}
-                className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic"
-              >
-                開始測驗
-              </button>
+            <div className="flex flex-col h-full">
+              <p className="text-center font-cubic text-xl drop-shadow-[1px_1px_0_#FEFEFE]">
+                Ambassador day in community day
+              </p>
+              <p className="text-center font-cubic text-3xl text-black drop-shadow-[2px_2px_0_#FEFEFE] py-20">
+                測出你的服務屬性
+              </p>
+              <div className="flex h-full justify-center items-center pb-24">
+                <button
+                  onClick={handleStart}
+                  className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12"
+                >
+                  開始測驗
+                </button>
+              </div>
             </div>
           ) : (
             <div>
@@ -207,7 +218,7 @@ const App: React.FC = () => {
                     {multipleChoices[step].options.map((option, index) => (
                       <button
                         key={index}
-                        className="block w-full border border-black bg-[#FAF5E7] hover:bg-[#F3DAB4] text-black font-bold font-cubic p-4 rounded-2xl mb-6"
+                        className="block w-full border border-black bg-[#FAF5E7] hover:bg-[#F3DAB4] text-black font-bold font-cubic py-4 rounded-2xl mb-6"
                         onClick={() => handleNext(option)}
                       >
                         {option}
