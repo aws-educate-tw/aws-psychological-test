@@ -6,3 +6,9 @@
     font-family: "Cubic11";
     src: url("../fonts/Cubic11Regular.ttf");
   }
+
+/* @layer base {
+  .font-outline-2 {
+    -webkit-text-stroke: 1px white;
+  }
+} */
