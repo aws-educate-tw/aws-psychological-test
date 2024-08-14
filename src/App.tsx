@@ -106,14 +106,14 @@ const App: React.FC = () => {
                   </p>
                 </div>
                 <div className="py-6">
-                  <p className="text-center font-cubic text-5xl text-white drop-shadow-[3px_3px_0_#000]">
-                    測出
+                  {/* <p className="text-center font-cubic text-5xl text-white drop-shadow-[3px_3px_0_#000]">
+                    你是
+                  </p> */}
+                  <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2">
+                    你是哪種
                   </p>
-                  <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000]">
-                    你的
-                  </p>
-                  <p className="text-center font-cubic text-6xl text-white drop-shadow-[5px_5px_0_#000]">
-                    服務屬性
+                  <p className="text-center font-cubic text-6xl text-white drop-shadow-[4px_4px_0_#000]">
+                    AWS服務?
                   </p>
                 </div>
                 <div className="flex flex-col h-full justify-center items-center pb-6 gap-5">
@@ -122,12 +122,13 @@ const App: React.FC = () => {
                     placeholder="請輸入名字"
                     // value={value}
                     // onChange={handleChange}
-                    className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl"
+                    className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl w-64"
                   />
                   <button
                     onClick={handleStart}
-                    className="bg-white active:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
+                    className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
                   >
+                    <img src="/CatPaw.png" alt="CatPaw" className="w-4" />
                     開始測驗
                   </button>
                 </div>
