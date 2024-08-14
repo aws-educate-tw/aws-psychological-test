@@ -87,7 +87,11 @@ const App: React.FC = () => {
         <Navbar />
         <div
           className="bg-[#FFBD59] p-8 flex-grow bg-cover bg-center relative"
-          style={!startTest ? { backgroundImage: "url('/Sunset.png')" } : {}}
+          style={
+            !startTest
+              ? { backgroundImage: "url('/Sunset.png')" }
+              : { backgroundImage: "url('/Office.png')" }
+          }
         >
           {!startTest ? (
             <div className="flex flex-col h-full">
@@ -100,7 +104,7 @@ const App: React.FC = () => {
               <div className="flex h-full justify-center items-center pb-24">
                 <button
                   onClick={handleStart}
-                  className="bg-white hover:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12"
+                  className="bg-white active:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12"
                 >
                   開始測驗
                 </button>
@@ -126,25 +130,26 @@ const App: React.FC = () => {
                   <>
                     <div className="relative shadow-[10px_10px_0_#E15A53]">
                       <p className="text-2xl text-center p-2 text-black border border-black font-semibold font-cubic bg-[#A6DAD5]">
-                        第 {step + 1} 關
+                        第 {step + 1} 題
                       </p>
                       <p className="text-xl mb-8 border border-x-black border-b-black p-4 px-4 bg-[#FAF5E7] text-black font-cubic">
                         {multipleChoices[step].question}
                       </p>
                     </div>
+                    {/* <img src="/Office.png" alt="Office" className="w-10 h-10" /> */}
                     {multipleChoices[step].options.map((option, index) => (
                       <button
                         key={index}
-                        className="block w-full border border-black bg-[#FAF5E7] hover:bg-[#F3DAB4] text-black font-bold font-cubic py-4 rounded-2xl mb-6"
+                        className="block w-full border border-black bg-[#FAF5E7] active:bg-[#F3DAB4] text-black font-bold font-cubic py-2 rounded-2xl mb-6"
                         onClick={() => handleNext(option)}
                       >
                         {option}
                       </button>
                     ))}
-                    <div className="flex justify-end py-4">
+                    <div className="flex justify-end">
                       <button
                         onClick={handleBack}
-                        className="bg-yellow-200 hover:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
+                        className="bg-yellow-200 active:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
                       >
                         回上一題
                       </button>
