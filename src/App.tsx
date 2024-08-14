@@ -88,30 +88,52 @@ const App: React.FC = () => {
         <div
           className={`p-8 flex-grow ${
             !startTest
-              ? "bg-container bg-center relative"
+              ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
               : "bg-cover bg-center relative"
           }`}
           style={
             !startTest
-              ? { backgroundImage: "url('/Sky.png')" }
+              ? { backgroundImage: "" }
               : { backgroundImage: "url('/Office.png')" }
           }
         >
           {!startTest ? (
             <div className="flex flex-col h-full">
-              <p className="text-center font-cubic text-xl drop-shadow-[1px_1px_0_#FEFEFE]">
-                Ambassador day in community day
-              </p>
-              <p className="text-center font-cubic text-3xl text-black drop-shadow-[2px_2px_0_#FEFEFE] py-20">
-                測出你的服務屬性
-              </p>
-              <div className="flex h-full justify-center items-center pb-24">
-                <button
-                  onClick={handleStart}
-                  className="bg-white active:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12"
-                >
-                  開始測驗
-                </button>
+              <div className="flex flex-col h-full">
+                <div className="whitespace-nowrap">
+                  <p className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE] animate-pulse">
+                    ~ Ambassador day in community day ~
+                  </p>
+                </div>
+                <div className="py-6">
+                  <p className="text-center font-cubic text-5xl text-white drop-shadow-[3px_3px_0_#000]">
+                    測出
+                  </p>
+                  <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000]">
+                    你的
+                  </p>
+                  <p className="text-center font-cubic text-6xl text-white drop-shadow-[5px_5px_0_#000]">
+                    服務屬性
+                  </p>
+                </div>
+                <div className="flex flex-col h-full justify-center items-center pb-6 gap-5">
+                  <input
+                    type="text"
+                    placeholder="請輸入名字"
+                    // value={value}
+                    // onChange={handleChange}
+                    className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl"
+                  />
+                  <button
+                    onClick={handleStart}
+                    className="bg-white active:bg-gray-200 text-red-500 px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
+                  >
+                    開始測驗
+                  </button>
+                </div>
+              </div>
+              <div className="flex w-full justify-end">
+                <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
               </div>
             </div>
           ) : (
@@ -145,7 +167,6 @@ const App: React.FC = () => {
                         {multipleChoices[step].question}
                       </p>
                     </div>
-                    {/* <img src="/Office.png" alt="Office" className="w-10 h-10" /> */}
                     {multipleChoices[step].options.map((option, index) => (
                       <button
                         key={index}
