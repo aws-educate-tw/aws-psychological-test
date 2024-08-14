@@ -86,10 +86,14 @@ const App: React.FC = () => {
       <div className="w-full max-w-md h-screen flex flex-col">
         <Navbar />
         <div
-          className="bg-[#FFBD59] p-8 flex-grow bg-cover bg-center relative"
+          className={`p-8 flex-grow ${
+            !startTest
+              ? "bg-container bg-center relative"
+              : "bg-cover bg-center relative"
+          }`}
           style={
             !startTest
-              ? { backgroundImage: "url('/Sunset.png')" }
+              ? { backgroundImage: "url('/Sky.png')" }
               : { backgroundImage: "url('/Office.png')" }
           }
         >
@@ -128,11 +132,16 @@ const App: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <div className="relative shadow-[10px_10px_0_#E15A53]">
-                      <p className="text-2xl text-center p-2 text-black border border-black font-semibold font-cubic bg-[#A6DAD5]">
-                        第 {step + 1} 題
-                      </p>
-                      <p className="text-xl mb-8 border border-x-black border-b-black p-4 px-4 bg-[#FAF5E7] text-black font-cubic">
+                    <div className="relative">
+                      <div className="flex justify-between p-2">
+                        <p className="text-2xl text-white *:font-semibold font-cubic">
+                          第 {step + 1} 題
+                        </p>
+                        <p className="text-2xl text-white *:font-semibold font-cubic">
+                          {step + 1}/8
+                        </p>
+                      </div>
+                      <p className="text-xl mb-8 px-4 py-6 bg-neutral-500 text-white font-cubic border-black border-4 border-dashed rounded-lg shadow-[5px_5px_0_#E5E5E5]">
                         {multipleChoices[step].question}
                       </p>
                     </div>
@@ -140,7 +149,7 @@ const App: React.FC = () => {
                     {multipleChoices[step].options.map((option, index) => (
                       <button
                         key={index}
-                        className="block w-full border border-black bg-[#FAF5E7] active:bg-[#F3DAB4] text-black font-bold font-cubic py-2 rounded-2xl mb-6"
+                        className="block w-full border border-black bg-neutral-200 active:bg-zinc-100 text-black font-bold font-cubic py-2 rounded-2xl mb-4"
                         onClick={() => handleNext(option)}
                       >
                         {option}
