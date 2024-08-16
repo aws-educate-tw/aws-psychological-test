@@ -1,19 +1,32 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./ui/navbar";
 import { multipleChoices } from "./lib/multipleChoices";
 
-const App: React.FC = () => {
+export default function App() {
   const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
     if (showResult) {
       calculateResult();
     }
   }, [showResult]);
+
+  useEffect(() => {
+    if (answerService === "ELB") {
+      const requestBody = {
+        data: {
+          model_id: "stability.stable-diffusion-xl-v1",
+          prompt: "A cute cat engineer, Pixel art",
+        },
+      };
+      generateImage(requestBody);
+    }
+  }, [answerService]);
 
   const handleStart = () => {
     setStartTest(true);
@@ -64,21 +77,38 @@ const App: React.FC = () => {
       serviceCounts[selectedService]++;
     });
 
-    // Find the maximum count
     const maxCount = Math.max(...Object.values(serviceCounts));
-
-    // Find all services that have the maximum count
     const topServices = Object.keys(serviceCounts).filter(
       (service) => serviceCounts[service] === maxCount
     );
 
-    // Randomly select one of the top services
     const resultService =
       topServices[Math.floor(Math.random() * topServices.length)];
 
-    console.log("Service counts: ", serviceCounts);
-    console.log("Top services: ", topServices);
     setAnswerService(resultService);
+  };
+
+  const generateImage = async (requestBody: {
+    data: { model_id: string; prompt: string };
+  }) => {
+    try {
+      const response = await fetch(
+        "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/generate-image",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to generate image");
+      }
+
+      const data = await response.json();
+      setImageUrl(data.image_url);
+    } catch (error) {
+      console.error("Error generating image:", error);
+    }
   };
 
   return (
@@ -106,9 +136,6 @@ const App: React.FC = () => {
                   </p>
                 </div>
                 <div className="py-6">
-                  {/* <p className="text-center font-cubic text-5xl text-white drop-shadow-[3px_3px_0_#000]">
-                    你是
-                  </p> */}
                   <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2">
                     你是哪種
                   </p>
@@ -120,8 +147,6 @@ const App: React.FC = () => {
                   <input
                     type="text"
                     placeholder="請輸入名字"
-                    // value={value}
-                    // onChange={handleChange}
                     className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl w-64"
                   />
                   <button
@@ -147,11 +172,7 @@ const App: React.FC = () => {
                     <p className="text-4xl text-red-500 font-black">
                       {answerService}
                     </p>
-                    {/* {answers.map((answer, index) => (
-                    <p key={index} className="mb-2">
-                      {multipleChoices[index].question}：{answer}
-                    </p>
-                  ))} */}
+                    <img src={imageUrl} alt="Service" className="w-full" />
                   </>
                 ) : (
                   <>
@@ -194,6 +215,4 @@ const App: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default App;
+}
