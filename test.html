@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Test API POST Request</h1>
+    <button onclick="testApi()">Send POST Request</button>
+    <pre id="response"></pre>
+    <img id="generatedImage" src="" alt="Generated Image" style="display:none; max-width: 100%; height: auto;">
+
+    <script>
+        function testApi() {
+            const url = "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/generate-image";
+            const requestBody = {
+                "data" : {
+                    "model_id" : "stability.stable-diffusion-xl-v1",
+                    "prompt" : "A cute cat engineer, Pixel art"
+                }
+            }
+            console.log("Request Body: ", JSON.stringify(requestBody));
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+                
+                // Update the image source and display the image
+                const imgElement = document.getElementById("generatedImage");
+                imgElement.src = data.image_url;
+                imgElement.style.display = 'block'; // Show the image
+            })
+            .catch(error => {
+                document.getElementById("response").textContent = "Error: " + error;
+            });
+        }
+    </script>
+</body>
+</html>
