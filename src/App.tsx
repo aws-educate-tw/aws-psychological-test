@@ -39,7 +39,7 @@ export default function App() {
           prompt: prompt,
         },
       };
-      generateImage(requestBody);
+      // generateImage(requestBody);
     }
   }, [answerService]);
 
@@ -239,22 +239,22 @@ export default function App() {
                           />
                         </div>
                       </div>
-                      <div className="flex justify-center px-5">
+                      <div className="flex justify-center pl-5 pr-3 pb-2 text-wrap">
                         <p className="font-cubic text-sm">
                           &quot;適應性強且靈活的人，能夠根據環境的變化迅速調整自己的步伐。擁有強大的能力，可以在需要的時候全力以赴，也可以在平靜時輕鬆應對。&quot;
                         </p>
                       </div>
                       <hr className="border-y-2 border-black my-2" />
-                      <div className="px-5">
+                      <div className="pl-5 pr-3 text-wrap">
                         <p className="font-cubic text-md text-[#23303F] py-2">
                           在職場上的你...
                         </p>
-                        <p className="font-cubic text-sm">
+                        <p className="font-cubic text-sm text-wrap w-full">
                           能迅速掌握新技能，並根據工作需求快速調整自己的步伐。他們在面對高強度的工作壓力時，能夠全力以赴，展現出卓越的表現和效率。無論是處理複雜的項目還是應對緊急情況，他們總是能夠迎刃而解。
                         </p>
                       </div>
                       <hr className="border-y-2 border-black my-2" />
-                      <div className="px-5 pb-5">
+                      <div className="pl-5 pr-3 pb-5 ">
                         <p className="font-cubic text-md text-[#23303F] py-2">
                           AWS 服務小教室
                         </p>
