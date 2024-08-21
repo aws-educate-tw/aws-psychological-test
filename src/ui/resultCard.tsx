@@ -1,4 +1,16 @@
 import { Circle, X } from "lucide-react";
+import { resultData } from "../lib/resultData";
+
+interface Result {
+  serviceName: string;
+  tags: string[];
+  soulMate: string;
+  soulMateImg: string;
+  friends: string;
+  friendsImg: string;
+  work_describe: string;
+  life_describe: string;
+}
 
 export default function ResultCard({
   answerService,
@@ -7,6 +19,14 @@ export default function ResultCard({
   answerService: string;
   imageUrl: string;
 }) {
+  const serviceResult = resultData.find(
+    (result: Result) => result.serviceName === answerService
+  );
+
+  if (!serviceResult) {
+    return <div>無法找到對應的服務資料</div>;
+  }
+
   return (
     <div className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-[5px_5px_0_#000]">
       <div className="flex items-center border-b-4 border-black p-2">
@@ -46,9 +66,11 @@ export default function ResultCard({
               {answerService}
             </p>
           )}
-          <p className="font-cubic text-xs"># 需要我隨時都在</p>
-          <p className="font-cubic text-xs"># 適應性強</p>
-          <p className="font-cubic text-xs"># 你是T嗎</p>
+          {serviceResult.tags.map((tag, index) => (
+            <p key={index} className="font-cubic text-xs">
+              {tag}
+            </p>
+          ))}
         </div>
         <div className="">
           <img
@@ -62,33 +84,45 @@ export default function ResultCard({
         </div>
       </div>
       <div className="flex justify-evenly pb-4">
-        <div>
-          <p className="font-cubic text-lg text-[#23303F] py-2">靈魂伴侶</p>
-          <div className="flex items-center gap-2">
-            <img src="/services/IAM.png" alt="IAM" className="w-12 h-12" />
-            <p className="font-cubic">IAM</p>
+        {serviceResult.soulMate && (
+          <div>
+            <p className="font-cubic text-lg text-[#23303F] py-2">靈魂伴侶</p>
+            <div className="flex items-center gap-2">
+              <img
+                src={serviceResult.soulMateImg}
+                alt={serviceResult.soulMate}
+                className="w-12 h-12"
+              />
+              <p className="font-cubic">{serviceResult.soulMate}</p>
+            </div>
           </div>
-        </div>
-        <div>
-          <p className="font-cubic text-lg text-[#23303F] py-2">偶爾一起玩</p>
-          <div className="flex items-center gap-2">
-            <img src="/services/ELB.png" alt="ELB" className="w-12 h-12" />
-            <p className="font-cubic">ELB</p>
+        )}
+        {serviceResult.friends && (
+          <div>
+            <p className="font-cubic text-lg text-[#23303F] py-2">偶爾一起玩</p>
+            <div className="flex items-center gap-2">
+              <img
+                src={serviceResult.friendsImg}
+                alt={serviceResult.friends}
+                className="w-12 h-12"
+              />
+              <p className="font-cubic">{serviceResult.friends}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <hr className="border-y-2 border-black my-2" />
       <div className="flex p-4 gap-2">
         <div className="flex flex-col text-wrap w-1/2 gap-2">
           <p className="font-cubic text-lg text-[#23303F]">在職場上的你...</p>
           <p className="font-cubic text-sm text-wrap w-full">
-            能迅速掌握新技能，並根據工作需求快速調整自己的步伐。他們在面對高強度的工作壓力時，能夠全力以赴，展現出卓越的表現和效率。無論是處理複雜的項目還是應對緊急情況，他們總是能夠迎刃而解。
+            {serviceResult.work_describe}
           </p>
         </div>
         <div className="flex flex-col text-wrap w-1/2 gap-2">
           <p className="font-cubic text-lg text-[#23303F]">在生活上的你...</p>
           <p className="font-cubic text-sm text-wrap w-full">
-            適應性強且靈活的人，能夠根據環境的變化迅速調整自己的步伐。擁有強大的能力，可以在需要的時候全力以赴，也可以在平靜時輕鬆應對。
+            {serviceResult.life_describe}
           </p>
         </div>
       </div>
