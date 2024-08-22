@@ -1,3 +1,5 @@
+"use client";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Navbar from "./ui/navbar";
 import { multipleChoices } from "./lib/multipleChoices";
@@ -149,36 +151,63 @@ export default function App() {
             <div className="flex flex-col h-full">
               <div className="flex flex-col h-full">
                 <div className="whitespace-nowrap">
-                  <p className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE] animate-pulse">
+                  <motion.p
+                    className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
+                    animate={{ x: [-20, 0, 20], opacity: [0, 1, 0] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 4,
+                      ease: "linear",
+                    }}
+                  >
                     ~ Ambassador day in community day ~
-                  </p>
+                  </motion.p>
                 </div>
-                <div className="py-6">
+                <motion.div
+                  className="py-6"
+                  animate={{ scale: [0.95, 1, 0.95] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "linear",
+                  }}
+                >
                   <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2">
                     你是哪種
                   </p>
                   <p className="text-center font-cubic text-6xl text-white drop-shadow-[4px_4px_0_#000]">
                     AWS服務?
                   </p>
-                </div>
+                </motion.div>
                 <div className="flex flex-col h-full justify-center items-center pb-6 gap-5">
-                  <input
+                  <motion.input
                     type="text"
                     placeholder="請輸入名字"
                     className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl w-64"
+                    initial={{ opacity: 0, y: -100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.175 }}
                   />
-                  <button
+                  <motion.button
                     onClick={handleStart}
                     className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
                   >
                     <img src="/CatPaw.png" alt="CatPaw" className="w-4" />
                     開始測驗
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-              <div className="flex w-full justify-end">
+              <motion.div
+                className="flex w-full justify-end"
+                initial={{ opacity: 0, scale: 0.8, y: 100, x: 100 }}
+                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                transition={{ duration: 0.175 }}
+              >
                 <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
-              </div>
+              </motion.div>
             </div>
           ) : (
             <div>
