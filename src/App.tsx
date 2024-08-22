@@ -153,7 +153,7 @@ export default function App() {
                 <div className="whitespace-nowrap">
                   <motion.p
                     className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
-                    animate={{ x: [-20, 0, 20], opacity: [0, 1, 0] }}
+                    animate={{ x: [-30, 0, 30], opacity: [0, 1, 0] }}
                     transition={{
                       repeat: Infinity,
                       duration: 4,
@@ -165,7 +165,7 @@ export default function App() {
                 </div>
                 <motion.div
                   className="py-6"
-                  animate={{ scale: [0.95, 1, 0.95] }}
+                  animate={{ scale: [1, 1.1, 1] }}
                   transition={{
                     repeat: Infinity,
                     duration: 1.5,
@@ -230,19 +230,32 @@ export default function App() {
                           {step + 1}/8
                         </p>
                       </div>
-                      <p className="text-xl mb-8 px-4 py-6 bg-neutral-500 text-white font-cubic border-black border-4 border-dashed rounded-lg shadow-[5px_5px_0_#E5E5E5]">
-                        {multipleChoices[step].question}
-                      </p>
-                    </div>
-                    {multipleChoices[step].options.map((option, index) => (
-                      <button
-                        key={index}
-                        className="block w-full border border-black bg-neutral-200 active:bg-zinc-100 text-black font-bold font-cubic py-2 rounded-2xl mb-4"
-                        onClick={() => handleNext(option)}
+                      <motion.p
+                        key={step}
+                        className="text-xl mb-8 px-4 py-6 bg-[#FAF5E7] text-black font-cubic border-black border-4 rounded-lg shadow-[5px_5px_0_#000]"
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
                       >
-                        {option}
-                      </button>
-                    ))}
+                        {multipleChoices[step].question}
+                      </motion.p>
+                    </div>
+                    <motion.div
+                      key={step}
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.175 }}
+                    >
+                      {multipleChoices[step].options.map((option, index) => (
+                        <button
+                          key={index}
+                          className="block w-full border border-black bg-neutral-200 active:bg-zinc-100 text-black font-bold font-cubic py-2 rounded-2xl mb-4"
+                          onClick={() => handleNext(option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </motion.div>
                     <div className="flex justify-end">
                       <button
                         onClick={handleBack}

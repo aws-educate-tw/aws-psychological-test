@@ -1,5 +1,6 @@
 import { Circle, X } from "lucide-react";
 import { resultData } from "../lib/resultData";
+import { motion } from "framer-motion";
 
 interface Result {
   serviceName: string;
@@ -28,7 +29,12 @@ export default function ResultCard({
   }
 
   return (
-    <div className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-[5px_5px_0_#000]">
+    <motion.div
+      className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-[5px_5px_0_#000]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 5 }}
+    >
       <div className="flex items-center border-b-4 border-black p-2">
         <div className="flex gap-2 w-full">
           <Circle size={20} strokeWidth={4} />
@@ -133,6 +139,6 @@ export default function ResultCard({
           提供可擴展計算能力的服務。用戶可以在雲中快速啟動虛擬機器，選擇不同的作業系統和配置。這對於處理不同的工作負載，例如應用程式伺服器、資料庫或後端伺服器等都非常有用
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
