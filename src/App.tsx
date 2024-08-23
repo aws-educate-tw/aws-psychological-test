@@ -1,19 +1,49 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Navbar from "./ui/navbar";
 import { multipleChoices } from "./lib/multipleChoices";
+import ResultCard from "./ui/resultCard";
 
-const App: React.FC = () => {
+export default function App() {
   const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
     if (showResult) {
       calculateResult();
     }
   }, [showResult]);
+
+  useEffect(() => {
+    const promptMap: { [key: string]: string } = {
+      EC2: "A cute cat using a computer with a dark background",
+      S3: "A cute cat playing with a USB with a dark background",
+      Lambda: "A cute cat playing with a robot with a dark background",
+      IAM: "A cute cat holding a key with a dark background",
+      Cloudwatch: "A cute cat using a camera with a dark background",
+      DynamoDB: "A cute cat hiding in a folder with a dark background",
+      "API gateway":
+        "A cute cat talking between two dogs with a dark background",
+      ELB: "A cute cat being a traffic police officer with a dark background",
+    };
+
+    const prompt = promptMap[answerService];
+
+    if (prompt) {
+      const requestBody = {
+        data: {
+          model_id: "stability.stable-diffusion-xl-v1",
+          prompt: prompt,
+        },
+      };
+      generateImage(requestBody);
+    }
+  }, [answerService]);
 
   const handleStart = () => {
     setStartTest(true);
@@ -64,21 +94,37 @@ const App: React.FC = () => {
       serviceCounts[selectedService]++;
     });
 
-    // Find the maximum count
     const maxCount = Math.max(...Object.values(serviceCounts));
-
-    // Find all services that have the maximum count
     const topServices = Object.keys(serviceCounts).filter(
       (service) => serviceCounts[service] === maxCount
     );
 
-    // Randomly select one of the top services
     const resultService =
       topServices[Math.floor(Math.random() * topServices.length)];
-
-    console.log("Service counts: ", serviceCounts);
-    console.log("Top services: ", topServices);
     setAnswerService(resultService);
+  };
+
+  const generateImage = async (requestBody: {
+    data: { model_id: string; prompt: string };
+  }) => {
+    try {
+      const response = await fetch(
+        "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/generate-image",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to generate image");
+      }
+
+      const data = await response.json();
+      setImageUrl(data.image_url);
+    } catch (error) {
+      console.error("Error generating image:", error);
+    }
   };
 
   return (
@@ -90,9 +136,13 @@ const App: React.FC = () => {
             !startTest
               ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
               : "bg-cover bg-center relative"
+          } ${
+            showResult
+              ? "bg-container bg-center relative bg-gradient-to-b from-[#BACBCB] to-[#95a3a3]"
+              : ""
           }`}
           style={
-            !startTest
+            !startTest || showResult
               ? { backgroundImage: "" }
               : { backgroundImage: "url('/Office.png')" }
           }
@@ -101,57 +151,73 @@ const App: React.FC = () => {
             <div className="flex flex-col h-full">
               <div className="flex flex-col h-full">
                 <div className="whitespace-nowrap">
-                  <p className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE] animate-pulse">
+                  <motion.p
+                    className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
+                    animate={{ x: [-30, 0, 30], opacity: [0, 1, 0] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 4,
+                      ease: "linear",
+                    }}
+                  >
                     ~ Ambassador day in community day ~
-                  </p>
+                  </motion.p>
                 </div>
-                <div className="py-6">
-                  {/* <p className="text-center font-cubic text-5xl text-white drop-shadow-[3px_3px_0_#000]">
-                    你是
-                  </p> */}
+                <motion.div
+                  className="py-6"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "linear",
+                  }}
+                >
                   <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2">
                     你是哪種
                   </p>
                   <p className="text-center font-cubic text-6xl text-white drop-shadow-[4px_4px_0_#000]">
                     AWS服務?
                   </p>
-                </div>
+                </motion.div>
                 <div className="flex flex-col h-full justify-center items-center pb-6 gap-5">
-                  <input
+                  <motion.input
                     type="text"
                     placeholder="請輸入名字"
-                    // value={value}
-                    // onChange={handleChange}
                     className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl w-64"
+                    initial={{ opacity: 0, y: -100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.175 }}
                   />
-                  <button
+                  <motion.button
                     onClick={handleStart}
                     className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
                   >
                     <img src="/CatPaw.png" alt="CatPaw" className="w-4" />
                     開始測驗
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-              <div className="flex w-full justify-end">
+              <motion.div
+                className="flex w-full justify-end"
+                initial={{ opacity: 0, scale: 0.8, y: 100, x: 100 }}
+                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                transition={{ duration: 0.175 }}
+              >
                 <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
-              </div>
+              </motion.div>
             </div>
           ) : (
             <div>
               <div className="mb-6">
                 {showResult ? (
                   <>
-                    <p className="text-2xl font-cubic">測驗結果</p>
-                    <p className="font-cubic">你最像</p>
-                    <p className="text-4xl text-red-500 font-black">
-                      {answerService}
-                    </p>
-                    {/* {answers.map((answer, index) => (
-                    <p key={index} className="mb-2">
-                      {multipleChoices[index].question}：{answer}
-                    </p>
-                  ))} */}
+                    <ResultCard
+                      answerService={answerService}
+                      imageUrl={imageUrl}
+                    />
                   </>
                 ) : (
                   <>
@@ -164,19 +230,32 @@ const App: React.FC = () => {
                           {step + 1}/8
                         </p>
                       </div>
-                      <p className="text-xl mb-8 px-4 py-6 bg-neutral-500 text-white font-cubic border-black border-4 border-dashed rounded-lg shadow-[5px_5px_0_#E5E5E5]">
-                        {multipleChoices[step].question}
-                      </p>
-                    </div>
-                    {multipleChoices[step].options.map((option, index) => (
-                      <button
-                        key={index}
-                        className="block w-full border border-black bg-neutral-200 active:bg-zinc-100 text-black font-bold font-cubic py-2 rounded-2xl mb-4"
-                        onClick={() => handleNext(option)}
+                      <motion.p
+                        key={step}
+                        className="text-xl mb-8 px-4 py-6 bg-[#FAF5E7] text-black font-cubic border-black border-4 rounded-lg shadow-[5px_5px_0_#000]"
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
                       >
-                        {option}
-                      </button>
-                    ))}
+                        {multipleChoices[step].question}
+                      </motion.p>
+                    </div>
+                    <motion.div
+                      key={step}
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.175 }}
+                    >
+                      {multipleChoices[step].options.map((option, index) => (
+                        <button
+                          key={index}
+                          className="block w-full border border-black bg-neutral-200 active:bg-zinc-100 text-black font-bold font-cubic py-2 rounded-2xl mb-4"
+                          onClick={() => handleNext(option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </motion.div>
                     <div className="flex justify-end">
                       <button
                         onClick={handleBack}
@@ -194,6 +273,4 @@ const App: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default App;
+}
