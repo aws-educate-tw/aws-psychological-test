@@ -60,7 +60,7 @@ export const resultData = [
         life_describe: "非常講究秩序，喜歡按照既定的規範和方法來做事，不喜歡隨意改變計劃，對自己的行為和承諾負責，為周圍的人帶來安全感和信任感。",
     },
     {
-        serviceName: "APIGateway",
+        serviceName: "API gateway",
         tags: ["#渣男辨識器", "#先冷靜談談好嗎", "#情報中心"],
         soulMate: "",
         soulMateImg: "",
