@@ -1,3 +1,5 @@
+"use client";
+
 import { Circle, X } from "lucide-react";
 import { resultData } from "../lib/resultData";
 import { motion } from "framer-motion";
@@ -25,7 +27,8 @@ export default function ResultCard({
   );
 
   if (!serviceResult) {
-    return <div>無法找到對應的服務資料</div>;
+    console.log(serviceResult);
+    return <></>;
   }
 
   return (
@@ -42,7 +45,7 @@ export default function ResultCard({
         </div>
         <X strokeWidth={4} />
       </div>
-      <div className="flex justify-between items-center px-4 py-4">
+      <div className="flex justify-between items-center px-4 py-4 gap-4">
         <div className="flex flex-col flex-grow">
           <p className="text-lg text-start font-cubic text-black ">
             你天生就是
@@ -62,7 +65,7 @@ export default function ResultCard({
           )}
 
           {answerService === "API gateway" && (
-            <p className="text-xl font-cubic font-outline-2 py-3">
+            <p className="text-lg font-cubic font-outline-2 py-3">
               {answerService}
             </p>
           )}
@@ -78,16 +81,37 @@ export default function ResultCard({
             </p>
           ))}
         </div>
-        <div className="">
-          <img
-            src={
-              imageUrl ||
-              "https://aws-psy-test-image.s3.amazonaws.com/generated_images/2b883c0c-121a-4826-8429-7d31ba3a29fd.png"
-            }
-            alt="Service"
-            className="rounded-lg w-48"
-          />
-        </div>
+        {imageUrl ? (
+          <div className="min-h-56">
+            <img
+              src={imageUrl}
+              alt="result_loading_img"
+              className="rounded-lg w-48"
+            />
+          </div>
+        ) : (
+          <div className="min-h-56">
+            <motion.p
+              className="flex justify-center font-cubic"
+              animate={{ scale: [1, 0.9, 1], y: [30, 30, 30], x: [0, 0, 0] }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.5,
+                ease: "linear",
+              }}
+            >
+              魔法生成中
+            </motion.p>
+            <img
+              src={
+                "./cat-loading.webp"
+                // "https://aws-psy-test-image.s3.amazonaws.com/generated_images/2b883c0c-121a-4826-8429-7d31ba3a29fd.png"
+              }
+              alt="result_img"
+              className="rounded-lg w-48"
+            />
+          </div>
+        )}
       </div>
       <div className="flex justify-evenly pb-4">
         {serviceResult.soulMate && (
@@ -135,9 +159,7 @@ export default function ResultCard({
       <hr className="border-y-2 border-black my-2" />
       <div className="pl-5 pr-3 pb-5 text-wrap">
         <p className="font-cubic text-lg text-[#23303F] py-2">AWS 服務小教室</p>
-        <p className="font-cubic text-sm">
-          提供可擴展計算能力的服務。用戶可以在雲中快速啟動虛擬機器，選擇不同的作業系統和配置。這對於處理不同的工作負載，例如應用程式伺服器、資料庫或後端伺服器等都非常有用
-        </p>
+        <p className="font-cubic text-sm">{serviceResult.service_describe}</p>
       </div>
     </motion.div>
   );
