@@ -61,8 +61,8 @@ export default function App() {
   };
 
   const handleNext = (option: string) => {
-    setSelectedOption(option); // Store the selected option
-    setShowIntermediate(true); // Show the intermediate page
+    setSelectedOption(option);
+    setShowIntermediate(true);
   };
 
   const handleBack = () => {
@@ -218,13 +218,14 @@ export default function App() {
                   </>
                 ) : showIntermediate ? (
                   <IntermediatePage
+                    question={multipleChoices[step].question}
                     selectedOption={selectedOption}
                     onContinue={() => {
-                      setShowIntermediate(false); // Hide intermediate page
+                      setShowIntermediate(false);
                       if (step < multipleChoices.length - 1) {
-                        setStep(step + 1); // Move to the next question
+                        setStep(step + 1);
                       } else {
-                        handleEnd(); // End the test if it was the last question
+                        handleEnd();
                       }
                     }}
                   />
