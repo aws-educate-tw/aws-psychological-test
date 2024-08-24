@@ -5,6 +5,7 @@ import Navbar from "./ui/navbar";
 import { multipleChoices } from "./lib/multipleChoices";
 import ResultCard from "./ui/resultCard";
 import QuestionAnswers from "./ui/questionAnswers";
+import IntermediatePage from "./ui/intermediatePage";
 
 export default function App() {
   const [step, setStep] = useState<number>(0);
@@ -13,6 +14,8 @@ export default function App() {
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [showIntermediate, setShowIntermediate] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<string>("");
 
   useEffect(() => {
     if (showResult) {
@@ -42,7 +45,7 @@ export default function App() {
           prompt: prompt,
         },
       };
-      generateImage(requestBody);
+      // generateImage(requestBody);
     }
   }, [answerService]);
 
@@ -58,15 +61,8 @@ export default function App() {
   };
 
   const handleNext = (option: string) => {
-    const newAnswers = [...answers];
-    newAnswers[step] = option;
-    setAnswers(newAnswers);
-
-    if (step < multipleChoices.length - 1) {
-      setStep(step + 1);
-    } else {
-      handleEnd();
-    }
+    setSelectedOption(option); // Store the selected option
+    setShowIntermediate(true); // Show the intermediate page
   };
 
   const handleBack = () => {
@@ -220,17 +216,27 @@ export default function App() {
                       imageUrl={imageUrl}
                     />
                   </>
+                ) : showIntermediate ? (
+                  <IntermediatePage
+                    selectedOption={selectedOption}
+                    onContinue={() => {
+                      setShowIntermediate(false); // Hide intermediate page
+                      if (step < multipleChoices.length - 1) {
+                        setStep(step + 1); // Move to the next question
+                      } else {
+                        handleEnd(); // End the test if it was the last question
+                      }
+                    }}
+                  />
                 ) : (
-                  <>
-                    <QuestionAnswers
-                      step={step}
-                      totalSteps={multipleChoices.length}
-                      question={multipleChoices[step].question}
-                      options={multipleChoices[step].options}
-                      onNext={handleNext}
-                      onBack={handleBack}
-                    />
-                  </>
+                  <QuestionAnswers
+                    step={step}
+                    totalSteps={multipleChoices.length}
+                    question={multipleChoices[step].question}
+                    options={multipleChoices[step].options}
+                    onNext={handleNext}
+                    onBack={handleBack}
+                  />
                 )}
               </div>
             </div>
