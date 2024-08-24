@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "./ui/navbar";
 import { multipleChoices } from "./lib/multipleChoices";
 import ResultCard from "./ui/resultCard";
+import QuestionAnswers from "./ui/questionAnswers";
 
 export default function App() {
   const [step, setStep] = useState<number>(0);
@@ -221,49 +222,14 @@ export default function App() {
                   </>
                 ) : (
                   <>
-                    <div className="relative">
-                      <div className="flex justify-between p-2">
-                        <p className="text-2xl text-white *:font-semibold font-cubic">
-                          第 {step + 1} 題
-                        </p>
-                        <p className="text-2xl text-white *:font-semibold font-cubic">
-                          {step + 1}/8
-                        </p>
-                      </div>
-                      <motion.p
-                        key={step}
-                        className="text-xl mb-8 px-4 py-6 bg-[#FAF5E7] text-black font-cubic border-black border-4 rounded-lg shadow-[5px_5px_0_#000]"
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 }}
-                      >
-                        {multipleChoices[step].question}
-                      </motion.p>
-                    </div>
-                    <motion.div
-                      key={step}
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.175 }}
-                    >
-                      {multipleChoices[step].options.map((option, index) => (
-                        <button
-                          key={index}
-                          className="block w-full border border-black bg-neutral-200 active:bg-zinc-100 text-black font-bold font-cubic py-2 rounded-2xl mb-4"
-                          onClick={() => handleNext(option)}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </motion.div>
-                    <div className="flex justify-end">
-                      <button
-                        onClick={handleBack}
-                        className="bg-yellow-200 active:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
-                      >
-                        回上一題
-                      </button>
-                    </div>
+                    <QuestionAnswers
+                      step={step}
+                      totalSteps={multipleChoices.length}
+                      question={multipleChoices[step].question}
+                      options={multipleChoices[step].options}
+                      onNext={handleNext}
+                      onBack={handleBack}
+                    />
                   </>
                 )}
               </div>
