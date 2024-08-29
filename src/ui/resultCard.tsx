@@ -49,125 +49,102 @@ export default function ResultCard({
           </p>
           <X strokeWidth={4} />
         </div>
-        <div className="flex items-center px-4 gap-4 h-56">
+        <div className="flex items-center px-4 gap-4 justify-evenly">
           {imageUrl ? (
-            <div className="">
+            <div className="w-1/2 mt-4">
               <img
                 src={imageUrl}
                 alt="result_loading_img"
-                className="rounded-lg w-48"
+                className="rounded-lg"
               />
             </div>
           ) : (
-            <div className="">
-              <motion.p
-                className="flex justify-center font-cubic"
-                animate={{ scale: [1, 0.9, 1], y: [30, 30, 30], x: [0, 0, 0] }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 1.5,
-                  ease: "linear",
-                }}
-              >
-                魔法生成中
-              </motion.p>
+            <div className="w-1/2 mt-4">
               <img
                 src={
-                  "./cat-loading.webp"
+                  "./AI-magic-generating.gif"
                   // "https://aws-psy-test-image.s3.amazonaws.com/generated_images/2b883c0c-121a-4826-8429-7d31ba3a29fd.png"
                 }
                 alt="result_img"
-                className="rounded-lg w-48"
+                className="rounded-lg"
               />
             </div>
           )}
           <div className="flex flex-col h-full justify-center items-center">
-            <div className="pb-2">
+            <div className="">
               <p className="text-xl text-start py-2 font-cubic font-outline-1 text-black">
                 harry chung
               </p>
-              <p className="text-md text-center font-cubic text-black">
+              <p className="text-md text-center font-cubic text-black py-1">
                 你就是...
               </p>
             </div>
-            <div className="">
-              {answerService === "API gateway" && (
-                <p className="text-3xl text-center font-cubic font-outline-2">
-                  {answerService}
-                </p>
-              )}
+            <div className="min-h-20 flex items-center">
               {(answerService === "EC2" ||
                 answerService === "S3" ||
                 answerService === "ELB" ||
                 answerService === "IAM") && (
-                <p className="text-5xl font-cubic font-outline-2 py-3 -translate-y-4">
+                <p className="text-7xl text-center font-cubic font-outline-2">
                   {answerService}
                 </p>
               )}
               {answerService === "Lambda" && (
-                <p className="text-4xl font-cubic font-outline-2 py-3 -translate-y-4">
+                <p className="text-5xl text-center font-cubic font-outline-2">
                   {answerService}
                 </p>
               )}
 
               {(answerService === "Cloudwatch" ||
-                answerService === "DynamoDB") && (
-                <p className="text-2xl font-cubic font-outline-2 py-3 -translate-y-4">
+                answerService === "DynamoDB" ||
+                answerService === "API gateway") && (
+                <p className="text-3xl text-center font-cubic font-outline-2">
                   {answerService}
                 </p>
               )}
             </div>
           </div>
         </div>
-        <div className="flex w-full justify-center items-center gap-2 p-2">
+        <div className="flex w-full justify-center items-center gap-2 p-2 mt-2">
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}
-              className="font-cubic text-sm bg-[#FEA419] rounded-full bg-opacity-80 px-2"
+              className="text-center font-cubic text-sm bg-[#FEA419] shadow-[3px_3px_0px_#000] text-black px-1"
             >
               {tag}
             </p>
           ))}
         </div>
-        <hr className="border-y-2 border-black mt-2 -mb-6" />
-        <div className="flex justify-evenly -translate-x-2">
+        <hr className="border-y-2 border-black my-2" />
+        <div className="flex justify-evenly px-5 gap-5">
           {serviceResult.soulMate && (
-            <div className="flex flex-col items-center">
-              <p className="font-cubic text-lg text-[#23303F] py-2 translate-y-8">
-                靈魂伴侶
-              </p>
-              <div className="flex items-center">
+            <div className="flex flex-col items-center w-1/2 gap-2">
+              <p className="font-cubic text-lg text-[#23303F]">靈魂伴侶</p>
+              <div className="flex justify-evenly items-center gap-2">
                 <img
                   src={serviceResult.soulMateImg}
                   alt={serviceResult.soulMate}
-                  className="w-36 h-36"
+                  className="w-2/5"
                 />
-                <p className="font-cubic -translate-x-4">
-                  {serviceResult.soulMate}
-                </p>
+                <p className="font-cubic">{serviceResult.soulMate}</p>
               </div>
             </div>
           )}
           {serviceResult.friends && (
-            <div className="flex flex-col items-center">
-              <p className="font-cubic text-lg text-[#23303F] py-2 translate-y-8">
-                偶爾一起玩
-              </p>
-              <div className="flex items-center">
+            <div className="flex flex-col items-center w-1/2 gap-2">
+              <p className="font-cubic text-lg text-[#23303F]">偶爾一起玩</p>
+              <div className="flex justify-evenly items-center gap-2">
                 <img
                   src={serviceResult.friendsImg}
                   alt={serviceResult.friends}
-                  className="w-36 h-36"
+                  className="w-2/5"
                 />
-                <p className="font-cubic -translate-x-4">
-                  {serviceResult.friends}
-                </p>
+                <p className="font-cubic">{serviceResult.friends}</p>
               </div>
             </div>
           )}
         </div>
-        <hr className="border-y-2 border-black mb-2 -mt-4" />
-        <div className="flex p-4 gap-2">
+        <hr className="border-y-2 border-black my-2" />
+        <div className="flex px-4 gap-2">
           <div className="flex flex-col text-wrap w-1/2 gap-2">
             <p className="font-cubic text-lg text-[#23303F]">在職場上的你...</p>
             <p className="font-cubic text-sm text-wrap w-full">
@@ -181,28 +158,28 @@ export default function ResultCard({
             </p>
           </div>
         </div>
-        {/* <hr className="border-y-2 border-black my-2" />
-      <div className="pl-5 pr-3 pb-5 text-wrap">
-        <div className="flex items-center gap-2">
-          <div>
-            <p className="font-cubic text-lg text-[#23303F] py-2">
-              AWS 服務小教室
-            </p>
-            <p className="font-cubic text-sm">
-              {serviceResult.service_describe}
-            </p>
+        <hr className="border-y-2 border-black my-2" />
+        <div className="px-4 pb-5 text-wrap">
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-1 w-4/5">
+              <p className="font-cubic text-lg text-[#23303F]">
+                AWS 服務小教室
+              </p>
+              <p className="font-cubic text-sm text-wrap">
+                {serviceResult.service_describe}
+              </p>
+            </div>
+            {serviceResult && (
+              <img
+                src={serviceResult.serviceImg}
+                alt={serviceResult.serviceName}
+                className="w-1/5"
+              />
+            )}
           </div>
-          {serviceResult && (
-            <img
-              src={serviceResult.serviceImg}
-              alt={serviceResult.serviceName}
-              className="w-32 h-32"
-            />
-          )}
         </div>
-      </div> */}
       </motion.div>
-      <div className="h-6"></div>
+      {/* <div className="h-6"></div>
       <motion.div
         className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-[5px_5px_0_#000]"
         initial={{ opacity: 0 }}
@@ -235,7 +212,7 @@ export default function ResultCard({
             )}
           </div>
         </div>
-      </motion.div>
+      </motion.div> */}
     </>
   );
 }

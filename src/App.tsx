@@ -41,7 +41,7 @@ export default function App() {
           prompt: prompt,
         },
       };
-      // generateImage(requestBody);
+      generateImage(requestBody);
     }
   }, [answerService]);
 
@@ -129,7 +129,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-md min-w-[300px] h-screen flex flex-col">
+      <div className="w-full max-w-md min-w-[400px] h-screen flex flex-col">
         <Navbar />
         <div
           className={`py-6 px-4 flex-grow ${
