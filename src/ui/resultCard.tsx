@@ -16,9 +16,11 @@ interface Result {
 }
 
 export default function ResultCard({
+  user_name,
   answerService,
   imageUrl,
 }: {
+  user_name: string;
   answerService: string;
   imageUrl: string;
 }) {
@@ -73,7 +75,7 @@ export default function ResultCard({
           <div className="flex flex-col h-full justify-center items-center">
             <div className="">
               <p className="text-xl text-start py-2 font-cubic font-outline-1 text-black">
-                harry chung
+                {user_name}
               </p>
               <p className="text-md text-center font-cubic text-black py-1">
                 你就是...
@@ -104,7 +106,7 @@ export default function ResultCard({
             </div>
           </div>
         </div>
-        <div className="flex w-full justify-center items-center gap-2 p-2 mt-2">
+        <div className="flex w-full justify-evenly items-center p-2 mt-2">
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}

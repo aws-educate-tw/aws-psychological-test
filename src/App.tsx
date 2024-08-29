@@ -12,6 +12,7 @@ export default function App() {
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [user_name, setUserName] = useState<string>("");
 
   useEffect(() => {
     if (showResult) {
@@ -41,7 +42,7 @@ export default function App() {
           prompt: prompt,
         },
       };
-      generateImage(requestBody);
+      // generateImage(requestBody);
     }
   }, [answerService]);
 
@@ -187,6 +188,8 @@ export default function App() {
                     initial={{ opacity: 0, y: -100 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.175 }}
+                    maxLength={15}
+                    onChange={(e) => setUserName(e.target.value)}
                   />
                   <motion.button
                     onClick={handleStart}
@@ -215,6 +218,7 @@ export default function App() {
                 {showResult ? (
                   <>
                     <ResultCard
+                      user_name={user_name}
                       answerService={answerService}
                       imageUrl={imageUrl}
                     />
