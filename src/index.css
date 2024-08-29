@@ -16,4 +16,12 @@
         2px -2px 0 #FEA419, 
         -2px -2px 0 #FEA419;
     }
+    .font-outline-1 {
+      text-shadow: 
+        0.5px 0.5px 0 #000, 
+        -0.5px 0.5px 0 #000, 
+        0.5px -0.5px 0 #000, 
+        -0.5px -0.5px 0 #000;
+      letter-spacing: 1px;
+    }
   }

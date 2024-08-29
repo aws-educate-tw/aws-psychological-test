@@ -12,6 +12,7 @@ export default function App() {
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [user_name, setUserName] = useState<string>("");
 
   useEffect(() => {
     if (showResult) {
@@ -21,18 +22,18 @@ export default function App() {
 
   useEffect(() => {
     const promptMap: { [key: string]: string } = {
-      EC2: "A cute cat using a computer with a dark background",
-      S3: "A cute cat playing with a USB with a dark background",
-      Lambda: "A cute cat playing with a robot with a dark background",
-      IAM: "A cute cat holding a key with a dark background",
-      Cloudwatch: "A cute cat using a camera with a dark background",
-      DynamoDB: "A cute cat hiding in a folder with a dark background",
-      "API gateway":
-        "A cute cat talking between two dogs with a dark background",
-      ELB: "A cute cat being a traffic police officer with a dark background",
+      EC2: "A cute cat being a salesperson in suit with a clean background",
+      S3: "A cute cat being a librarian with a clean background",
+      Lambda: "A cute cat being a scientist with a clean background",
+      IAM: "A cute cat being a security guard with a clean background",
+      Cloudwatch: "A cute cat being a company manager with a clean background",
+      DynamoDB: "A cute cat being a secretary with a clean background",
+      "API gateway": "A cute cat being a diplomat with a clean background",
+      ELB: "A cute cat being a traffic police officer with a clean background",
     };
 
     const prompt = promptMap[answerService];
+    console.log("prompt", prompt);
 
     if (prompt) {
       const requestBody = {
@@ -129,10 +130,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-md h-screen flex flex-col">
+      <div className="w-full max-w-md min-w-[400px] h-screen flex flex-col">
         <Navbar />
         <div
-          className={`p-8 flex-grow ${
+          className={`py-6 px-4 flex-grow ${
             !startTest
               ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
               : "bg-cover bg-center relative"
@@ -187,6 +188,8 @@ export default function App() {
                     initial={{ opacity: 0, y: -100 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.175 }}
+                    maxLength={15}
+                    onChange={(e) => setUserName(e.target.value)}
                   />
                   <motion.button
                     onClick={handleStart}
@@ -215,6 +218,7 @@ export default function App() {
                 {showResult ? (
                   <>
                     <ResultCard
+                      user_name={user_name}
                       answerService={answerService}
                       imageUrl={imageUrl}
                     />
@@ -259,7 +263,7 @@ export default function App() {
                     <div className="flex justify-end">
                       <button
                         onClick={handleBack}
-                        className="bg-yellow-200 active:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
+                        className="bg-[#FAF5E7] active:bg-[#ddd7c8] text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
                       >
                         回上一題
                       </button>

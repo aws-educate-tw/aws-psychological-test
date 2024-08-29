@@ -22,7 +22,7 @@ export const multipleChoices = [
     },
     {
       question:
-        "開完會老闆突然通知團隊中午要和隔壁部門聚餐，並要大家著手安排，這時的你會？",
+        "開完會老闆突然通知要和隔壁部門聚餐，並要大家著手安排，這時的你會？",
       options: [
         "先把手上的工作完成再說",
         "立馬開始和同事們分工聚餐事宜",
@@ -42,7 +42,7 @@ export const multipleChoices = [
       services: ["ELB", "Cloudwatch", "DynamoDB", "EC2"],
     },
     {
-      question: "午休還有有10分鐘的空檔，你會做什麼呢？",
+      question: "聚餐完回到公司，你發現午休還有10分鐘，你會做什麼呢？",
       options: [
         "用手機的智能監控，看一下家裡的貓狗",
         "瀏覽各種社群平台和新聞",
@@ -52,7 +52,7 @@ export const multipleChoices = [
       services: ["Cloudwatch", "API gateway", "IAM", "S3"],
     },
     {
-      question: "週五的晚上，你想要怎麼慶祝這一周的結束？",
+      question: "工作告一段落總算到了週五晚上，你會怎麼慶祝這一周的結束？",
       options: [
         "計劃與朋友聚會，確保每個人都能參加",
         "研究新的投資策略或學習新技能",
@@ -62,7 +62,7 @@ export const multipleChoices = [
       services: ["ELB", "EC2", "Lambda", "IAM"],
     },
     {
-      question: "周末到了，你會怎麼度過這兩天？",
+      question: "期待已久的周末終於到了，你會怎麼度過寶貴的兩天呢？",
       options: [
         "參加聚會，交流職缺或投資情報",
         "記錄與分析這周的工作成果",
@@ -72,7 +72,7 @@ export const multipleChoices = [
       services: ["API gateway", "DynamoDB", "EC2", "S3"],
     },
     {
-      question: "外出旅遊時，你會怎樣確保一切順利？",
+      question: "你打算給自己放個長假並規劃出國旅行，你會怎樣確保一切順利？",
       options: [
         "反覆檢查天氣和交通狀況",
         "規劃一個行程滿滿的旅遊",
