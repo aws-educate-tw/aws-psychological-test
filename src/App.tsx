@@ -21,15 +21,14 @@ export default function App() {
 
   useEffect(() => {
     const promptMap: { [key: string]: string } = {
-      EC2: "A cute cat using a computer with a dark background",
-      S3: "A cute cat playing with a USB with a dark background",
-      Lambda: "A cute cat playing with a robot with a dark background",
-      IAM: "A cute cat holding a key with a dark background",
-      Cloudwatch: "A cute cat using a camera with a dark background",
-      DynamoDB: "A cute cat hiding in a folder with a dark background",
-      "API gateway":
-        "A cute cat talking between two dogs with a dark background",
-      ELB: "A cute cat being a traffic police officer with a dark background",
+      EC2: "A cute cat being a salesperson in suit with a clean background",
+      S3: "A cute cat being a librarian with a clean background",
+      Lambda: "A cute cat being a scientist with a clean background",
+      Cloudwatch: "A cute cat being a CEO with a clean background",
+      DynamoDB: "A cute cat being a secretary with a clean background",
+      IAM: "A cute cat being a security guard with a clean background",
+      "API gateway": "A cute cat being a diplomat with a clean background",
+      ELB: "A cute cat being a traffic police officer with a clean background",
     };
 
     const prompt = promptMap[answerService];
