@@ -172,11 +172,12 @@ export default function ResultCard({
               </p>
             </div>
             {serviceResult && (
-              <img
-                src={serviceResult.serviceImg}
-                alt={serviceResult.serviceName}
-                className="w-1/5"
-              />
+              <a href={serviceResult.service_link} className="w-1/5">
+                <img
+                  src={serviceResult.serviceImg}
+                  alt={serviceResult.serviceName}
+                />
+              </a>
             )}
           </div>
         </div>

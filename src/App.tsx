@@ -42,7 +42,7 @@ export default function App() {
           prompt: prompt,
         },
       };
-      // generateImage(requestBody);
+      generateImage(requestBody);
     }
   }, [answerService]);
 
@@ -263,7 +263,7 @@ export default function App() {
                     <div className="flex justify-end">
                       <button
                         onClick={handleBack}
-                        className="bg-yellow-200 active:bg-yellow-300 text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
+                        className="bg-[#FAF5E7] active:bg-[#ddd7c8] text-black px-2 font-bold rounded-full border-r-4 border-b-4 border-t-2 border-l-2 border-black font-cubic"
                       >
                         回上一題
                       </button>
