@@ -24,14 +24,15 @@ export default function App() {
       EC2: "A cute cat being a salesperson in suit with a clean background",
       S3: "A cute cat being a librarian with a clean background",
       Lambda: "A cute cat being a scientist with a clean background",
-      Cloudwatch: "A cute cat being a CEO with a clean background",
-      DynamoDB: "A cute cat being a secretary with a clean background",
       IAM: "A cute cat being a security guard with a clean background",
+      Cloudwatch: "A cute cat being a company manager with a clean background",
+      DynamoDB: "A cute cat being a secretary with a clean background",
       "API gateway": "A cute cat being a diplomat with a clean background",
       ELB: "A cute cat being a traffic police officer with a clean background",
     };
 
     const prompt = promptMap[answerService];
+    console.log("prompt", prompt);
 
     if (prompt) {
       const requestBody = {
