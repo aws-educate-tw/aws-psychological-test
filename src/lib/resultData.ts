@@ -2,7 +2,7 @@ export const resultData = [
     {
         serviceName: "EC2",
         serviceImg: "/serviceImages/EC2.png",
-        tags: ["#需要我隨時都在", "#適應性強", "#默默付出"],
+        tags: ["#需要我隨時都在 ", "#適應性強 ", "#默默付出 "],
         soulMate: "ELB",
         soulMateImg: "/serviceImages/IAM.png",
         friends: "Lambda",
@@ -15,7 +15,7 @@ export const resultData = [
     {
         serviceName: "S3",
         serviceImg: "/serviceImages/S3.png",
-        tags: ["#我記得你說過", "#我懂你", "#超會給情緒價值"],
+        tags: ["#我記得你說過 ", "#我懂你 ", "#超會給情緒價值 "],
         soulMate: "Cloudwatch",
         soulMateImg: "/serviceImages/Cloudwatch.png",
         friends: "DynamoDB",
@@ -28,7 +28,7 @@ export const resultData = [
     {
         serviceName: "Lambda",
         serviceImg: "/serviceImages/Lambda.png",
-        tags: ["#職場強人", "#沒事別找我", "#超絕T人"],
+        tags: ["#職場強人 ", "#沒事別找我 ", "#超絕T人 "],
         soulMate: "API gateway",
         soulMateImg: "/serviceImages/API gateway.png",
         friends: "EC2",
@@ -41,7 +41,7 @@ export const resultData = [
     {
         serviceName: "Cloudwatch",
         serviceImg: "/serviceImages/Cloudwatch.png",
-        tags: ["#控制狂", "#敏銳的嗅覺", "#細節怪"],
+        tags: ["#控制狂 ", "#敏銳的嗅覺 ", "#細節怪 "],
         soulMate: "EC2",
         soulMateImg: "/serviceImages/EC2.png",
         friends: "IAM",
@@ -54,7 +54,7 @@ export const resultData = [
     {
         serviceName: "DynamoDB",
         serviceImg: "/serviceImages/DynamoDB.png",
-        tags: ["#整理魔人", "#我馬上完成", "#朋友王"],
+        tags: ["#整理魔人 ", "#我馬上完成 ", "#朋友王 "],
         soulMate: "Lambda",
         soulMateImg: "/serviceImages/Lambda.png",
         friends: "Cloudwatch",
@@ -67,7 +67,7 @@ export const resultData = [
     {
         serviceName: "IAM",
         serviceImg: "/serviceImages/IAM.png",
-        tags: ["#重視Me Time", "#我有我的原則", "#沒事別約我"],
+        tags: ["#重視Me Time ", "#我有我的原則 ", "#沒事別約我 "],
         soulMate: "S3",
         soulMateImg: "/serviceImages/S3.png",
         friends: "Cloudwatch",
@@ -80,7 +80,7 @@ export const resultData = [
     {
         serviceName: "API gateway",
         serviceImg: "/serviceImages/API gateway.png",
-        tags: ["#渣男辨識器", "#先冷靜談談好嗎", "#情報中心"],
+        tags: ["#渣男辨識器 ", "#先冷靜談談好嗎 ", "#情報中心 "],
         soulMate: "Lambda",
         soulMateImg: "/serviceImages/Lambda.png",
         friends: "DynamoDB",
@@ -93,7 +93,7 @@ export const resultData = [
     {
         serviceName: "ELB",
         serviceImg: "/serviceImages/ELB.png",
-        tags: ["#天生leader", "#無法放鬆", "#我相信你可以的！"],
+        tags: ["#天生leader ", "#無法放鬆 ", "#我相信你可以的！ "],
         soulMate: "EC2",
         soulMateImg: "/serviceImages/EC2.png",
         friends: "Lambda",
