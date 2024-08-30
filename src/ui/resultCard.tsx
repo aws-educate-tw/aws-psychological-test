@@ -136,11 +136,17 @@ export default function ResultCard({
         transition={{ duration: 5 }}
         ref={cardRef}
       >
-        <img
-          src={resultUrl}
-          alt="resultUrl"
-          className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
-        />
+        {resultUrl && (
+          <img
+            src={resultUrl}
+            alt="resultUrl"
+            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
+            onLoad={() => {
+              console.log("Image loaded successfully");
+              setImageLoaded(true);
+            }}
+          />
+        )}
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
             <Circle size={20} strokeWidth={4} />
@@ -293,7 +299,7 @@ export default function ResultCard({
         </div>
       </motion.div>
       {imageLoaded && (
-        <div className="p-3 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
+        <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
             className="text-center text-sm font-cubic text-[#23303F]"
             animate={{ opacity: [0.5, 1, 0.5] }}
