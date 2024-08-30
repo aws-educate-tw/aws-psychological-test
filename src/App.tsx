@@ -42,7 +42,7 @@ export default function App() {
           prompt: prompt,
         },
       };
-      // generateImage(requestBody);
+      generateImage(requestBody);
     }
   }, [answerService]);
 

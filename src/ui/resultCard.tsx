@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useState } from "react";
+import domtoimage from "dom-to-image";
 import { Circle, X } from "lucide-react";
 import { resultData } from "../lib/resultData";
 import { motion } from "framer-motion";
@@ -24,22 +26,54 @@ export default function ResultCard({
   answerService: string;
   imageUrl: string;
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  let timer: ReturnType<typeof setTimeout>;
+
+  const handleMouseDown = () => {
+    if (imageLoaded) {
+      console.log("saving...");
+      timer = setTimeout(() => {
+        if (cardRef.current) {
+          domtoimage
+            .toPng(cardRef.current)
+            .then((dataUrl) => {
+              const link = document.createElement("a");
+              link.href = dataUrl;
+              link.download = `${user_name}_${answerService}.png`;
+              link.click();
+            })
+            .catch((error) => {
+              console.error("Failed to capture image:", error);
+            });
+        }
+      }, 1000); // 1 second
+    }
+  };
+
+  const handleMouseUp = () => {
+    clearTimeout(timer);
+  };
+
   const serviceResult = resultData.find(
     (result: Result) => result.serviceName === answerService
   );
 
   if (!serviceResult) {
-    console.log(serviceResult);
     return <></>;
   }
 
   return (
     <>
       <motion.div
-        className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-[5px_5px_0_#000]"
+        className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
+        ref={cardRef}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
@@ -53,15 +87,16 @@ export default function ResultCard({
         </div>
         <div className="flex items-center px-4 gap-4 justify-evenly">
           {imageUrl ? (
-            <div className="w-1/2 mt-4">
+            <div className="w-1/2 mt-4 shadow-custom-5px rounded-lg">
               <img
                 src={imageUrl}
                 alt="result_loading_img"
                 className="rounded-lg"
+                onLoad={() => setImageLoaded(true)}
               />
             </div>
           ) : (
-            <div className="w-1/2 mt-4 shadow-[5px_5px_0_#000] rounded-lg">
+            <div className="w-1/2 mt-4 shadow-custom-5px rounded-lg">
               <img
                 src={
                   "./AI-magic-generating.gif"
@@ -74,7 +109,7 @@ export default function ResultCard({
           )}
           <div className="flex flex-col h-full justify-center items-center">
             <div className="flex flex-col items-center">
-              <p className="text-xl text-start font-cubic font-outline-1 text-black">
+              <p className="text-xl text-start font-cubic font-outline-1 text-black pb-2">
                 {user_name}
               </p>
               <p className="text-md text-center font-cubic text-black pb-2">
@@ -110,7 +145,7 @@ export default function ResultCard({
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}
-              className="text-center font-cubic text-sm bg-[#FEA419] shadow-[3px_3px_0px_#000] text-black px-1"
+              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1"
             >
               {tag}
             </p>
@@ -182,9 +217,24 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
+      {imageLoaded && (
+        <motion.div
+          className="p-3"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{
+            repeat: Infinity,
+            duration: 2,
+            ease: "linear",
+          }}
+        >
+          <p className="text-center text-sm font-cubic text-[#23303F]">
+            按住卡片 1 秒即可下載
+          </p>
+        </motion.div>
+      )}
       {/* <div className="h-6"></div>
       <motion.div
-        className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-[5px_5px_0_#000]"
+        className="flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
