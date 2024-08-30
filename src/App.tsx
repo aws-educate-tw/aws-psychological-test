@@ -11,7 +11,8 @@ export default function App() {
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string>("");
+  // const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageBase64, setImageBase64] = useState<string>("");
   const [user_name, setUserName] = useState<string>("");
 
   useEffect(() => {
@@ -122,7 +123,8 @@ export default function App() {
       }
 
       const data = await response.json();
-      setImageUrl(data.image_url);
+      // setImageUrl(data.image_url);
+      setImageBase64(data.image_base64);
     } catch (error) {
       console.error("Error generating image:", error);
     }
@@ -220,7 +222,7 @@ export default function App() {
                     <ResultCard
                       user_name={user_name}
                       answerService={answerService}
-                      imageUrl={imageUrl}
+                      imageBase64={imageBase64}
                     />
                   </>
                 ) : (

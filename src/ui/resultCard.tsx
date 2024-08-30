@@ -20,11 +20,11 @@ interface Result {
 export default function ResultCard({
   user_name,
   answerService,
-  imageUrl,
+  imageBase64,
 }: {
   user_name: string;
   answerService: string;
-  imageUrl: string;
+  imageBase64: string;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -61,7 +61,7 @@ export default function ResultCard({
             reader.readAsDataURL(blob);
             reader.onloadend = () => {
               if (typeof reader.result === "string") {
-                resolve(reader.result.split(",")[1]); // 移除数据URL的前缀部分
+                resolve(reader.result.split(",")[1]);
               } else {
                 resolve(null);
               }
@@ -69,6 +69,7 @@ export default function ResultCard({
             reader.onerror = reject;
           }
         );
+        // console.log("base64data", base64data);
 
         if (base64data) {
           const response = await fetch(
@@ -81,7 +82,8 @@ export default function ResultCard({
               body: JSON.stringify({ image_data: base64data }),
             }
           );
-          // console.log("response", response);
+          console.log("response status", response.status);
+          console.log("The image can be download");
 
           if (response.ok) {
             const data = await response.json();
@@ -121,9 +123,7 @@ export default function ResultCard({
         console.error("分享失敗:", error);
       }
     } else {
-      alert(
-        "您的瀏覽器不支持 Web 分享 API，請手動下載並上傳圖片到 Instagram。"
-      );
+      alert("您的瀏覽器不支持分享，請手動下載並上傳圖片到 Instagram。");
     }
   };
 
@@ -140,11 +140,7 @@ export default function ResultCard({
           <img
             src={resultUrl}
             alt="resultUrl"
-            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
-            onLoad={() => {
-              console.log("Image loaded successfully");
-              setImageLoaded(true);
-            }}
+            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover z-10"
           />
         )}
         <div className="flex items-center border-b-4 border-black p-2">
@@ -155,16 +151,22 @@ export default function ResultCard({
           <p className="w-full font-cubic text-sm text-center">
             AWS COMMUNITY DAY ON 9/28
           </p>
-          <X strokeWidth={4} />
+          <div className="">
+            <X strokeWidth={4} />
+          </div>
         </div>
         <div className="flex items-center px-4 gap-4 justify-evenly">
-          {imageUrl ? (
+          {imageBase64 ? (
             <div className="w-1/2 mt-4 shadow-custom-5px rounded-lg">
               <img
-                src={imageUrl}
+                src={`data:image/png;base64,${imageBase64}`}
                 alt="result_loading_img"
                 className="rounded-lg"
-                onLoad={() => setImageLoaded(true)}
+                onLoad={() => {
+                  setTimeout(() => {
+                    setImageLoaded(true);
+                  }, 1000);
+                }}
               />
             </div>
           ) : (
@@ -181,7 +183,7 @@ export default function ResultCard({
               <p className="text-xl text-start font-cubic font-outline-1 text-black pb-2">
                 {user_name}
               </p>
-              <p className="text-md text-center font-cubic text-black pb-2">
+              <p className="text-md text-center font-cubic text-black pb-2 text-wrap">
                 你就是...
               </p>
             </div>
@@ -214,7 +216,7 @@ export default function ResultCard({
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}
-              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1 select-none"
+              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1 select-none text-wrap"
             >
               {tag}
             </p>
@@ -224,7 +226,7 @@ export default function ResultCard({
         <div className="flex justify-evenly px-5 gap-5">
           {serviceResult.soulMate && (
             <div className="flex flex-col items-center w-1/2 gap-2">
-              <p className="font-cubic text-lg text-[#23303F] select-none">
+              <p className="font-cubic text-lg text-[#23303F] select-none text-wrap">
                 靈魂伴侶
               </p>
               <div className="flex justify-evenly items-center gap-2">
@@ -241,7 +243,7 @@ export default function ResultCard({
           )}
           {serviceResult.friends && (
             <div className="flex flex-col items-center w-1/2 gap-2">
-              <p className="font-cubic text-lg text-[#23303F] select-none">
+              <p className="font-cubic text-lg text-[#23303F] select-none text-wrap">
                 泛泛之交
               </p>
               <div className="flex justify-evenly items-center gap-2">
@@ -292,6 +294,7 @@ export default function ResultCard({
                 <img
                   src={serviceResult.serviceImg}
                   alt={serviceResult.serviceName}
+                  className="select-none"
                 />
               </div>
             )}
@@ -301,7 +304,7 @@ export default function ResultCard({
       {imageLoaded && (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
-            className="text-center text-sm font-cubic text-[#23303F]"
+            className="text-center text-lg font-cubic text-[#23303F]"
             animate={{ opacity: [0.5, 1, 0.5] }}
             onClick={handleShare}
             transition={{
