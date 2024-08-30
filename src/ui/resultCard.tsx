@@ -30,6 +30,25 @@ export default function ResultCard({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isImageProcessing, setIsImageProcessing] = useState(false);
   const [resultUrl, setResultUrl] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
+  const [showdownloadable, setShowDownloadable] = useState(false);
+
+  useEffect(() => {
+    if (imageBase64) {
+      // Create a Blob from the base64 string
+      const byteCharacters = atob(imageBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "image/png" });
+
+      // Create a URL for the Blob
+      const imageUrl = URL.createObjectURL(blob);
+      setImageSrc(imageUrl);
+    }
+  }, [imageBase64]);
 
   useEffect(() => {
     if (imageLoaded) {
@@ -88,6 +107,7 @@ export default function ResultCard({
           if (response.ok) {
             const data = await response.json();
             setResultUrl(data.image_url);
+            setShowDownloadable(true);
             // console.log("Image uploaded:", resultUrl);
           } else {
             console.error("Failed to upload image:", response.statusText);
@@ -130,7 +150,7 @@ export default function ResultCard({
   return (
     <>
       <motion.div
-        className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px z-0"
+        className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
@@ -140,7 +160,7 @@ export default function ResultCard({
           <img
             src={resultUrl}
             alt="resultUrl"
-            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover z-10"
+            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
           />
         )}
         <div className="flex items-center border-b-4 border-black p-2">
@@ -156,17 +176,13 @@ export default function ResultCard({
           </div>
         </div>
         <div className="flex items-center px-4 gap-4 justify-evenly">
-          {imageBase64 ? (
+          {imageSrc ? (
             <div className="w-1/2 mt-4 shadow-custom-5px rounded-lg">
               <img
-                src={`data:image/png;base64,${imageBase64}`}
+                src={imageSrc}
                 alt="result_loading_img"
                 className="rounded-lg"
-                onLoad={() => {
-                  setTimeout(() => {
-                    setImageLoaded(true);
-                  }, 1000);
-                }}
+                onLoad={() => setImageLoaded(true)}
               />
             </div>
           ) : (
@@ -301,7 +317,7 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
-      {imageLoaded && (
+      {showdownloadable && (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
             className="text-center text-lg font-cubic text-[#23303F]"
