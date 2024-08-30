@@ -22,7 +22,7 @@ export const resultData = [
         friendsImg: "/serviceImages/DynamoDB.png",
         work_describe: "團隊中的數據管理專家，能夠記住並快速檢索大量的數據和信息，確保團隊在需要時能夠立即獲得所需的資料。你非常可靠，無論是文件、報告、還是歷史數據，都能夠完好無損地保存並準確地提供。",
         life_describe: "你是朋友們接收情緒的垃圾桶，朋友們都依賴您傾訴心事，並得到安慰和支持。你能夠提供極高的情緒價值，總能記得周遭朋友們的所有細節與各種小事，讓人感到被重視。",
-        service_describe: "Amazon Simple Storage Service (Amazon S3) 是一種物件儲存服務，提供領先業界的可擴展性、資料可用性、安全性及效能。各種規模和業界的客戶可以存放和保護幾乎任何使用案例的任何資料量，如資料湖、雲端原生應用程式和行動應用程式。",
+        service_describe: "Amazon Simple Storage Service (Amazon S3) 是一種物件儲存服務，具備高可擴展性、資料可用性、安全性和效能，可以存放和保護幾乎任何使用案例的任何資料量。",
         service_link: "https://aws.amazon.com/tw/s3/"
     },
     {
