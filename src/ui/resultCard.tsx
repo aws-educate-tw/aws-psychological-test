@@ -61,7 +61,7 @@ export default function ResultCard({
               />
             </div>
           ) : (
-            <div className="w-1/2 mt-4">
+            <div className="w-1/2 mt-4 shadow-[5px_5px_0_#000] rounded-lg">
               <img
                 src={
                   "./AI-magic-generating.gif"
@@ -73,15 +73,15 @@ export default function ResultCard({
             </div>
           )}
           <div className="flex flex-col h-full justify-center items-center">
-            <div className="">
-              <p className="text-xl text-start py-2 font-cubic font-outline-1 text-black">
+            <div className="flex flex-col items-center">
+              <p className="text-xl text-start font-cubic font-outline-1 text-black">
                 {user_name}
               </p>
-              <p className="text-md text-center font-cubic text-black py-1">
+              <p className="text-md text-center font-cubic text-black pb-2">
                 你就是...
               </p>
             </div>
-            <div className="min-h-20 flex items-center">
+            <div className="flex items-center">
               {(answerService === "EC2" ||
                 answerService === "S3" ||
                 answerService === "ELB" ||
