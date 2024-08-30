@@ -15,7 +15,7 @@ export const resultData = [
     {
         serviceName: "S3",
         serviceImg: "/serviceImages/S3.png",
-        tags: ["#我記得你說過...", "#我懂你", "#超會給情緒價值"],
+        tags: ["#我記得你說過", "#我懂你", "#超會給情緒價值"],
         soulMate: "Cloudwatch",
         soulMateImg: "/serviceImages/Cloudwatch.png",
         friends: "DynamoDB",

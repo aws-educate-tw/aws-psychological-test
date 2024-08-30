@@ -41,7 +41,20 @@ export default function ResultCard({
     if (cardRef.current && !isImageProcessing) {
       setIsImageProcessing(true); // 防止多次调用
       try {
-        const blob = await domtoimage.toBlob(cardRef.current);
+        const scale = 2; // 調整比例，可以改變這個值以得到不同的分辨率
+        const node = cardRef.current;
+
+        const blob = await domtoimage.toBlob(node, {
+          width: node.clientWidth * scale,
+          height: node.clientHeight * scale,
+          style: {
+            transform: "scale(" + scale + ")",
+            transformOrigin: "top left",
+            width: node.clientWidth + "px",
+            height: node.clientHeight + "px",
+          },
+        });
+
         const base64data = await new Promise<string | null>(
           (resolve, reject) => {
             const reader = new FileReader();
