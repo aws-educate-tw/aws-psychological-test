@@ -5,6 +5,7 @@ import domtoimage from "dom-to-image";
 import { Circle, X } from "lucide-react";
 import { resultData } from "../lib/resultData";
 import { motion } from "framer-motion";
+import { saveAs } from "file-saver";
 
 interface Result {
   serviceName: string;
@@ -36,12 +37,9 @@ export default function ResultCard({
       timer = setTimeout(() => {
         if (cardRef.current) {
           domtoimage
-            .toPng(cardRef.current)
-            .then((dataUrl) => {
-              const link = document.createElement("a");
-              link.href = dataUrl;
-              link.download = `${user_name}_${answerService}.png`;
-              link.click();
+            .toBlob(cardRef.current)
+            .then((blob) => {
+              saveAs(blob, `${user_name}_${answerService}.png`);
             })
             .catch((error) => {
               console.error("Failed to capture image:", error);
@@ -121,12 +119,12 @@ export default function ResultCard({
                 answerService === "S3" ||
                 answerService === "ELB" ||
                 answerService === "IAM") && (
-                <p className="text-7xl text-center font-cubic font-outline-2">
+                <p className="text-7xl text-center font-cubic font-outline-2 select-none">
                   {answerService}
                 </p>
               )}
               {answerService === "Lambda" && (
-                <p className="text-5xl text-center font-cubic font-outline-2">
+                <p className="text-5xl text-center font-cubic font-outline-2 select-none">
                   {answerService}
                 </p>
               )}
@@ -134,7 +132,7 @@ export default function ResultCard({
               {(answerService === "Cloudwatch" ||
                 answerService === "DynamoDB" ||
                 answerService === "API gateway") && (
-                <p className="text-3xl text-center font-cubic font-outline-2">
+                <p className="text-3xl text-center font-cubic font-outline-2 select-none">
                   {answerService}
                 </p>
               )}
@@ -145,7 +143,7 @@ export default function ResultCard({
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}
-              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1"
+              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1 select-none"
             >
               {tag}
             </p>
@@ -155,7 +153,9 @@ export default function ResultCard({
         <div className="flex justify-evenly px-5 gap-5">
           {serviceResult.soulMate && (
             <div className="flex flex-col items-center w-1/2 gap-2">
-              <p className="font-cubic text-lg text-[#23303F]">靈魂伴侶</p>
+              <p className="font-cubic text-lg text-[#23303F] select-none">
+                靈魂伴侶
+              </p>
               <div className="flex justify-evenly items-center gap-2">
                 <img
                   src={serviceResult.soulMateImg}
@@ -168,7 +168,9 @@ export default function ResultCard({
           )}
           {serviceResult.friends && (
             <div className="flex flex-col items-center w-1/2 gap-2">
-              <p className="font-cubic text-lg text-[#23303F]">偶爾一起玩</p>
+              <p className="font-cubic text-lg text-[#23303F] select-none">
+                泛泛之交
+              </p>
               <div className="flex justify-evenly items-center gap-2">
                 <img
                   src={serviceResult.friendsImg}
@@ -183,14 +185,18 @@ export default function ResultCard({
         <hr className="border-y-2 border-black my-2" />
         <div className="flex px-4 gap-2">
           <div className="flex flex-col text-wrap w-1/2 gap-2">
-            <p className="font-cubic text-lg text-[#23303F]">在職場上的你...</p>
-            <p className="font-cubic text-sm text-wrap w-full">
+            <p className="font-cubic text-lg text-[#23303F] select-none">
+              在職場上的你...
+            </p>
+            <p className="font-cubic text-sm text-wrap w-full select-none">
               {serviceResult.work_describe}
             </p>
           </div>
           <div className="flex flex-col text-wrap w-1/2 gap-2">
-            <p className="font-cubic text-lg text-[#23303F]">在生活上的你...</p>
-            <p className="font-cubic text-sm text-wrap w-full">
+            <p className="font-cubic text-lg text-[#23303F] select-none">
+              在生活上的你...
+            </p>
+            <p className="font-cubic text-sm text-wrap w-full select-none">
               {serviceResult.life_describe}
             </p>
           </div>
@@ -199,10 +205,10 @@ export default function ResultCard({
         <div className="px-4 pb-5 text-wrap">
           <div className="flex items-center gap-3">
             <div className="flex flex-col gap-1 w-4/5">
-              <p className="font-cubic text-lg text-[#23303F]">
+              <p className="font-cubic text-lg text-[#23303F] select-none">
                 AWS 服務小教室
               </p>
-              <p className="font-cubic text-sm text-wrap">
+              <p className="font-cubic text-sm text-wrap select-none">
                 {serviceResult.service_describe}
               </p>
             </div>
