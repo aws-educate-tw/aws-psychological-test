@@ -37,17 +37,18 @@ export default function ResultCard({
   useEffect(() => {
     if (imageBase64) {
       // Create a Blob from the base64 string
-      const byteCharacters = atob(imageBase64);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      try {
+        const byteCharacters = atob(imageBase64);
+        const byteNumbers = new Uint8Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const blob = new Blob([byteNumbers], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImageSrc(imageUrl);
+      } catch (error) {
+        console.error("Failed to convert base64 to blob:", error);
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: "image/png" });
-
-      // Create a URL for the Blob
-      const imageUrl = URL.createObjectURL(blob);
-      setImageSrc(imageUrl);
     }
   }, [imageBase64]);
 
