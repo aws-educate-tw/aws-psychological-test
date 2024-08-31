@@ -31,6 +31,7 @@ export default function ResultCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageGenerated, setImageGenerated] = useState(false);
   const [dataUrl, setDataUrl] = useState("");
+  const [resultImageGenerated, setResultImageGenerated] = useState(false);
 
   useEffect(() => {
     if (imageGenerated) {
@@ -59,16 +60,22 @@ export default function ResultCard({
     try {
       const data = await buildPng();
       setDataUrl(data);
+      setResultImageGenerated(true);
     } catch (error) {
       console.error("Error generating image:", error);
     }
   };
 
   const downloadImage = (dataUrl: string) => {
-    const link = document.createElement("a");
-    link.href = dataUrl;
-    link.download = "result.png";
-    link.click();
+    if (resultImageGenerated) {
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "result.png"; // Set the desired filename
+      link.type = "image/png"; // Ensure MIME type is specified correctly
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Clean up after triggering the download
+    }
   };
 
   const serviceResult = resultData.find(
