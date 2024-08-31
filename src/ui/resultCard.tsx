@@ -1,11 +1,10 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-// import domtoimage from "dom-to-image";
-import domtoimage from "dom-to-image";
 import { Circle, X } from "lucide-react";
 import { resultData } from "../lib/resultData";
 import { motion } from "framer-motion";
+import * as htmlToImage from "html-to-image";
 
 interface Result {
   serviceName: string;
@@ -16,87 +15,60 @@ interface Result {
   friendsImg: string;
   work_describe: string;
   life_describe: string;
+  service_describe: string;
+  serviceImg: string;
 }
 
 export default function ResultCard({
   user_name,
   answerService,
-  imageBase64,
+  imageUrl,
 }: {
   user_name: string;
   answerService: string;
-  imageBase64: string;
+  imageUrl: string;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [isImageProcessing, setIsImageProcessing] = useState(false);
-  const [imageSrc, setImageSrc] = useState("");
-  const [resultUrl, setResultUrl] = useState("");
-  // const [showdownloadable, setShowDownloadable] = useState(false);
+  const [imageGenerated, setImageGenerated] = useState(false);
+  const [dataUrl, setDataUrl] = useState("");
 
   useEffect(() => {
-    if (imageBase64) {
-      const img = new Image();
-      img.src = `data:image/png;base64,${imageBase64}`;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(img, 0, 0);
-        }
-        const imageUrl = canvas.toDataURL("image/png");
-        setImageSrc(imageUrl);
-      };
-    }
-  }, [imageBase64]);
-
-  useEffect(() => {
-    if (imageLoaded) {
+    if (imageGenerated) {
       generateImage();
     }
-  }, [imageLoaded]);
+  }, [imageGenerated]);
+
+  const buildPng = async () => {
+    const element = cardRef.current;
+    if (!element) return "";
+
+    let dataUrl = "";
+    const minDataLength = 2000000;
+    let i = 0;
+    const maxAttempts = 10;
+
+    while (dataUrl.length < minDataLength && i < maxAttempts) {
+      dataUrl = await htmlToImage.toPng(element);
+      i += 1;
+    }
+
+    return dataUrl;
+  };
 
   const generateImage = async () => {
-    if (cardRef.current && !isImageProcessing) {
-      setIsImageProcessing(true);
-      try {
-        const scale = 2;
-        const node = cardRef.current;
-
-        const dataUrl = await domtoimage.toJpeg(node, {
-          quality: 0.95,
-          width: node.clientWidth * scale,
-          height: node.clientHeight * scale,
-          style: {
-            transform: "scale(" + scale + ")",
-            transformOrigin: "top left",
-            width: node.clientWidth + "px",
-            height: node.clientHeight + "px",
-          },
-        });
-
-        if (dataUrl) {
-          setResultUrl(dataUrl);
-        }
-      } catch (error) {
-        console.error("Failed to capture image:", error);
-      } finally {
-        setIsImageProcessing(false);
-      }
+    try {
+      const data = await buildPng();
+      setDataUrl(data);
+    } catch (error) {
+      console.error("Error generating image:", error);
     }
   };
 
-  const downloadImage = () => {
-    if (resultUrl) {
-      const link = document.createElement("a");
-      link.href = resultUrl;
-      link.download = "result-image.jpeg";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+  const downloadImage = (dataUrl: string) => {
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "result.png";
+    link.click();
   };
 
   const serviceResult = resultData.find(
@@ -115,7 +87,7 @@ export default function ResultCard({
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
         ref={cardRef}
-        onClick={downloadImage} // Added onClick handler
+        onClick={() => downloadImage(dataUrl)}
       >
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
@@ -130,21 +102,21 @@ export default function ResultCard({
           </div>
         </div>
         <div className="flex items-center px-4 gap-4 justify-evenly">
-          {imageSrc ? (
-            <div className="w-1/2 mt-4 shadow-custom-5px rounded-lg">
+          {imageUrl ? (
+            <div className="w-1/2 mt-4 rounded-lg">
               <img
-                src={imageSrc}
+                src={imageUrl}
                 alt="result_loading_img"
-                className="rounded-lg"
-                onLoad={() => setImageLoaded(true)}
+                className="rounded-lg border-r-4 border-b-4 border-t-0 border-l-0 border-black"
+                onLoad={() => setImageGenerated(true)}
               />
             </div>
           ) : (
-            <div className="w-1/2 mt-4 shadow-custom-5px rounded-lg">
+            <div className="w-1/2 mt-4 rounded-lg">
               <img
                 src="./AI-magic-generating.gif"
                 alt="result_img"
-                className="rounded-lg"
+                className="rounded-lg border-r-4 border-b-4 border-t-0 border-l-0 border-black"
               />
             </div>
           )}
@@ -186,7 +158,7 @@ export default function ResultCard({
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}
-              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1 select-none whitespace-nowrap"
+              className="text-center font-cubic text-sm bg-[#FEA419] border-r-[3px] border-b-[3px] border-t-0 border-l-0 border-black text-black px-1 select-none whitespace-nowrap"
             >
               {tag}
             </p>
@@ -196,7 +168,7 @@ export default function ResultCard({
         <div className="flex justify-evenly px-5 gap-5">
           {serviceResult.soulMate && (
             <div className="flex flex-col items-center w-1/2 gap-2">
-              <p className="font-cubic text-lg text-[#23303F] select-none text-wrap">
+              <p className="font-cubic text-lg text-[#23303F] select-none flex-wrap">
                 靈魂伴侶
               </p>
               <div className="flex justify-evenly items-center gap-2">
@@ -213,7 +185,7 @@ export default function ResultCard({
           )}
           {serviceResult.friends && (
             <div className="flex flex-col items-center w-1/2 gap-2">
-              <p className="font-cubic text-lg text-[#23303F] select-none text-wrap">
+              <p className="font-cubic text-lg text-[#23303F] select-none">
                 泛泛之交
               </p>
               <div className="flex justify-evenly items-center gap-2">
@@ -271,22 +243,6 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
-      {/* {showdownloadable && (
-        <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
-          <motion.button
-            className="text-center text-lg font-cubic text-[#23303F]"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            onClick={handleShare}
-            transition={{
-              repeat: Infinity,
-              duration: 2,
-              ease: "linear",
-            }}
-          >
-            分享到 Instagram
-          </motion.button>
-        </div>
-      )} */}
     </>
   );
 }

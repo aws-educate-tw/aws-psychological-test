@@ -11,8 +11,8 @@ export default function App() {
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
-  // const [imageUrl, setImageUrl] = useState<string>("");
-  const [imageBase64, setImageBase64] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
+  // const [imageBase64, setImageBase64] = useState<string>("");
   const [user_name, setUserName] = useState<string>("");
 
   useEffect(() => {
@@ -110,6 +110,7 @@ export default function App() {
     data: { model_id: string; prompt: string };
   }) => {
     try {
+      console.log("start generating image");
       const response = await fetch(
         "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/generate-image",
         {
@@ -122,9 +123,10 @@ export default function App() {
         throw new Error("Failed to generate image");
       }
 
+      console.log("end generating image");
       const data = await response.json();
-      // setImageUrl(data.image_url);
-      setImageBase64(data.image_base64);
+      setImageUrl(data.image_url);
+      // setImageBase64(data.image_base64);
     } catch (error) {
       console.error("Error generating image:", error);
     }
@@ -222,7 +224,7 @@ export default function App() {
                     <ResultCard
                       user_name={user_name}
                       answerService={answerService}
-                      imageBase64={imageBase64}
+                      imageUrl={imageUrl}
                     />
                   </>
                 ) : (
