@@ -30,9 +30,9 @@ export default function ResultCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isImageProcessing, setIsImageProcessing] = useState(false);
-  const [resultUrl, setResultUrl] = useState("");
   const [imageSrc, setImageSrc] = useState("");
-  const [showdownloadable, setShowDownloadable] = useState(false);
+  const [resultUrl, setResultUrl] = useState("");
+  // const [showdownloadable, setShowDownloadable] = useState(false);
 
   useEffect(() => {
     if (imageBase64) {
@@ -54,19 +54,19 @@ export default function ResultCard({
 
   useEffect(() => {
     if (imageLoaded) {
-      uploadResult();
+      generateImage();
     }
   }, [imageLoaded]);
 
-  const uploadResult = async () => {
+  const generateImage = async () => {
     if (cardRef.current && !isImageProcessing) {
-      setIsImageProcessing(true); // 防止多次调用
+      setIsImageProcessing(true);
       try {
-        const scale = 2; // 調整比例，可以改變這個值以得到不同的分辨率
+        const scale = 2;
         const node = cardRef.current;
 
         const dataUrl = await domtoimage.toJpeg(node, {
-          quality: 0.95, // 壓縮品質，可調整，0.95 是高品質
+          quality: 0.95,
           width: node.clientWidth * scale,
           height: node.clientHeight * scale,
           style: {
@@ -77,35 +77,25 @@ export default function ResultCard({
           },
         });
 
-        const base64data = dataUrl.split(",")[1];
-
-        if (base64data) {
-          const response = await fetch(
-            "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/result-upload",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ image_data: base64data }),
-            }
-          );
-          console.log("response status", response.status);
-          console.log("The image can be downloaded");
-
-          if (response.ok) {
-            const data = await response.json();
-            setResultUrl(data.image_url);
-            setShowDownloadable(true);
-          } else {
-            console.error("Failed to upload image:", response.statusText);
-          }
+        if (dataUrl) {
+          setResultUrl(dataUrl);
         }
       } catch (error) {
         console.error("Failed to capture image:", error);
       } finally {
         setIsImageProcessing(false);
       }
+    }
+  };
+
+  const downloadImage = () => {
+    if (resultUrl) {
+      const link = document.createElement("a");
+      link.href = resultUrl;
+      link.download = "result-image.jpeg";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 
@@ -117,24 +107,6 @@ export default function ResultCard({
     return <></>;
   }
 
-  const handleShare = async () => {
-    if (navigator.share && resultUrl) {
-      try {
-        const response = await fetch(resultUrl);
-        const blob = await response.blob();
-        const file = new File([blob], "result-image.png", { type: blob.type });
-        await navigator.share({
-          title: "分享到Instagram",
-          files: [file],
-        });
-      } catch (error) {
-        console.error("分享失敗:", error);
-      }
-    } else {
-      alert("您的瀏覽器不支持分享，請手動下載並上傳圖片到 Instagram。");
-    }
-  };
-
   return (
     <>
       <motion.div
@@ -143,14 +115,8 @@ export default function ResultCard({
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
         ref={cardRef}
+        onClick={downloadImage} // Added onClick handler
       >
-        {resultUrl && (
-          <img
-            src={resultUrl}
-            alt="resultUrl"
-            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
-          />
-        )}
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
             <Circle size={20} strokeWidth={4} />
@@ -216,11 +182,11 @@ export default function ResultCard({
             </div>
           </div>
         </div>
-        <div className="flex w-full justify-evenly items-center p-2 mt-2">
+        <div className="flex w-full justify-evenly items-center p-2 mt-2 flex-wrap">
           {serviceResult.tags.map((tag, index) => (
             <p
               key={index}
-              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1 select-none text-wrap"
+              className="text-center font-cubic text-sm bg-[#FEA419] shadow-custom-3px text-black px-1 select-none whitespace-nowrap"
             >
               {tag}
             </p>
@@ -305,7 +271,7 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
-      {showdownloadable && (
+      {/* {showdownloadable && (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
             className="text-center text-lg font-cubic text-[#23303F]"
@@ -320,7 +286,7 @@ export default function ResultCard({
             分享到 Instagram
           </motion.button>
         </div>
-      )}
+      )} */}
     </>
   );
 }
