@@ -60,7 +60,7 @@ export default function ResultCard({
     if (cardRef.current && !isImageProcessing) {
       setIsImageProcessing(true); // 防止多次调用
       try {
-        const scale = 2; // 調整比例，可以改變這個值以得到不同的分辨率
+        const scale = 1.5; // 調整比例，可以根据设备情况修改这个值以得到合适的分辨率
         const node = cardRef.current;
 
         const blob = await domtoimage.toBlob(node, {
@@ -74,13 +74,33 @@ export default function ResultCard({
           },
         });
 
+        const compressedBlob = await new Promise((resolve, reject) => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const img = new Image();
+          img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            if (ctx) {
+              ctx.drawImage(img, 0, 0);
+            }
+            canvas.toBlob(
+              (blob) => resolve(blob),
+              "image/jpeg",
+              0.7 // 调整图像质量，范围为 0.0 到 1.0
+            );
+          };
+          img.src = URL.createObjectURL(blob);
+          img.onerror = reject;
+        });
+
         const base64data = await new Promise<string | null>(
           (resolve, reject) => {
             const reader = new FileReader();
-            reader.readAsDataURL(blob);
+            reader.readAsDataURL(compressedBlob as Blob);
             reader.onloadend = () => {
               if (typeof reader.result === "string") {
-                resolve(reader.result.split(",")[1]);
+                resolve(reader.result.split(",")[1]); // 移除数据URL的前缀部分
               } else {
                 resolve(null);
               }
@@ -88,7 +108,6 @@ export default function ResultCard({
             reader.onerror = reject;
           }
         );
-        // console.log("base64data", base64data);
 
         if (base64data) {
           const response = await fetch(
@@ -101,14 +120,11 @@ export default function ResultCard({
               body: JSON.stringify({ image_data: base64data }),
             }
           );
-          console.log("response status", response.status);
-          console.log("The image can be download");
 
           if (response.ok) {
             const data = await response.json();
             setResultUrl(data.image_url);
             setShowDownloadable(true);
-            // console.log("Image uploaded:", resultUrl);
           } else {
             console.error("Failed to upload image:", response.statusText);
           }
