@@ -30,8 +30,8 @@ export default function ResultCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageGenerated, setImageGenerated] = useState(false);
-  const [dataUrl, setDataUrl] = useState("");
   const [resultImageGenerated, setResultImageGenerated] = useState(false);
+  const [resultImageUrl, setResultImageUrl] = useState("");
 
   useEffect(() => {
     if (imageGenerated) {
@@ -59,22 +59,41 @@ export default function ResultCard({
   const generateImage = async () => {
     try {
       const data = await buildPng();
-      setDataUrl(data);
-      setResultImageGenerated(true);
+      const base64data = data.split(",")[1];
+      // console.log(base64data);
+
+      const response = await fetch(
+        "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/result-upload",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image_data: base64data }),
+        }
+      );
+      const result = await response.json();
+      setResultImageUrl(result.image_url);
     } catch (error) {
       console.error("Error generating image:", error);
     }
   };
 
-  const downloadImage = (dataUrl: string) => {
-    if (resultImageGenerated) {
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = "result.png"; // Set the desired filename
-      link.type = "image/png"; // Ensure MIME type is specified correctly
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link); // Clean up after triggering the download
+  const handleShare = async () => {
+    if (navigator.share && resultImageUrl) {
+      try {
+        const response = await fetch(resultImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], "result-image.png", { type: blob.type });
+        await navigator.share({
+          title: "分享到Instagram",
+          files: [file],
+        });
+      } catch (error) {
+        console.error("分享失敗:", error);
+      }
+    } else {
+      alert("您的瀏覽器不支持 Web 分享，請手動下載並上傳圖片到 Instagram。");
     }
   };
 
@@ -94,8 +113,18 @@ export default function ResultCard({
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
         ref={cardRef}
-        onClick={() => downloadImage(dataUrl)}
       >
+        {resultImageUrl && (
+          <img
+            src={resultImageUrl}
+            alt="resultUrl"
+            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
+            onLoad={() => {
+              console.log("Image loaded successfully");
+              setResultImageGenerated(true);
+            }}
+          />
+        )}
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
             <Circle size={20} strokeWidth={4} />
@@ -250,6 +279,22 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
+      {resultImageGenerated && (
+        <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
+          <motion.button
+            className="text-center text-lg font-cubic text-[#23303F]"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: "linear",
+            }}
+            onClick={handleShare}
+          >
+            分享到 Instagram
+          </motion.button>
+        </div>
+      )}
     </>
   );
 }
