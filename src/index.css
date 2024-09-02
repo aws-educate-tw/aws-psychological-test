@@ -3,25 +3,27 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Cubic11";
-    src: url("../fonts/Cubic11Regular.ttf");
-  }
+  font-family: "Cubic11";
+  src: url("/fonts/Cubic11Regular.ttf") format("truetype");
+}
 
-  @layer base {
-    .font-outline-2 {
-      font-weight: bold;
-      text-shadow: 
-        2px 2px 0 #FEA419, 
-        -2px 2px 0 #FEA419, 
-        2px -2px 0 #FEA419, 
-        -2px -2px 0 #FEA419;
-    }
-    .font-outline-1 {
-      text-shadow: 
-        0.5px 0.5px 0 #000, 
-        -0.5px 0.5px 0 #000, 
-        0.5px -0.5px 0 #000, 
-        -0.5px -0.5px 0 #000;
-      letter-spacing: 1px;
-    }
+@layer base {
+  .font-outline-2 {
+    font-family: "Cubic11", sans-serif;
+    font-weight: bold;
+    text-shadow: 
+      2px 2px 0 #FEA419, 
+      -2px 2px 0 #FEA419, 
+      2px -2px 0 #FEA419, 
+      -2px -2px 0 #FEA419;
   }
+  .font-outline-1 {
+    font-family: "Cubic11", sans-serif;
+    text-shadow: 
+      0.5px 0.5px 0 #000, 
+      -0.5px 0.5px 0 #000, 
+      0.5px -0.5px 0 #000, 
+      -0.5px -0.5px 0 #000;
+    letter-spacing: 1px;
+  }
+}
