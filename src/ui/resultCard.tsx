@@ -109,9 +109,18 @@ export default function ResultCard({
     <>
       <motion.div
         className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 5 }}
+        animate={
+          resultImageGenerated ? { opacity: [1] } : { opacity: [0.3, 1, 0.3] }
+        }
+        transition={
+          resultImageGenerated
+            ? {}
+            : {
+                repeat: Infinity,
+                duration: 2.5,
+                ease: "linear",
+              }
+        }
         ref={cardRef}
       >
         {resultImageUrl && (
@@ -279,10 +288,10 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
-      {resultImageGenerated && (
+      {resultImageGenerated ? (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
-            className="text-center text-lg font-cubic text-[#23303F]"
+            className="text-center text-lg font-cubic text-white"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{
               repeat: Infinity,
@@ -292,6 +301,20 @@ export default function ResultCard({
             onClick={handleShare}
           >
             分享到 Instagram
+          </motion.button>
+        </div>
+      ) : (
+        <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
+          <motion.button
+            className="text-center text-lg font-cubic text-white"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2.5,
+              ease: "linear",
+            }}
+          >
+            圖片處理中...
           </motion.button>
         </div>
       )}
