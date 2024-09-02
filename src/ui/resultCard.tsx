@@ -107,20 +107,27 @@ export default function ResultCard({
 
   return (
     <>
-      <motion.div
+      {/* {!resultImageGenerated && (
+        <motion.div
+          className="top-0 left-0 w-full h-full object-cover bg-[#FAF5E7] absolute z-50"
+          animate={resultImageGenerated ? {} : { opacity: [0.7, 0.9, 0.7] }}
+          transition={
+            resultImageGenerated
+              ? {}
+              : {
+                  repeat: Infinity,
+                  duration: 2.5,
+                  ease: "linear",
+                }
+          }
+        >
+          <p className="flex flex-grow justify-center h-screen items-center text-3xl font-cubic">
+            獨一無二圖片生成中
+          </p>
+        </motion.div>
+      )} */}
+      <div
         className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
-        animate={
-          resultImageGenerated ? { opacity: [1] } : { opacity: [0.3, 1, 0.3] }
-        }
-        transition={
-          resultImageGenerated
-            ? {}
-            : {
-                repeat: Infinity,
-                duration: 2.5,
-                ease: "linear",
-              }
-        }
         ref={cardRef}
       >
         {resultImageUrl && (
@@ -134,6 +141,7 @@ export default function ResultCard({
             }}
           />
         )}
+
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
             <Circle size={20} strokeWidth={4} />
@@ -287,7 +295,7 @@ export default function ResultCard({
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
       {resultImageGenerated ? (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
