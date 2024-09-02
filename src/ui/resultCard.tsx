@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { Circle, X } from "lucide-react";
-import { resultData } from "../lib/resultData";
+import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
 
