@@ -126,8 +126,11 @@ export default function ResultCard({
           </p>
         </motion.div>
       )} */}
-      <div
+      <motion.div
         className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 5 }}
         ref={cardRef}
       >
         {resultImageUrl && (
@@ -295,7 +298,7 @@ export default function ResultCard({
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
       {resultImageGenerated ? (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
