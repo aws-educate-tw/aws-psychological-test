@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { Circle, X } from "lucide-react";
-import { resultData } from "../lib/resultData";
+import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
 
@@ -107,6 +107,25 @@ export default function ResultCard({
 
   return (
     <>
+      {/* {!resultImageGenerated && (
+        <motion.div
+          className="top-0 left-0 w-full h-full object-cover bg-[#FAF5E7] absolute z-50"
+          animate={resultImageGenerated ? {} : { opacity: [0.7, 0.9, 0.7] }}
+          transition={
+            resultImageGenerated
+              ? {}
+              : {
+                  repeat: Infinity,
+                  duration: 2.5,
+                  ease: "linear",
+                }
+          }
+        >
+          <p className="flex flex-grow justify-center h-screen items-center text-3xl font-cubic">
+            獨一無二圖片生成中
+          </p>
+        </motion.div>
+      )} */}
       <motion.div
         className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
         initial={{ opacity: 0 }}
@@ -125,6 +144,7 @@ export default function ResultCard({
             }}
           />
         )}
+
         <div className="flex items-center border-b-4 border-black p-2">
           <div className="flex gap-2">
             <Circle size={20} strokeWidth={4} />
@@ -279,10 +299,10 @@ export default function ResultCard({
           </div>
         </div>
       </motion.div>
-      {resultImageGenerated && (
+      {resultImageGenerated ? (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
-            className="text-center text-lg font-cubic text-[#23303F]"
+            className="text-center text-lg font-cubic text-white"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{
               repeat: Infinity,
@@ -292,6 +312,20 @@ export default function ResultCard({
             onClick={handleShare}
           >
             分享到 Instagram
+          </motion.button>
+        </div>
+      ) : (
+        <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
+          <motion.button
+            className="text-center text-lg font-cubic text-white"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2.5,
+              ease: "linear",
+            }}
+          >
+            圖片處理中...
           </motion.button>
         </div>
       )}

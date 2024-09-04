@@ -1,9 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import Navbar from "./ui/navbar";
-import { multipleChoices } from "./lib/multipleChoices";
-import ResultCard from "./ui/resultCard";
+import Navbar from "@/ui/navbar";
+import { multipleChoices } from "@/lib/multipleChoices";
+import ResultCard from "@/ui/resultCard";
 
 export default function App() {
   const [step, setStep] = useState<number>(0);

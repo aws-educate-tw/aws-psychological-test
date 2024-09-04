@@ -22,7 +22,10 @@ export default function Navbar() {
     <div className="flex items-center bg-[#FAF5E7] p-1 border-black border-b-2">
       {/* <p className="font-cubic ml-2 font-black text-sm">AWS</p> */}
       <img src="/AWSEducate.png" alt="heart" className="h-6 ml-1 mr-3" />
-      <span className="flex flex-grow justify-start items-center text-sm font-cubic opacity-70">
+      <span
+        className="flex flex-grow justify-center
+       items-center text-sm font-cubic opacity-70"
+      >
         Made by 6th AWS Ambassador
         <img src="/heart.png" alt="heart" className="w-6 h-6 p-1 m-1" />
       </span>
