@@ -12,6 +12,8 @@ export default function App() {
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [putUrl, setPutUrl] = useState<string>("");
+  const [getUrl, setGetUrl] = useState<string>("");
   // const [imageBase64, setImageBase64] = useState<string>("");
   const [user_name, setUserName] = useState<string>("");
 
@@ -112,7 +114,7 @@ export default function App() {
     try {
       console.log("start generating image");
       const response = await fetch(
-        "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/generate-image",
+        "https://sqa4k9iu70.execute-api.ap-northeast-1.amazonaws.com/default/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -124,8 +126,11 @@ export default function App() {
       }
 
       console.log("end generating image");
+      console.log("response", response);
       const data = await response.json();
       setImageUrl(data.image_url);
+      setPutUrl(data.put_url);
+      setGetUrl(data.get_url);
       // setImageBase64(data.image_base64);
     } catch (error) {
       console.error("Error generating image:", error);
@@ -225,6 +230,8 @@ export default function App() {
                       user_name={user_name}
                       answerService={answerService}
                       imageUrl={imageUrl}
+                      put_url={putUrl}
+                      get_url={getUrl}
                     />
                   </>
                 ) : (

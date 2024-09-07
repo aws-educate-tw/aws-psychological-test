@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image Using Fetch</title>
+</head>
+<body>
+    <h1>Upload an Image using Fetch API</h1>
+    
+    <input type="file" id="fileInput" accept="image/png">
+    <button onclick="uploadFile()">Upload</button>
+
+    <img id="uploadedImage" src="" alt="Uploaded Image" width="300">
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert("Please select a file first!");
+                return;
+            }
+            
+            // Upload URL with the query parameters for signed PUT request
+            const uploadUrl = "https://psy-all-images.s3.amazonaws.com/result_images/34897beb-50cc-422d-b033-e1c8310afe89.png?AWSAccessKeyId=ASIAVRUVWMDOIAGZH3PZ&Signature=nXY4Avs3YOHxon%2Bly%2F0yakBjv8Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLW5vcnRoZWFzdC0xIkYwRAIgPCmDRQIzx42KwaPmxrrFKgFtL6DH8%2BkIP9u82VsIQLACIEYJTqyHyR1L6Y7F%2FW7LhV%2BZG9vaojErXqn9H4fZF2RuKvUCCCYQABoMMzgxNDkyMjg5NzU2IgyaktIhv%2FCLCiFGDugq0gLK%2B8Z5EnT3zProt9T3gjJ0d5n5KwWtDDdKfFyhanyG7C7F26jgT9hIhRTCCmT97TAyJX%2BIChiFuXg7DCtGm4e8f8NWPeVHL%2FjZGcv5sX7MUd1ysrX6De66u2qcuzQljU2I%2BQfCNBofglrKJy6SN4P3R7ji%2F5u7InFnpD6H59th%2B9QWq7QKdvVeqomloE57E%2BHyoRdmMVQS7kMiPOoAhFavmoqPNJpX5PXARXNHBpU%2BPSD3qsCkLmo%2B0n5XhK8FkG%2BS221%2FyG3VPSjC7yV9OA5bOslqgLA8zG8d3KanBsY%2BNFFCT6WkAIIqXn8mcTJaBI19YPVyKxSaJQsJkzl8D92YuHtGzFfx9PhVP1Q40gNXoQWiob02dUBWJS5uJMGoQ86SnzLHPw860vYglIUCnPHZFEoYiQDLCbL3gxk9LRi7imXV3YjnZsqfoGz6Owj3YSxvmjCasu%2B2BjqfASsszv42KxANz2r9rTYCrXhUNwPFZEnwcEqQf8qUgDorZvI1LfiL3rehw%2BdeDdYbzI6JLOFTOwNtXjVsbfFRH1aJudVs0Fn2EDru6%2F39g00sDaHWfMO7CY1nAMP7d20EYQfUeMxe5paTxypB5TeGlSZD8GQQlHcS2k26ERrx2iG9se40Qegitfd0KSMwwrsC56REwnk6amX2TL44ArMjsQ%3D%3D&Expires=1725691205";
+            
+            // Base URL (without query parameters) to display the image
+            const baseImageUrl = "https://psy-all-images.s3.amazonaws.com/result_images/34897beb-50cc-422d-b033-e1c8310afe89.png";
+
+            try {
+                const response = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': "" // Content-Type should be empty string to prevent signature mismatch
+                    },
+                    body: file // Attach the file as the body of the PUT request
+                });
+
+                if (response.ok) {
+                    alert('File uploaded successfully!');
+                    
+                    // Update the img element to show the newly uploaded image
+                    const imgElement = document.getElementById('uploadedImage');
+                    imgElement.src = `${baseImageUrl}?${new Date().getTime()}`; // Add timestamp to avoid caching issues
+                } else {
+                    const errorText = await response.text();
+                    console.error('Upload failed:', errorText);
+                    alert(`Upload failed with status: ${response.status} - ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                alert('An error occurred. Please check the console for details.');
+            }
+        }
+    </script>
+</body>
+</html>
