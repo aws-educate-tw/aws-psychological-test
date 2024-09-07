@@ -19,7 +19,7 @@ export default function Navbar() {
   const [currentTime, setCurrentTime] = useState<string>("");
 
   return (
-    <div className="flex items-center bg-[#FAF5E7] p-1 border-black border-b-2">
+    <div className="flex items-center bg-[#FAF5E7] p-1 border-black border-b-2 z-10">
       {/* <p className="font-cubic ml-2 font-black text-sm">AWS</p> */}
       <img src="/AWSEducate.png" alt="heart" className="h-6 ml-1 mr-3" />
       <span

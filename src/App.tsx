@@ -139,7 +139,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-md min-w-[400px] h-screen flex flex-col">
+      <div className="w-full max-w-md min-w-[400px] max-h-[1100px] h-screen flex flex-col">
         <Navbar />
         <div
           className={`py-6 px-4 flex-grow ${
@@ -159,7 +159,7 @@ export default function App() {
         >
           {!startTest ? (
             <div className="flex flex-col h-full">
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full z-10">
                 <div className="whitespace-nowrap">
                   <motion.p
                     className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
@@ -213,13 +213,18 @@ export default function App() {
                 </div>
               </div>
               <motion.div
-                className="flex w-full justify-end"
+                className="flex w-full justify-end z-10"
                 initial={{ opacity: 0, scale: 0.8, y: 100, x: 100 }}
                 animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
                 transition={{ duration: 0.175 }}
               >
                 <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
               </motion.div>
+              <img
+                src="/psy-test-background.png"
+                alt="background"
+                className="w-full absolute bottom-0 right-0 h-auto object-cover bg-cover bg-gradient-to-t from-[#ffffff6c] to-[#ffffff00]"
+              />
             </div>
           ) : (
             <div>

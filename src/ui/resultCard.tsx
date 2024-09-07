@@ -134,7 +134,7 @@ export default function ResultCard({
             <Circle size={20} strokeWidth={4} />
           </div>
           <p className="w-full font-cubic text-sm text-center">
-            AWS COMMUNITY DAY ON 9/28
+            你是哪種 AWS 服務？
           </p>
           <div className="">
             <X strokeWidth={4} />
@@ -294,7 +294,7 @@ export default function ResultCard({
             }}
             onClick={handleShare}
           >
-            分享到 Instagram
+            長按以儲存
           </motion.button>
         </div>
       ) : (
