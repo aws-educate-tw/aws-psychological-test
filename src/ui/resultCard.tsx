@@ -117,7 +117,6 @@ export default function ResultCard({
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
         ref={cardRef}
-        onClick={() => onComplete()}
       >
         {resultImageUrl && (
           <img
@@ -127,6 +126,7 @@ export default function ResultCard({
             onLoad={() => {
               console.log("Image loaded successfully");
               setResultImageGenerated(true);
+              onComplete();
             }}
           />
         )}
