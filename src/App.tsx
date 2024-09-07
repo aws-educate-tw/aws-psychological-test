@@ -16,6 +16,10 @@ export default function App() {
   const [getUrl, setGetUrl] = useState<string>("");
   // const [imageBase64, setImageBase64] = useState<string>("");
   const [user_name, setUserName] = useState<string>("");
+  const [ipAddress, setIpAddress] = useState<string>("");
+
+  const [totalSeconds, setTotalSeconds] = useState<number>(0);
+  const [startTimer, setStartTimer] = useState<boolean>(false);
 
   useEffect(() => {
     if (showResult) {
@@ -49,11 +53,43 @@ export default function App() {
     }
   }, [answerService]);
 
+  useEffect(() => {
+    getIpAddress();
+  }, []);
+
+  useEffect(() => {
+    let interval: number | undefined = undefined;
+
+    if (startTimer) {
+      // If the timer is active, start the interval
+      interval = setInterval(() => {
+        setTotalSeconds((totalSeconds) => totalSeconds + 1); // Increase seconds by 1
+      }, 1000);
+    } else if (!startTimer && totalSeconds !== 0) {
+      // Clear the interval if timer is not active
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval); // Cleanup on component unmount or when interval is cleared
+  }, [startTimer, totalSeconds]);
+
+  const getIpAddress = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      setIpAddress(data.ip);
+      console.log("IP address:", data.ip);
+    } catch (error) {
+      console.error("Error fetching IP address:", error);
+    }
+  };
+
   const handleStart = () => {
     setStartTest(true);
     setStep(0);
     setAnswers([]);
     setShowResult(false);
+    setStartTimer(true);
   };
 
   const handleEnd = () => {
@@ -237,6 +273,11 @@ export default function App() {
                       imageUrl={imageUrl}
                       put_url={putUrl}
                       get_url={getUrl}
+                      onComplete={() => {
+                        setStartTimer(false);
+                        setTotalSeconds(0);
+                        console.log("time spent:", totalSeconds);
+                      }}
                     />
                   </>
                 ) : (

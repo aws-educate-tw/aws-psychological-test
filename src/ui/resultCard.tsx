@@ -25,12 +25,14 @@ export default function ResultCard({
   imageUrl,
   put_url,
   get_url,
+  onComplete,
 }: {
   user_name: string;
   answerService: string;
   imageUrl: string;
   put_url: string;
   get_url: string;
+  onComplete: () => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageGenerated, setImageGenerated] = useState(false);
@@ -115,6 +117,7 @@ export default function ResultCard({
         animate={{ opacity: 1 }}
         transition={{ duration: 5 }}
         ref={cardRef}
+        onClick={() => onComplete()}
       >
         {resultImageUrl && (
           <img
