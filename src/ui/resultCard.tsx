@@ -122,7 +122,7 @@ export default function ResultCard({
           <img
             src={resultImageUrl}
             alt="resultUrl"
-            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
+            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover select-none"
             onLoad={() => {
               console.log("Image loaded successfully");
               setResultImageGenerated(true);
