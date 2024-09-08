@@ -180,12 +180,19 @@ export default function App() {
               ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
               : "bg-cover bg-center relative"
           } ${
-            showResult
+            showResult && !showIntermediate
               ? "bg-container bg-center relative bg-gradient-to-b from-[#BACBCB] to-[#95a3a3]"
               : ""
-          }`}
+          } ${
+            showIntermediate
+              ? "bg-gradient-to-t from-[#674588] to-[#061D3C]"
+              : ""
+          }
+          `}
           style={
             !startTest || showResult
+              ? { backgroundImage: "" }
+              : showIntermediate
               ? { backgroundImage: "" }
               : { backgroundImage: "url('/Office.png')" }
           }
@@ -261,7 +268,7 @@ export default function App() {
             </div>
           ) : (
             <div>
-              <div className="mb-6">
+              <div className="">
                 {showResult ? (
                   <>
                     <ResultCard
