@@ -12,8 +12,14 @@ export default function App() {
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [putUrl, setPutUrl] = useState<string>("");
+  const [getUrl, setGetUrl] = useState<string>("");
   // const [imageBase64, setImageBase64] = useState<string>("");
   const [user_name, setUserName] = useState<string>("");
+  const [ipAddress, setIpAddress] = useState<string>("");
+
+  const [totalSeconds, setTotalSeconds] = useState<number>(0);
+  const [startTimer, setStartTimer] = useState<boolean>(false);
 
   useEffect(() => {
     if (showResult) {
@@ -47,11 +53,43 @@ export default function App() {
     }
   }, [answerService]);
 
+  useEffect(() => {
+    getIpAddress();
+  }, []);
+
+  useEffect(() => {
+    let interval: number | undefined = undefined;
+
+    if (startTimer) {
+      // If the timer is active, start the interval
+      interval = setInterval(() => {
+        setTotalSeconds((totalSeconds) => totalSeconds + 1); // Increase seconds by 1
+      }, 1000);
+    } else if (!startTimer && totalSeconds !== 0) {
+      // Clear the interval if timer is not active
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval); // Cleanup on component unmount or when interval is cleared
+  }, [startTimer, totalSeconds]);
+
+  const getIpAddress = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      setIpAddress(data.ip);
+      console.log("IP address:", data.ip);
+    } catch (error) {
+      console.error("Error fetching IP address:", error);
+    }
+  };
+
   const handleStart = () => {
     setStartTest(true);
     setStep(0);
     setAnswers([]);
     setShowResult(false);
+    setStartTimer(true);
   };
 
   const handleEnd = () => {
@@ -112,7 +150,7 @@ export default function App() {
     try {
       console.log("start generating image");
       const response = await fetch(
-        "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/generate-image",
+        "https://sqa4k9iu70.execute-api.ap-northeast-1.amazonaws.com/default/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -124,8 +162,11 @@ export default function App() {
       }
 
       console.log("end generating image");
+      console.log("response", response);
       const data = await response.json();
       setImageUrl(data.image_url);
+      setPutUrl(data.put_url);
+      setGetUrl(data.get_url);
       // setImageBase64(data.image_base64);
     } catch (error) {
       console.error("Error generating image:", error);
@@ -134,7 +175,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-md min-w-[400px] h-screen flex flex-col">
+      <div className="w-full max-w-md min-w-[400px] max-h-[1100px] h-screen flex flex-col">
         <Navbar />
         <div
           className={`py-6 px-4 flex-grow ${
@@ -154,7 +195,7 @@ export default function App() {
         >
           {!startTest ? (
             <div className="flex flex-col h-full">
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full z-10">
                 <div className="whitespace-nowrap">
                   <motion.p
                     className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
@@ -208,13 +249,18 @@ export default function App() {
                 </div>
               </div>
               <motion.div
-                className="flex w-full justify-end"
+                className="flex w-full justify-end z-10"
                 initial={{ opacity: 0, scale: 0.8, y: 100, x: 100 }}
                 animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
                 transition={{ duration: 0.175 }}
               >
                 <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
               </motion.div>
+              <img
+                src="/psy-test-background.png"
+                alt="background"
+                className="w-full absolute bottom-0 right-0 h-auto object-cover bg-cover bg-gradient-to-t from-[#ffffff6c] to-[#ffffff00]"
+              />
             </div>
           ) : (
             <div>
@@ -225,6 +271,13 @@ export default function App() {
                       user_name={user_name}
                       answerService={answerService}
                       imageUrl={imageUrl}
+                      put_url={putUrl}
+                      get_url={getUrl}
+                      onComplete={() => {
+                        setStartTimer(false);
+                        setTotalSeconds(0);
+                        console.log("time spent:", totalSeconds);
+                      }}
                     />
                   </>
                 ) : (

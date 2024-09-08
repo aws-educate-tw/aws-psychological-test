@@ -23,10 +23,16 @@ export default function ResultCard({
   user_name,
   answerService,
   imageUrl,
+  put_url,
+  get_url,
+  onComplete,
 }: {
   user_name: string;
   answerService: string;
   imageUrl: string;
+  put_url: string;
+  get_url: string;
+  onComplete: () => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageGenerated, setImageGenerated] = useState(false);
@@ -35,47 +41,45 @@ export default function ResultCard({
 
   useEffect(() => {
     if (imageGenerated) {
-      generateImage();
+      UploadResultImage();
     }
   }, [imageGenerated]);
 
   const buildPng = async () => {
     const element = cardRef.current;
-    if (!element) return "";
+    if (!element) return null;
 
-    let dataUrl = "";
+    let blob = null;
     const minDataLength = 2000000;
     let i = 0;
     const maxAttempts = 10;
 
-    while (dataUrl.length < minDataLength && i < maxAttempts) {
-      dataUrl = await htmlToImage.toPng(element);
+    while (!blob || (blob.size < minDataLength && i < maxAttempts)) {
+      blob = await htmlToImage.toBlob(element); // Generate Blob (binary)
       i += 1;
     }
 
-    return dataUrl;
+    return blob;
   };
 
-  const generateImage = async () => {
+  const UploadResultImage = async () => {
     try {
-      const data = await buildPng();
-      const base64data = data.split(",")[1];
-      // console.log(base64data);
+      const blob = await buildPng();
+      if (!blob) return;
 
-      const response = await fetch(
-        "https://gnn1p9jyed.execute-api.us-east-1.amazonaws.com/dev/result-upload",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ image_data: base64data }),
-        }
-      );
-      const result = await response.json();
-      setResultImageUrl(result.image_url);
+      const response = await fetch(put_url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "", // Content-Type should be empty string to prevent signature mismatch
+        },
+        body: blob, // Send binary data (the Blob)
+      });
+
+      if (response.ok) {
+        setResultImageUrl(get_url);
+      }
     } catch (error) {
-      console.error("Error generating image:", error);
+      console.error("Error uploading image:", error);
     }
   };
 
@@ -107,25 +111,6 @@ export default function ResultCard({
 
   return (
     <>
-      {/* {!resultImageGenerated && (
-        <motion.div
-          className="top-0 left-0 w-full h-full object-cover bg-[#FAF5E7] absolute z-50"
-          animate={resultImageGenerated ? {} : { opacity: [0.7, 0.9, 0.7] }}
-          transition={
-            resultImageGenerated
-              ? {}
-              : {
-                  repeat: Infinity,
-                  duration: 2.5,
-                  ease: "linear",
-                }
-          }
-        >
-          <p className="flex flex-grow justify-center h-screen items-center text-3xl font-cubic">
-            獨一無二圖片生成中
-          </p>
-        </motion.div>
-      )} */}
       <motion.div
         className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
         initial={{ opacity: 0 }}
@@ -137,10 +122,11 @@ export default function ResultCard({
           <img
             src={resultImageUrl}
             alt="resultUrl"
-            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
+            className="opacity-0 absolute top-0 left-0 w-full h-full object-cover select-none"
             onLoad={() => {
               console.log("Image loaded successfully");
               setResultImageGenerated(true);
+              onComplete();
             }}
           />
         )}
@@ -151,7 +137,7 @@ export default function ResultCard({
             <Circle size={20} strokeWidth={4} />
           </div>
           <p className="w-full font-cubic text-sm text-center">
-            AWS COMMUNITY DAY ON 9/28
+            你是哪種 AWS 服務？
           </p>
           <div className="">
             <X strokeWidth={4} />
@@ -311,7 +297,7 @@ export default function ResultCard({
             }}
             onClick={handleShare}
           >
-            分享到 Instagram
+            長按以儲存
           </motion.button>
         </div>
       ) : (
