@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
 import ResultCard from "@/ui/resultCard";
+import IntermediatePage from "@/ui/intermediatePage";
 
 export default function App() {
   const [step, setStep] = useState<number>(0);
@@ -20,6 +21,9 @@ export default function App() {
 
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [startTimer, setStartTimer] = useState<boolean>(false);
+
+  const [showIntermediate, setShowIntermediate] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<string>("");
 
   useEffect(() => {
     if (showResult) {
@@ -97,15 +101,8 @@ export default function App() {
   };
 
   const handleNext = (option: string) => {
-    const newAnswers = [...answers];
-    newAnswers[step] = option;
-    setAnswers(newAnswers);
-
-    if (step < multipleChoices.length - 1) {
-      setStep(step + 1);
-    } else {
-      handleEnd();
-    }
+    setSelectedOption(option);
+    setShowIntermediate(true);
   };
 
   const handleBack = () => {
@@ -280,6 +277,20 @@ export default function App() {
                       }}
                     />
                   </>
+                ) : showIntermediate ? (
+                  <IntermediatePage
+                    question={multipleChoices[step].question}
+                    selectedOption={selectedOption}
+                    selectedService={multipleChoices[step].services[0]}
+                    onContinue={() => {
+                      setShowIntermediate(false);
+                      if (step < multipleChoices.length - 1) {
+                        setStep(step + 1);
+                      } else {
+                        handleEnd();
+                      }
+                    }}
+                  />
                 ) : (
                   <>
                     <div className="relative">
