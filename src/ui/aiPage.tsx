@@ -67,7 +67,7 @@ export default function AiPage({
   showResultPageClick: () => void;
 }) {
   const [loading, setLoading] = useState(true);
-  const [response, setResponse] = useState("算命進行中...");
+  const [response, setResponse] = useState("算命師掐指一算...");
   const prevPromptQA = useRef(promptQA);
 
   const fetchData = async () => {

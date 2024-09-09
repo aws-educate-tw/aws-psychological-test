@@ -38,7 +38,42 @@ export default function App() {
 
   const [showAIPage, setShowAIPage] = useState<boolean>(false);
 
-  // const [showIntermediate, setShowIntermediate] = useState<boolean>(false);
+  useEffect(() => {
+    if (showResult && imageUrl !== "") {
+      const submitData = {
+        chooseService: answers, // Array of selected services in each step
+        finalService: answerService, // Final selected service after calculating the result
+        imageUrl: imageUrl, // The generated image URL
+        totalSeconds: totalSeconds, // The total time spent on the test
+        userIP: ipAddress, // The IP address of the user
+      };
+      const saveRDS = async (data: {
+        chooseService: string[];
+        finalService: string;
+        imageUrl: string;
+        totalSeconds: number;
+        userIP: string;
+      }) => {
+        try {
+          const response = await fetch(
+            "http://18.181.236.29:8080/submit-data",
+            {
+              method: "POST",
+              body: JSON.stringify(data),
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to submit data");
+          }
+          const result = await response.json();
+          console.log("Data submitted successfully:", result);
+        } catch (error) {
+          console.error("Error submitting data:", error);
+        }
+      };
+      saveRDS(submitData);
+    }
+  }, [showResult, imageUrl]);
 
   useEffect(() => {
     if (showAIPage) {
@@ -59,7 +94,7 @@ export default function App() {
     };
 
     const prompt = promptMap[answerService];
-    console.log("prompt", prompt);
+    // console.log("prompt", prompt);
 
     if (prompt) {
       const requestBody = {
@@ -97,7 +132,7 @@ export default function App() {
       const response = await fetch("https://api.ipify.org?format=json");
       const data = await response.json();
       setIpAddress(data.ip);
-      console.log("IP address:", data.ip);
+      // console.log("IP address:", data.ip);
     } catch (error) {
       console.error("Error fetching IP address:", error);
     }
