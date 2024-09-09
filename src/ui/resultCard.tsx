@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { Circle, X } from "lucide-react";
+import { Circle, Upload, X } from "lucide-react";
 import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
@@ -20,6 +20,7 @@ interface Result {
 }
 
 export default function ResultCard({
+  isAIpage,
   user_name,
   answerService,
   imageUrl,
@@ -27,6 +28,7 @@ export default function ResultCard({
   get_url,
   onComplete,
 }: {
+  isAIpage: boolean;
   user_name: string;
   answerService: string;
   imageUrl: string;
@@ -39,13 +41,22 @@ export default function ResultCard({
   const [resultImageGenerated, setResultImageGenerated] = useState(false);
   const [resultImageUrl, setResultImageUrl] = useState("");
 
+  // useEffect(() => {
+  //   if (imageUrl && !isAIpage) {
+  //     console.log(imageUrl);
+  //     UploadResultImage();
+  //   }
+  // }, [imageUrl]);
+
   useEffect(() => {
-    if (imageGenerated) {
+    if (imageGenerated && !isAIpage) {
+      console.log(imageUrl);
       UploadResultImage();
     }
   }, [imageGenerated]);
 
   const buildPng = async () => {
+    console.log("start building png");
     const element = cardRef.current;
     if (!element) return null;
 
@@ -59,13 +70,16 @@ export default function ResultCard({
       i += 1;
     }
 
+    console.log("end building png", blob);
     return blob;
   };
 
   const UploadResultImage = async () => {
     try {
+      console.log("start uploading result image");
       const blob = await buildPng();
       if (!blob) return;
+      console.log(put_url);
 
       const response = await fetch(put_url, {
         method: "PUT",
@@ -77,6 +91,7 @@ export default function ResultCard({
 
       if (response.ok) {
         setResultImageUrl(get_url);
+        console.log("result image uploaded successfully");
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -113,9 +128,6 @@ export default function ResultCard({
     <>
       <motion.div
         className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 5 }}
         ref={cardRef}
       >
         {resultImageUrl && (
@@ -150,6 +162,7 @@ export default function ResultCard({
                 src={imageUrl}
                 alt="result_loading_img"
                 className="rounded-lg border-r-4 border-b-4 border-t-0 border-l-0 border-black"
+                crossOrigin="anonymous"
                 onLoad={() => setImageGenerated(true)}
               />
             </div>

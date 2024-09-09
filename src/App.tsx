@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
 import ResultCard from "@/ui/resultCard";
-import IntermediatePage from "@/ui/intermediatePage";
+import AiPage from "@/ui/aiPage";
 
 export default function App() {
   const [step, setStep] = useState<number>(0);
@@ -22,14 +22,15 @@ export default function App() {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [startTimer, setStartTimer] = useState<boolean>(false);
 
-  const [showIntermediate, setShowIntermediate] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [showAIPage, setShowAIPage] = useState<boolean>(false);
+
+  // const [showIntermediate, setShowIntermediate] = useState<boolean>(false);
 
   useEffect(() => {
-    if (showResult) {
+    if (showAIPage) {
       calculateResult();
     }
-  }, [showResult]);
+  }, [showAIPage]);
 
   useEffect(() => {
     const promptMap: { [key: string]: string } = {
@@ -93,16 +94,25 @@ export default function App() {
     setStep(0);
     setAnswers([]);
     setShowResult(false);
+    setShowAIPage(false);
     setStartTimer(true);
   };
 
   const handleEnd = () => {
-    setShowResult(true);
+    setShowAIPage(true);
+    // setShowResult(true);
   };
 
   const handleNext = (option: string) => {
-    setSelectedOption(option);
-    setShowIntermediate(true);
+    const newAnswers = [...answers];
+    newAnswers[step] = option;
+    setAnswers(newAnswers);
+
+    if (step < multipleChoices.length - 1) {
+      setStep(step + 1);
+    } else {
+      handleEnd();
+    }
   };
 
   const handleBack = () => {
@@ -159,7 +169,7 @@ export default function App() {
       }
 
       console.log("end generating image");
-      console.log("response", response);
+      // console.log("response", response);
       const data = await response.json();
       setImageUrl(data.image_url);
       setPutUrl(data.put_url);
@@ -180,19 +190,12 @@ export default function App() {
               ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
               : "bg-cover bg-center relative"
           } ${
-            showResult && !showIntermediate
+            showResult
               ? "bg-container bg-center relative bg-gradient-to-b from-[#BACBCB] to-[#95a3a3]"
               : ""
-          } ${
-            showIntermediate
-              ? "bg-gradient-to-t from-[#674588] to-[#061D3C]"
-              : ""
-          }
-          `}
+          }`}
           style={
             !startTest || showResult
-              ? { backgroundImage: "" }
-              : showIntermediate
               ? { backgroundImage: "" }
               : { backgroundImage: "url('/Office.png')" }
           }
@@ -268,10 +271,19 @@ export default function App() {
             </div>
           ) : (
             <div>
-              <div className="">
-                {showResult ? (
+              <div className="mb-6">
+                {showAIPage ? (
+                  <AiPage
+                    answerService={answerService}
+                    showResultPageClick={() => {
+                      setShowAIPage(false);
+                      setShowResult(true);
+                    }}
+                  />
+                ) : showResult ? (
                   <>
                     <ResultCard
+                      isAIpage={showAIPage}
                       user_name={user_name}
                       answerService={answerService}
                       imageUrl={imageUrl}
@@ -284,20 +296,6 @@ export default function App() {
                       }}
                     />
                   </>
-                ) : showIntermediate ? (
-                  <IntermediatePage
-                    question={multipleChoices[step].question}
-                    selectedOption={selectedOption}
-                    selectedService={multipleChoices[step].services[0]}
-                    onContinue={() => {
-                      setShowIntermediate(false);
-                      if (step < multipleChoices.length - 1) {
-                        setStep(step + 1);
-                      } else {
-                        handleEnd();
-                      }
-                    }}
-                  />
                 ) : (
                   <>
                     <div className="relative">
