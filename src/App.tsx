@@ -190,12 +190,15 @@ export default function App() {
               ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
               : "bg-cover bg-center relative"
           } ${
-            showResult
+            showResult && !showAIPage
               ? "bg-container bg-center relative bg-gradient-to-b from-[#BACBCB] to-[#95a3a3]"
               : ""
-          }`}
+          } ${showAIPage ? "bg-gradient-to-b from-[#674588] to-[#95a3a3]" : ""}
+          `}
           style={
             !startTest || showResult
+              ? { backgroundImage: "" }
+              : showAIPage
               ? { backgroundImage: "" }
               : { backgroundImage: "url('/Office.png')" }
           }

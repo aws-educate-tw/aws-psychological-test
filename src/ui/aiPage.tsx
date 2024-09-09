@@ -100,7 +100,7 @@ export default function AiPage({
 
           debouncedUpdate.current = setTimeout(() => {
             setResponse(chunk);
-          }, 40);
+          }, 50);
         },
         (finalResponse) => {
           setResponse(finalResponse);
@@ -134,7 +134,9 @@ export default function AiPage({
           </p>
         </div>
       </div>
-      <button onClick={showResultPageClick}>result page</button>
+      <button onClick={showResultPageClick}>
+        {loading ? "生成結果圖" : "skip"}
+      </button>
       {/* <div className="flex justify-end">
         <motion.button
           className="font-cubic bg-[#071E3D] text-white font-bold py-2 px-4 rounded-lg active:bg-purple-300 active:text-black"
