@@ -310,7 +310,7 @@ export default function ResultCard({
             }}
             onClick={handleShare}
           >
-            長按以儲存
+            長按上方儲存
           </motion.button>
         </div>
       ) : (

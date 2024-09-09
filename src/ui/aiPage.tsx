@@ -1,19 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { resultData } from "@/lib/resultData";
-
-interface Result {
-  serviceName: string;
-  tags: string[];
-  soulMate: string;
-  soulMateImg: string;
-  friends: string;
-  friendsImg: string;
-  work_describe: string;
-  life_describe: string;
-  service_describe: string;
-  serviceImg: string;
-}
+import { MoveRight, StepForward } from "lucide-react";
 
 const generateChat = async (
   prompt: string,
@@ -74,11 +61,9 @@ const generateChat = async (
 
 export default function AiPage({
   promptQA,
-  answerService,
   showResultPageClick,
 }: {
   promptQA: string;
-  answerService: string;
   showResultPageClick: () => void;
 }) {
   const [loading, setLoading] = useState(true);
@@ -127,20 +112,37 @@ export default function AiPage({
           </p>
         </div>
       </div>
-      <button onClick={showResultPageClick}>
-        {loading ? "skip" : "生成結果圖"}
-      </button>
-      {/* <div className="flex justify-end">
-        <motion.button
-          className="font-cubic bg-[#071E3D] text-white font-bold py-2 px-4 rounded-lg active:bg-purple-300 active:text-black"
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.2 }}
-          disabled={loading}
-        >
-          {loading ? "生成中..." : "下一題"}
-        </motion.button>
-      </div> */}
+      <div className="flex justify-end">
+        {loading ? (
+          <motion.button
+            className="flex gap-1 items-center font-cubic bg-[#071E3D] text-white font-bold py-2 px-4 rounded-lg active:bg-purple-300 active:text-black"
+            animate={{ y: [3, 0, 3] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: "linear",
+            }}
+            onClick={showResultPageClick}
+          >
+            SKIP
+            <StepForward size={20} />
+          </motion.button>
+        ) : (
+          <motion.button
+            className="flex gap-2 items-center font-cubic bg-[#071E3D] text-white font-bold py-2 px-4 rounded-lg active:bg-purple-300 active:text-black"
+            animate={{ y: [3, 0, 3] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: "linear",
+            }}
+            onClick={showResultPageClick}
+          >
+            生成結果圖
+            <MoveRight size={20} />
+          </motion.button>
+        )}
+      </div>
     </div>
   );
 }

@@ -297,7 +297,6 @@ export default function App() {
                 {showAIPage ? (
                   <AiPage
                     promptQA={promptQA}
-                    answerService={answerService}
                     showResultPageClick={() => {
                       setShowAIPage(false);
                       setShowResult(true);
