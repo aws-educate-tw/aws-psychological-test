@@ -31,11 +31,11 @@ const generateChat = async (
         body: JSON.stringify({
           model: "anthropic.claude-3-sonnet-20240229-v1:0",
           system: `
-                你是一隻具備科技知識且幽默的小貓咪占卜師，
-                請你根據提供的「職場上的你」和「生活上的你」的產生一段溫暖鼓勵的回應，
+                你是一隻幽默的小貓咪占卜師，請先根據使用者姓名跟他打招呼，如果沒有使用者姓名，請使用「貓友」來代替。
+                並切根據提供的「職場上的你」和「生活上的你」的產生一段溫暖鼓勵的回應，
 
                 注意事項：
-                1. 你的風格親切可愛，會使用喵語表達，並且會使用顏文字來增添表達的可愛感：
+                1. 你的風格親切可愛，偶爾會使用喵語表達，並且會使用顏文字來增添表達的可愛感：
                    (＝^ω^＝), (=①ω①=), (=ＴェＴ=), (=ↀωↀ=), (=ΦωΦ=), (ΦзΦ), (^・ω・^ ), (ฅ^•ﻌ•^ฅ)。
                 2. 回應需控制在30個中文字數以內。
 
@@ -73,44 +73,37 @@ const generateChat = async (
 };
 
 export default function AiPage({
+  promptQA,
   answerService,
   showResultPageClick,
 }: {
+  promptQA: string;
   answerService: string;
   showResultPageClick: () => void;
 }) {
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState("算命進行中...");
-  const debouncedUpdate = useRef<any>();
+  const prevPromptQA = useRef(promptQA);
 
-  const serviceResult = resultData.find(
-    (result: Result) => result.serviceName === answerService
-  );
-
-  const promptQA = `職場上的你：${serviceResult?.work_describe}。生活上的你：${serviceResult?.life_describe}`;
-
+  const fetchData = async () => {
+    console.log("開始算命啦！");
+    await generateChat(
+      promptQA,
+      (chunk) => {
+        setResponse(chunk); // Update the response directly with each chunk
+      },
+      (finalResponse) => {
+        setResponse(finalResponse); // Final response after completion
+        setLoading(false); // Stop loading when complete
+      }
+    );
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      await generateChat(
-        promptQA,
-        (chunk) => {
-          if (debouncedUpdate.current) {
-            clearTimeout(debouncedUpdate.current);
-          }
-
-          debouncedUpdate.current = setTimeout(() => {
-            setResponse(chunk);
-          }, 50);
-        },
-        (finalResponse) => {
-          setResponse(finalResponse);
-          setLoading(false); // Stop loading when complete
-        }
-      );
-    };
-
-    fetchData();
-  }, [promptQA]);
+    if (promptQA !== prevPromptQA.current) {
+      prevPromptQA.current = promptQA;
+      fetchData();
+    }
+  }, [promptQA, fetchData]);
 
   return (
     <div className="flex flex-col justify-end px-2 gap-4">
@@ -135,7 +128,7 @@ export default function AiPage({
         </div>
       </div>
       <button onClick={showResultPageClick}>
-        {loading ? "生成結果圖" : "skip"}
+        {loading ? "skip" : "生成結果圖"}
       </button>
       {/* <div className="flex justify-end">
         <motion.button

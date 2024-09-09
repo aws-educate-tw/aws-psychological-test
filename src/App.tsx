@@ -5,6 +5,20 @@ import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
 import ResultCard from "@/ui/resultCard";
 import AiPage from "@/ui/aiPage";
+import { resultData } from "@/lib/resultData";
+
+interface Result {
+  serviceName: string;
+  tags: string[];
+  soulMate: string;
+  soulMateImg: string;
+  friends: string;
+  friendsImg: string;
+  work_describe: string;
+  life_describe: string;
+  service_describe: string;
+  serviceImg: string;
+}
 
 export default function App() {
   const [step, setStep] = useState<number>(0);
@@ -16,7 +30,7 @@ export default function App() {
   const [putUrl, setPutUrl] = useState<string>("");
   const [getUrl, setGetUrl] = useState<string>("");
   // const [imageBase64, setImageBase64] = useState<string>("");
-  const [user_name, setUserName] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [ipAddress, setIpAddress] = useState<string>("");
 
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
@@ -151,6 +165,11 @@ export default function App() {
     setAnswerService(resultService);
   };
 
+  const serviceResult = resultData.find(
+    (result: Result) => result.serviceName === answerService
+  );
+  const promptQA = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。生活上的你：${serviceResult?.life_describe}`;
+
   const generateImage = async (requestBody: {
     data: { model_id: string; prompt: string };
   }) => {
@@ -277,6 +296,7 @@ export default function App() {
               <div className="mb-6">
                 {showAIPage ? (
                   <AiPage
+                    promptQA={promptQA}
                     answerService={answerService}
                     showResultPageClick={() => {
                       setShowAIPage(false);
@@ -287,7 +307,7 @@ export default function App() {
                   <>
                     <ResultCard
                       isAIpage={showAIPage}
-                      user_name={user_name}
+                      user_name={userName}
                       answerService={answerService}
                       imageUrl={imageUrl}
                       put_url={putUrl}
