@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data and Chart Display</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .loading {
+            color: #888;
+        }
+        #chartContainer {
+            width: 600px;
+            height: 400px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>User Data</h2>
+
+<div id="userData" class="loading">Loading data...</div>
+
+<h3>Service Usage Chart</h3>
+<div id="chartContainer">
+    <canvas id="serviceChart"></canvas>
+</div>
+
+<script>
+    // Sample data from the example
+    const servicesArray = ["Lambda", "ELB", "ELB", "Cloudwatch", "IAM", "EC2", "EC2", "S3"];
+
+    // Function to count occurrences of each service
+    function countServices(services) {
+        const serviceCount = {};
+        services.forEach(service => {
+            if (serviceCount[service]) {
+                serviceCount[service]++;
+            } else {
+                serviceCount[service] = 1;
+            }
+        });
+        return serviceCount;
+    }
+
+    // Fetch data from the API
+    fetch('http://18.181.236.29:8080/user-data')
+        .then(response => response.json())
+        .then(data => {
+            // Display the data in a table
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Create Date</th>
+                            <th>Final Service</th>
+                            <th>Total Seconds</th>
+                            <th>User IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(item => `
+                            <tr>
+                                <td>${new Date(item.createDate).toLocaleString()}</td>
+                                <td>${item.finalService}</td>
+                                <td>${item.totalSeconds}</td>
+                                <td>${item.userIp}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Insert the table into the div
+            document.getElementById('userData').innerHTML = tableHTML;
+
+            // Extract services from the fetched data and count occurrences
+            const fetchedServices = data.map(item => item.finalService);
+            const allServices = [...fetchedServices, ...servicesArray]; // Combine API data with the example services
+            const serviceCounts = countServices(allServices);
+
+            // Prepare data for the chart
+            const serviceLabels = Object.keys(serviceCounts);
+            const serviceData = Object.values(serviceCounts);
+
+            // Create the chart
+            const ctx = document.getElementById('serviceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: serviceLabels,
+                    datasets: [{
+                        label: 'Service Usage Count',
+                        data: serviceData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            document.getElementById('userData').innerHTML = '<p>Error loading data</p>';
+        });
+
+</script>
+
+</body>
+</html>
