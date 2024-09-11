@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API POST Request Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        .loading {
+            color: #888;
+        }
+        .error {
+            color: red;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Test POST Request to API Gateway</h1>
+<p>Click the button below to send the following data to the API:</p>
+
+<pre>
+{
+  "chooseService": ["Lambda", "ELB", "ELB", "Cloudwatch", "IAM", "EC2", "EC2", "S3"],
+  "finalService": "IAM",
+  "imageUrl": "https://example.com",
+  "totalSeconds": 20,
+  "userIP": "111.100.128.50"
+}
+</pre>
+
+<button id="sendRequest">Send POST Request</button>
+
+<div id="response" class="loading">Waiting for request...</div>
+
+<script>
+    // Data to send in the POST request
+    const postData = {
+        chooseService: ["Lambda", "ELB", "ELB", "Cloudwatch", "IAM", "EC2", "EC2", "S3"],
+        finalService: "IAM",
+        imageUrl: "https://example.com",
+        totalSeconds: 53,
+        userIP: "111.100.128.50"
+    };
+
+    // Function to handle the POST request
+    document.getElementById('sendRequest').addEventListener('click', function() {
+        const button = this;
+        button.disabled = true;
+        document.getElementById('response').innerHTML = 'Sending request...';
+
+        // Send the POST request using fetch
+        fetch('https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/submit-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(response => {
+            // Try to parse as JSON
+            return response.json().catch(() => {
+                // If JSON parsing fails, return response text
+                return response.text().then(text => {
+                    return { message: text };
+                });
+            });
+        })
+        .then(data => {
+            // Handle the response
+            if (typeof data.message === 'string') {
+                // If the response is a message (string)
+                document.getElementById('response').innerHTML = '<strong>Success:</strong> ' + data.message;
+            } else {
+                // If the response is JSON
+                document.getElementById('response').innerHTML = '<strong>Success:</strong> Data submitted successfully<br>' + JSON.stringify(data, null, 2);
+            }
+        })
+        .catch(error => {
+            // Handle errors
+            document.getElementById('response').innerHTML = '<strong class="error">Error:</strong> ' + error.message;
+        })
+        .finally(() => {
+            // Re-enable the button
+            button.disabled = false;
+        });
+    });
+</script>
+
+</body>
+</html>
