@@ -59,6 +59,9 @@ export default function App() {
             "https://j1xye602f4.execute-api.ap-northeast-1.amazonaws.com/submit-data",
             {
               method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify(data),
             }
           );
