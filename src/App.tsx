@@ -56,7 +56,7 @@ export default function App() {
       }) => {
         try {
           const response = await fetch(
-            "https://j1xye602f4.execute-api.ap-northeast-1.amazonaws.com/submit-data",
+            "https://ag87jz70we.execute-api.ap-northeast-1.amazonaws.com/submit-data",
             {
               method: "POST",
               headers: {
