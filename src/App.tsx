@@ -55,13 +55,10 @@ export default function App() {
         userIP: string;
       }) => {
         try {
-          const response = await fetch(
-            "http://18.181.236.29:8080/submit-data",
-            {
-              method: "POST",
-              body: JSON.stringify(data),
-            }
-          );
+          const response = await fetch("http://18.179.10.85:8080/submit-data", {
+            method: "POST",
+            body: JSON.stringify(data),
+          });
           if (!response.ok) {
             throw new Error("Failed to submit data");
           }
