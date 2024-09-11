@@ -40,8 +40,13 @@ export default function App() {
 
   useEffect(() => {
     if (showResult && imageUrl !== "") {
+      const relatedServices = answers.map((answer, index) => {
+        const selectedIndex = multipleChoices[index].options.indexOf(answer);
+        return multipleChoices[index].services[selectedIndex];
+      });
+
       const submitData = {
-        chooseService: answers, // Array of selected services in each step
+        chooseService: relatedServices, // The services selected by the user
         finalService: answerService, // Final selected service after calculating the result
         imageUrl: imageUrl, // The generated image URL
         totalSeconds: totalSeconds, // The total time spent on the test
@@ -55,8 +60,10 @@ export default function App() {
         userIP: string;
       }) => {
         try {
+          // console.log(JSON.stringify(data));
+          console.log("Time spent:", totalSeconds);
           const response = await fetch(
-            "https://ter1eexr90.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
+            "https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/submit-data",
             {
               method: "POST",
               headers: {
@@ -69,6 +76,7 @@ export default function App() {
             throw new Error("Failed to submit data");
           }
           const result = await response.json();
+
           console.log("Data submitted successfully:", result);
         } catch (error) {
           console.error("Error submitting data:", error);
@@ -352,7 +360,6 @@ export default function App() {
                       onComplete={() => {
                         setStartTimer(false);
                         setTotalSeconds(0);
-                        console.log("time spent:", totalSeconds);
                       }}
                     />
                   </>
