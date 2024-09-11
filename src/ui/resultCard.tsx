@@ -50,7 +50,7 @@ export default function ResultCard({
 
   useEffect(() => {
     if (imageGenerated && !isAIpage) {
-      console.log(imageUrl);
+      // console.log(imageUrl);
       UploadResultImage();
     }
   }, [imageGenerated]);
@@ -79,7 +79,7 @@ export default function ResultCard({
       console.log("start uploading result image");
       const blob = await buildPng();
       if (!blob) return;
-      console.log(put_url);
+      // console.log(put_url);
 
       const response = await fetch(put_url, {
         method: "PUT",
