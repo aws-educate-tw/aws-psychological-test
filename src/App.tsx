@@ -72,12 +72,9 @@ export default function App() {
               body: JSON.stringify(data),
             }
           );
-          if (!response.ok) {
-            throw new Error("Failed to submit data");
+          if (response.ok) {
+            console.log("Data submitted successfully");
           }
-          const result = await response.json();
-
-          console.log("Data submitted successfully:", result);
         } catch (error) {
           console.error("Error submitting data:", error);
         }
@@ -100,7 +97,7 @@ export default function App() {
       IAM: "A cute cat being a security guard with a clean background",
       Cloudwatch: "A cute cat being a company manager with a clean background",
       DynamoDB: "A cute cat being a secretary with a clean background",
-      "API gateway": "A cute cat being a diplomat with a clean background",
+      "API gateway": "Three cats playing together with a clean background",
       ELB: "A cute cat being a traffic police officer with a clean background",
     };
 
