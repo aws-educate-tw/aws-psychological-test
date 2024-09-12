@@ -136,9 +136,10 @@ export default function ResultCard({
             alt="resultUrl"
             className="opacity-0 absolute top-0 left-0 w-full h-full object-cover select-none"
             onLoad={() => {
-              console.log("Image loaded successfully");
-              setResultImageGenerated(true);
-              onComplete();
+              setTimeout(() => {
+                setResultImageGenerated(true);
+                onComplete();
+              }, 1000);
             }}
           />
         )}
@@ -324,7 +325,7 @@ export default function ResultCard({
               ease: "linear",
             }}
           >
-            圖片處理中...
+            圖片快處理好了...
           </motion.button>
         </div>
       )}
