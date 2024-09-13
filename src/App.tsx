@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
-import ResultCard from "@/ui/resultCard";
 import AiPage from "@/ui/aiPage";
 import { resultData } from "@/lib/resultData";
 
@@ -26,62 +25,12 @@ export default function App() {
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [putUrl, setPutUrl] = useState<string>("");
-  const [getUrl, setGetUrl] = useState<string>("");
-  // const [imageBase64, setImageBase64] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
-  const [ipAddress, setIpAddress] = useState<string>("");
 
-  const [totalSeconds, setTotalSeconds] = useState<number>(0);
-  const [startTimer, setStartTimer] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>("");
 
   const [showAIPage, setShowAIPage] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (showResult && imageUrl !== "") {
-      const relatedServices = answers.map((answer, index) => {
-        const selectedIndex = multipleChoices[index].options.indexOf(answer);
-        return multipleChoices[index].services[selectedIndex];
-      });
-
-      const submitData = {
-        chooseService: relatedServices, // The services selected by the user
-        finalService: answerService, // Final selected service after calculating the result
-        imageUrl: imageUrl, // The generated image URL
-        totalSeconds: totalSeconds, // The total time spent on the test
-        userIP: ipAddress, // The IP address of the user
-      };
-      const saveRDS = async (data: {
-        chooseService: string[];
-        finalService: string;
-        imageUrl: string;
-        totalSeconds: number;
-        userIP: string;
-      }) => {
-        try {
-          // console.log(JSON.stringify(data));
-          console.log("Time spent:", totalSeconds);
-          const response = await fetch(
-            "https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/submit-data",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            }
-          );
-          if (response.ok) {
-            console.log("Data submitted successfully");
-          }
-        } catch (error) {
-          console.error("Error submitting data:", error);
-        }
-      };
-      saveRDS(submitData);
-    }
-  }, [showResult, imageUrl]);
+  const [apiEndpoint, setApiEndpoint] = useState("");
 
   useEffect(() => {
     if (showAIPage) {
@@ -111,48 +60,26 @@ export default function App() {
           prompt: prompt,
         },
       };
-      generateImage(requestBody);
+      // generateImage(requestBody);
     }
   }, [answerService]);
 
-  useEffect(() => {
-    getIpAddress();
-  }, []);
-
-  useEffect(() => {
-    let interval: number | undefined = undefined;
-
-    if (startTimer) {
-      // If the timer is active, start the interval
-      interval = setInterval(() => {
-        setTotalSeconds((totalSeconds) => totalSeconds + 1); // Increase seconds by 1
-      }, 1000);
-    } else if (!startTimer && totalSeconds !== 0) {
-      // Clear the interval if timer is not active
-      clearInterval(interval);
-    }
-
-    return () => clearInterval(interval); // Cleanup on component unmount or when interval is cleared
-  }, [startTimer, totalSeconds]);
-
-  const getIpAddress = async () => {
-    try {
-      const response = await fetch("https://api.ipify.org?format=json");
-      const data = await response.json();
-      setIpAddress(data.ip);
-      // console.log("IP address:", data.ip);
-    } catch (error) {
-      console.error("Error fetching IP address:", error);
+  const handlePrompt = () => {
+    const endpoint = window.prompt("Please enter the API endpoint:");
+    if (endpoint) {
+      setApiEndpoint(endpoint);
+      setStartTest(true);
+      setStep(0);
+      setAnswers([]);
+      setShowResult(false);
+      setShowAIPage(false);
     }
   };
 
   const handleStart = () => {
-    setStartTest(true);
-    setStep(0);
-    setAnswers([]);
-    setShowResult(false);
-    setShowAIPage(false);
-    setStartTimer(true);
+    handlePrompt();
+    if (apiEndpoint) {
+    }
   };
 
   const handleEnd = () => {
@@ -211,36 +138,8 @@ export default function App() {
   const serviceResult = resultData.find(
     (result: Result) => result.serviceName === answerService
   );
-  const promptQA = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。生活上的你：${serviceResult?.life_describe}`;
-
-  const generateImage = async (requestBody: {
-    data: { model_id: string; prompt: string };
-  }) => {
-    try {
-      console.log("start generating image");
-      const response = await fetch(
-        "https://sqa4k9iu70.execute-api.ap-northeast-1.amazonaws.com/default/generate-image",
-        {
-          method: "POST",
-          body: JSON.stringify(requestBody),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to generate image");
-      }
-
-      console.log("end generating image");
-      // console.log("response", response);
-      const data = await response.json();
-      setImageUrl(data.image_url);
-      setPutUrl(data.put_url);
-      setGetUrl(data.get_url);
-      // setImageBase64(data.image_base64);
-    } catch (error) {
-      console.error("Error generating image:", error);
-    }
-  };
+  const promptQAWork = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。`;
+  const promptQALife = `使用者的名字：${userName}。生活上的你：${serviceResult?.life_describe}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
@@ -339,27 +238,12 @@ export default function App() {
               <div className="mb-6">
                 {showAIPage ? (
                   <AiPage
-                    promptQA={promptQA}
-                    showResultPageClick={() => {
-                      setShowAIPage(false);
-                      setShowResult(true);
-                    }}
+                    apiEndpoint={apiEndpoint}
+                    promptQAWork={promptQAWork}
+                    promptQALife={promptQALife}
+                    userName={userName ? userName : "貓友"}
+                    answerService={answerService}
                   />
-                ) : showResult ? (
-                  <>
-                    <ResultCard
-                      isAIpage={showAIPage}
-                      user_name={userName}
-                      answerService={answerService}
-                      imageUrl={imageUrl}
-                      put_url={putUrl}
-                      get_url={getUrl}
-                      onComplete={() => {
-                        setStartTimer(false);
-                        setTotalSeconds(0);
-                      }}
-                    />
-                  </>
                 ) : (
                   <>
                     <div className="relative">
