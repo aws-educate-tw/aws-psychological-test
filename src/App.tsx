@@ -219,7 +219,7 @@ export default function App() {
     try {
       console.log("start generating image");
       const response = await fetch(
-        "https://sqa4k9iu70.execute-api.ap-northeast-1.amazonaws.com/default/generate-image",
+        "https://7psxs12rwg.execute-api.ap-northeast-1.amazonaws.com/default/psy-generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
