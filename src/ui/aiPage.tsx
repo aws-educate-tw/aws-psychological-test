@@ -138,7 +138,7 @@ export default function AiPage({
             }}
             onClick={showResultPageClick}
           >
-            生成結果圖
+            生成專屬結果圖
             <MoveRight size={20} />
           </motion.button>
         )}

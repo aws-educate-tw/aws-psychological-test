@@ -267,7 +267,7 @@ export default function App() {
         >
           {!startTest ? (
             <>
-              <div className="absolute w-full right-0 top-0 h-2/3 bg-gradient-to-b from-[#ffffffbb] to-[#fff0] z-30"></div>
+              <div className="absolute w-full right-0 top-0 h-2/3 bg-gradient-to-b from-[#999999bb] to-[#fff0] z-30"></div>
               <div className="flex flex-col h-full">
                 <div className="flex flex-col h-full z-40">
                   <div className="whitespace-nowrap">
@@ -285,12 +285,12 @@ export default function App() {
                   </div>
                   <motion.div
                     className="py-6 z-50"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 2,
-                      ease: "linear",
-                    }}
+                    // animate={{ scale: [1, 1.1, 1] }}
+                    // transition={{
+                    //   repeat: Infinity,
+                    //   duration: 2,
+                    //   ease: "linear",
+                    // }}
                   >
                     <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
                       你是哪種
@@ -313,9 +313,17 @@ export default function App() {
                     <motion.button
                       onClick={handleStart}
                       className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.2 }}
+                      // initial={{ opacity: 0, scale: 0.8 }}
+                      // animate={{ opacity: 1, scale: 1 }}
+                      // transition={{ delay: 0.2 }}
+                      animate={{ y: [3, -2, 3] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1,
+                        ease: "easeInOut",
+                        repeatDelay: 3,
+                        delay: 1,
+                      }}
                     >
                       <img src="/CatPaw.png" alt="CatPaw" className="w-4" />
                       開始測驗
@@ -331,7 +339,7 @@ export default function App() {
                   <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
                 </motion.div>
                 <img
-                  src="/psy-test-background.png"
+                  src="/psy-test-background-2.png"
                   alt="background"
                   className="z-0 w-full absolute bottom-0 right-0 h-auto object-cover bg-cover bg-gradient-to-t from-[#ffffff6c] to-[#ffffff00]"
                 />

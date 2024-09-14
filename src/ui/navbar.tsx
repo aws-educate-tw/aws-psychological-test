@@ -29,7 +29,7 @@ export default function Navbar() {
         className="flex flex-grow justify-center
        items-center text-sm font-cubic opacity-70"
       >
-        Made by 6th AWS Educate Ambassador
+        Made by AWS Educate 6th Ambassadors
       </span>
       <p className="font-cubic text-xs font-black pr-2 text-center">
         {currentTime}
