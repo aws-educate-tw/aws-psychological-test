@@ -31,7 +31,7 @@ export default function App() {
   const [getUrl, setGetUrl] = useState<string>("");
   // const [imageBase64, setImageBase64] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
-  const [ipAddress, setIpAddress] = useState<string>("");
+  // const [ipAddress, setIpAddress] = useState<string>("");
 
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [startTimer, setStartTimer] = useState<boolean>(false);
@@ -50,14 +50,14 @@ export default function App() {
         finalService: answerService, // Final selected service after calculating the result
         imageUrl: imageUrl, // The generated image URL
         totalSeconds: totalSeconds, // The total time spent on the test
-        userIP: ipAddress, // The IP address of the user
+        // userIP: ipAddress, // The IP address of the user
       };
       const saveRDS = async (data: {
         chooseService: string[];
         finalService: string;
         imageUrl: string;
         totalSeconds: number;
-        userIP: string;
+        // userIP: string;
       }) => {
         try {
           // console.log(JSON.stringify(data));
@@ -116,10 +116,6 @@ export default function App() {
   }, [answerService]);
 
   useEffect(() => {
-    getIpAddress();
-  }, []);
-
-  useEffect(() => {
     let interval: number | undefined = undefined;
 
     if (startTimer) {
@@ -135,16 +131,20 @@ export default function App() {
     return () => clearInterval(interval); // Cleanup on component unmount or when interval is cleared
   }, [startTimer, totalSeconds]);
 
-  const getIpAddress = async () => {
-    try {
-      const response = await fetch("https://api.ipify.org?format=json");
-      const data = await response.json();
-      setIpAddress(data.ip);
-      // console.log("IP address:", data.ip);
-    } catch (error) {
-      console.error("Error fetching IP address:", error);
-    }
-  };
+  // useEffect(() => {
+  //   getIpAddress();
+  // }, []);
+
+  // const getIpAddress = async () => {
+  //   try {
+  //     const response = await fetch("https://api.ipify.org?format=json");
+  //     const data = await response.json();
+  //     setIpAddress(data.ip);
+  //     // console.log("IP address:", data.ip);
+  //   } catch (error) {
+  //     console.error("Error fetching IP address:", error);
+  //   }
+  // };
 
   const handleStart = () => {
     setStartTest(true);
@@ -219,7 +219,7 @@ export default function App() {
     try {
       console.log("start generating image");
       const response = await fetch(
-        "https://sqa4k9iu70.execute-api.ap-northeast-1.amazonaws.com/default/generate-image",
+        "https://7psxs12rwg.execute-api.ap-northeast-1.amazonaws.com/default/psy-generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -249,7 +249,7 @@ export default function App() {
         <div
           className={`py-6 px-4 flex-grow ${
             !startTest
-              ? "bg-container bg-center relative bg-gradient-to-t from-[#BACBCB] to-[#95a3a3]"
+              ? "bg-container bg-center relative bg-[#95a3a3]"
               : "bg-cover bg-center relative"
           } ${
             showResult && !showAIPage
@@ -266,74 +266,77 @@ export default function App() {
           }
         >
           {!startTest ? (
-            <div className="flex flex-col h-full">
-              <div className="flex flex-col h-full z-10">
-                <div className="whitespace-nowrap">
-                  <motion.p
-                    className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
-                    animate={{ x: [-30, 0, 30], opacity: [0, 1, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 4,
-                      ease: "linear",
-                    }}
-                  >
-                    ~ Ambassador day in community day ~
-                  </motion.p>
+            <>
+              <div className="absolute w-full right-0 top-0 h-2/3 bg-gradient-to-b from-[#999999bb] to-[#fff0] z-30"></div>
+              <div className="flex flex-col h-full">
+                <div className="flex flex-col h-full z-40">
+                  <div className="whitespace-nowrap">
+                    <motion.p
+                      className="w-full text-center font-cubic text-xl text-black drop-shadow-[1px_1px_0_#FEFEFE]"
+                      animate={{ x: [-30, 0, 30], opacity: [0, 1, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 4,
+                        ease: "linear",
+                      }}
+                    >
+                      ~ Ambassador day in community day ~
+                    </motion.p>
+                  </div>
+                  <motion.div className="py-6 z-50">
+                    <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
+                      你是哪種
+                    </p>
+                    <p className="text-center font-cubic text-6xl text-white drop-shadow-[4px_4px_0_#000] z-5nope,0">
+                      AWS服務?
+                    </p>
+                  </motion.div>
+                  <div className="flex flex-col h-full justify-center items-center pb-6 gap-5">
+                    <motion.input
+                      type="text"
+                      placeholder="請輸入名字"
+                      className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl w-64"
+                      initial={{ opacity: 0, y: -100 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.175 }}
+                      maxLength={15}
+                      onChange={(e) => setUserName(e.target.value)}
+                    />
+                    <motion.button
+                      onClick={handleStart}
+                      className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
+                      // initial={{ opacity: 0, scale: 0.8 }}
+                      // animate={{ opacity: 1, scale: 1 }}
+                      // transition={{ delay: 0.2 }}
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1,
+                        ease: "easeInOut",
+                        repeatDelay: 3,
+                        delay: 1,
+                      }}
+                    >
+                      <img src="/CatPaw.png" alt="CatPaw" className="w-4" />
+                      開始測驗
+                    </motion.button>
+                  </div>
                 </div>
                 <motion.div
-                  className="py-6"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1.5,
-                    ease: "linear",
-                  }}
+                  className="flex w-full justify-end z-10"
+                  initial={{ opacity: 0, scale: 0.8, y: 100, x: 100 }}
+                  animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                  transition={{ duration: 0.175 }}
                 >
-                  <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2">
-                    你是哪種
-                  </p>
-                  <p className="text-center font-cubic text-6xl text-white drop-shadow-[4px_4px_0_#000]">
-                    AWS服務?
-                  </p>
+                  <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
                 </motion.div>
-                <div className="flex flex-col h-full justify-center items-center pb-6 gap-5">
-                  <motion.input
-                    type="text"
-                    placeholder="請輸入名字"
-                    className="font-cubic p-2 rounded-full text-center border-r-4 border-b-4 border-t-2 border-l-2 border-black focus:bg-neutral-100 focus:outline-none text-3xl w-64"
-                    initial={{ opacity: 0, y: -100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.175 }}
-                    maxLength={15}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-                  <motion.button
-                    onClick={handleStart}
-                    className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <img src="/CatPaw.png" alt="CatPaw" className="w-4" />
-                    開始測驗
-                  </motion.button>
-                </div>
+                <img
+                  src="/psy-test-background-2.png"
+                  alt="background"
+                  className="z-0 w-full absolute bottom-0 right-0 h-auto object-cover bg-cover bg-gradient-to-t from-[#ffffff6c] to-[#ffffff00]"
+                />
               </div>
-              <motion.div
-                className="flex w-full justify-end z-10"
-                initial={{ opacity: 0, scale: 0.8, y: 100, x: 100 }}
-                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-                transition={{ duration: 0.175 }}
-              >
-                <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
-              </motion.div>
-              <img
-                src="/psy-test-background.png"
-                alt="background"
-                className="w-full absolute bottom-0 right-0 h-auto object-cover bg-cover bg-gradient-to-t from-[#ffffff6c] to-[#ffffff00]"
-              />
-            </div>
+            </>
           ) : (
             <div>
               <div className="mb-6">

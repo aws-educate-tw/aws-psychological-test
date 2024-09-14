@@ -5,6 +5,7 @@ import { Circle, Upload, X } from "lucide-react";
 import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
+import { Share, Mail, Instagram, Earth } from "lucide-react";
 
 interface Result {
   serviceName: string;
@@ -98,24 +99,6 @@ export default function ResultCard({
     }
   };
 
-  const handleShare = async () => {
-    if (navigator.share && resultImageUrl) {
-      try {
-        const response = await fetch(resultImageUrl);
-        const blob = await response.blob();
-        const file = new File([blob], "result-image.png", { type: blob.type });
-        await navigator.share({
-          title: "分享到Instagram",
-          files: [file],
-        });
-      } catch (error) {
-        console.error("分享失敗:", error);
-      }
-    } else {
-      alert("您的瀏覽器不支持 Web 分享，請手動下載並上傳圖片到 Instagram。");
-    }
-  };
-
   const serviceResult = resultData.find(
     (result: Result) => result.serviceName === answerService
   );
@@ -123,6 +106,21 @@ export default function ResultCard({
   if (!serviceResult) {
     return <></>;
   }
+
+  const handleShare = async () => {
+    if (navigator.share && resultImageUrl) {
+      try {
+        await navigator.share({
+          title: "分享到Instagram",
+          url: resultImageUrl,
+        });
+      } catch (error) {
+        console.error("分享失敗:", error);
+      }
+    } else {
+      alert("您的瀏覽器不支持分享，請手動下載並上傳圖片到 Instagram。");
+    }
+  };
 
   return (
     <>
@@ -277,7 +275,7 @@ export default function ResultCard({
           </div>
         </div>
         <hr className="border-y-2 border-black my-2" />
-        <div className="px-4 pb-5 text-wrap">
+        <div className="px-4 pb-4 text-wrap">
           <div className="flex items-center gap-3">
             <div className="flex flex-col gap-1 w-4/5">
               <p className="font-cubic text-lg text-[#23303F] select-none">
@@ -298,22 +296,32 @@ export default function ResultCard({
             )}
           </div>
         </div>
+        <footer className="px-4 text-center text-gray-400">
+          <small className="mb-2 text-xs block">
+            &copy;AWS Educate 6th Ambassadors
+          </small>
+        </footer>
       </motion.div>
       {resultImageGenerated ? (
-        <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
-          <motion.button
+        <motion.div
+          className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center gap-2 h-16"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{
+            repeat: Infinity,
+            duration: 2,
+            ease: "linear",
+          }}
+        >
+          <button
             className="text-center text-lg font-cubic text-white"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{
-              repeat: Infinity,
-              duration: 2,
-              ease: "linear",
-            }}
             onClick={handleShare}
           >
             長按上方儲存
-          </motion.button>
-        </div>
+          </button>
+          <button onClick={handleShare}>
+            <Share size={14} className="" color="white" />
+          </button>
+        </motion.div>
       ) : (
         <div className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center">
           <motion.button
@@ -329,6 +337,26 @@ export default function ResultCard({
           </motion.button>
         </div>
       )}
+      <footer className="flex flex-col justify-center items-center px-4 text-xs text-center text-gray-900 gap-1">
+        <div className="flex gap-3">
+          <div className="flex justify-center items-center gap-1">
+            <Earth size={12} />
+            <small className="underline">
+              <a href="https://aws.amazon.com/tw/education/awseducate/">
+                AWS Educate
+              </a>
+            </small>
+          </div>
+          <div className="flex justify-center items-center gap-1">
+            <Instagram size={12} />
+            <small className="underline">
+              <a href="https://www.instagram.com/awseducatestdambtw/">
+                awseducatestdamb
+              </a>
+            </small>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
