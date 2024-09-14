@@ -31,7 +31,7 @@ export default function App() {
   const [getUrl, setGetUrl] = useState<string>("");
   // const [imageBase64, setImageBase64] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
-  const [ipAddress, setIpAddress] = useState<string>("");
+  // const [ipAddress, setIpAddress] = useState<string>("");
 
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [startTimer, setStartTimer] = useState<boolean>(false);
@@ -50,14 +50,14 @@ export default function App() {
         finalService: answerService, // Final selected service after calculating the result
         imageUrl: imageUrl, // The generated image URL
         totalSeconds: totalSeconds, // The total time spent on the test
-        userIP: ipAddress, // The IP address of the user
+        // userIP: ipAddress, // The IP address of the user
       };
       const saveRDS = async (data: {
         chooseService: string[];
         finalService: string;
         imageUrl: string;
         totalSeconds: number;
-        userIP: string;
+        // userIP: string;
       }) => {
         try {
           // console.log(JSON.stringify(data));
@@ -116,10 +116,6 @@ export default function App() {
   }, [answerService]);
 
   useEffect(() => {
-    getIpAddress();
-  }, []);
-
-  useEffect(() => {
     let interval: number | undefined = undefined;
 
     if (startTimer) {
@@ -135,16 +131,20 @@ export default function App() {
     return () => clearInterval(interval); // Cleanup on component unmount or when interval is cleared
   }, [startTimer, totalSeconds]);
 
-  const getIpAddress = async () => {
-    try {
-      const response = await fetch("https://api.ipify.org?format=json");
-      const data = await response.json();
-      setIpAddress(data.ip);
-      // console.log("IP address:", data.ip);
-    } catch (error) {
-      console.error("Error fetching IP address:", error);
-    }
-  };
+  // useEffect(() => {
+  //   getIpAddress();
+  // }, []);
+
+  // const getIpAddress = async () => {
+  //   try {
+  //     const response = await fetch("https://api.ipify.org?format=json");
+  //     const data = await response.json();
+  //     setIpAddress(data.ip);
+  //     // console.log("IP address:", data.ip);
+  //   } catch (error) {
+  //     console.error("Error fetching IP address:", error);
+  //   }
+  // };
 
   const handleStart = () => {
     setStartTest(true);
