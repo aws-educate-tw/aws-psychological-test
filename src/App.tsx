@@ -283,15 +283,7 @@ export default function App() {
                       ~ Ambassador day in community day ~
                     </motion.p>
                   </div>
-                  <motion.div
-                    className="py-6 z-50"
-                    // animate={{ scale: [1, 1.1, 1] }}
-                    // transition={{
-                    //   repeat: Infinity,
-                    //   duration: 2,
-                    //   ease: "linear",
-                    // }}
-                  >
+                  <motion.div className="py-6 z-50">
                     <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
                       你是哪種
                     </p>
