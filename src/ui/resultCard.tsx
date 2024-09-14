@@ -5,7 +5,7 @@ import { Circle, Upload, X } from "lucide-react";
 import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
-import { Share } from "lucide-react";
+import { Share, Mail, Instagram, Earth } from "lucide-react";
 
 interface Result {
   serviceName: string;
@@ -337,6 +337,26 @@ export default function ResultCard({
           </motion.button>
         </div>
       )}
+      <footer className="flex flex-col justify-center items-center px-4 text-xs text-center text-gray-900 gap-1">
+        <div className="flex gap-3">
+          <div className="flex justify-center items-center gap-1">
+            <Earth size={12} />
+            <small className="underline">
+              <a href="https://aws.amazon.com/tw/education/awseducate/">
+                AWS Educate
+              </a>
+            </small>
+          </div>
+          <div className="flex justify-center items-center gap-1">
+            <Instagram size={12} />
+            <small className="underline">
+              <a href="https://www.instagram.com/awseducatestdambtw/">
+                awseducatestdamb
+              </a>
+            </small>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

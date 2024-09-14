@@ -316,7 +316,7 @@ export default function App() {
                       // initial={{ opacity: 0, scale: 0.8 }}
                       // animate={{ opacity: 1, scale: 1 }}
                       // transition={{ delay: 0.2 }}
-                      animate={{ y: [3, -2, 3] }}
+                      animate={{ scale: [1, 1.1, 1] }}
                       transition={{
                         repeat: Infinity,
                         duration: 1,
