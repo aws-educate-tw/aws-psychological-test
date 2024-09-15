@@ -62,8 +62,9 @@ export default function App() {
         try {
           // console.log(JSON.stringify(data));
           console.log("Time spent:", totalSeconds);
+          // console.log(data);
           const response = await fetch(
-            "https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/submit-data",
+            "https://snw6iw2c1e.execute-api.ap-northeast-1.amazonaws.com/Prod/submit-data",
             {
               method: "POST",
               headers: {
@@ -131,21 +132,6 @@ export default function App() {
     return () => clearInterval(interval); // Cleanup on component unmount or when interval is cleared
   }, [startTimer, totalSeconds]);
 
-  // useEffect(() => {
-  //   getIpAddress();
-  // }, []);
-
-  // const getIpAddress = async () => {
-  //   try {
-  //     const response = await fetch("https://api.ipify.org?format=json");
-  //     const data = await response.json();
-  //     setIpAddress(data.ip);
-  //     // console.log("IP address:", data.ip);
-  //   } catch (error) {
-  //     console.error("Error fetching IP address:", error);
-  //   }
-  // };
-
   const handleStart = () => {
     setStartTest(true);
     setStep(0);
@@ -211,15 +197,16 @@ export default function App() {
   const serviceResult = resultData.find(
     (result: Result) => result.serviceName === answerService
   );
-  const promptQA = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。生活上的你：${serviceResult?.life_describe}`;
+  // const promptQA = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。生活上的你：${serviceResult?.life_describe}`;
 
   const generateImage = async (requestBody: {
     data: { model_id: string; prompt: string };
   }) => {
     try {
       console.log("start generating image");
+      // console.log("requestBody", requestBody);
       const response = await fetch(
-        "https://7psxs12rwg.execute-api.ap-northeast-1.amazonaws.com/default/psy-generate-image",
+        "https://api.psy.aws-educate.tw/prod/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -342,7 +329,9 @@ export default function App() {
               <div className="mb-6">
                 {showAIPage ? (
                   <AiPage
-                    promptQA={promptQA}
+                    userName={userName}
+                    at_work={serviceResult?.work_describe || "工作描述未提供"}
+                    in_life={serviceResult?.life_describe || "生活描述未提供"}
                     showResultPageClick={() => {
                       setShowAIPage(false);
                       setShowResult(true);

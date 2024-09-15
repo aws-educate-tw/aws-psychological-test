@@ -3,35 +3,24 @@ import { useState, useEffect, useRef } from "react";
 import { MoveRight, StepForward } from "lucide-react";
 
 const generateChat = async (
-  prompt: string,
+  userName: string,
+  at_work: string,
+  in_life: string,
   onUpdate: (newChunk: string) => void,
   onComplete: (finalResponse: string) => void
 ) => {
   try {
     const response = await fetch(
-      "https://3bj6absvecvdtp5ufb32fporgi0licyc.lambda-url.us-east-1.on.aws/v1/chat/completions",
+      "https://api.psy.aws-educate.tw/v1/insight/generate",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "anthropic.claude-3-sonnet-20240229-v1:0",
-          system: `
-                你是一隻幽默的小貓咪占卜師，請先根據使用者姓名跟他打招呼，如果沒有使用者姓名，請使用「貓友」來代替。
-                並切根據提供的「職場上的你」和「生活上的你」的產生兩段溫暖鼓勵的回應，
-
-                注意事項：
-                1. 你的風格親切可愛，偶爾會使用喵語表達，並且會使用顏文字來增添表達的可愛感：
-                   (＝^ω^＝), (=①ω①=), (=ＴェＴ=), (=ↀωↀ=), (=ΦωΦ=), (ΦзΦ), (^・ω・^ ), (ฅ^•ﻌ•^ฅ)。
-                2. 回應需控制在30個中文字數以內。
-
-                請生成回應：
-              `,
-          messages: [{ role: "user", content: prompt }],
-          max_tokens: 1024,
-          temperature: 0.5,
-          stream: true,
+          participant_name: userName,
+          at_work: at_work,
+          in_life: in_life,
         }),
       }
     );
@@ -60,20 +49,26 @@ const generateChat = async (
 };
 
 export default function AiPage({
-  promptQA,
+  userName,
+  at_work,
+  in_life,
   showResultPageClick,
 }: {
-  promptQA: string;
+  userName: string;
+  at_work: string;
+  in_life: string;
   showResultPageClick: () => void;
 }) {
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState("算命師掐指一算...");
-  const prevPromptQA = useRef(promptQA);
+  const prevPromptQA = useRef({ userName, at_work, in_life });
 
   const fetchData = async () => {
     console.log("開始算命啦！");
     await generateChat(
-      promptQA,
+      userName,
+      at_work,
+      in_life,
       (chunk) => {
         setResponse(chunk); // Update the response directly with each chunk
       },
@@ -83,12 +78,17 @@ export default function AiPage({
       }
     );
   };
+
   useEffect(() => {
-    if (promptQA !== prevPromptQA.current) {
-      prevPromptQA.current = promptQA;
+    if (
+      userName !== prevPromptQA.current.userName ||
+      at_work !== prevPromptQA.current.at_work ||
+      in_life !== prevPromptQA.current.in_life
+    ) {
+      prevPromptQA.current = { userName, at_work, in_life };
       fetchData();
     }
-  }, [promptQA, fetchData]);
+  }, [userName, at_work, in_life]);
 
   return (
     <div className="flex flex-col justify-end px-2 gap-4">
