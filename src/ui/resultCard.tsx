@@ -110,15 +110,18 @@ export default function ResultCard({
   const handleShare = async () => {
     if (navigator.share && resultImageUrl) {
       try {
+        const response = await fetch(resultImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], "result-image.png", { type: blob.type });
         await navigator.share({
           title: "分享到Instagram",
-          url: resultImageUrl,
+          files: [file],
         });
       } catch (error) {
         console.error("分享失敗:", error);
       }
     } else {
-      alert("您的瀏覽器不支持分享，請手動下載並上傳圖片到 Instagram。");
+      alert("您的瀏覽器不支持 Web 分享，請手動下載並上傳圖片到 Instagram。");
     }
   };
 
@@ -297,7 +300,7 @@ export default function ResultCard({
           </div>
         </div>
         <footer className="px-4 text-center text-gray-400">
-          <small className="mb-2 text-xs block">
+          <small className="mb-2 text-xs block font-cubic">
             &copy;AWS Educate 6th Ambassadors
           </small>
         </footer>
