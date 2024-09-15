@@ -5,7 +5,7 @@ import { Circle, Upload, X } from "lucide-react";
 import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
-import { Share, Mail, Instagram, Earth } from "lucide-react";
+import { Share, Mail, Instagram, Earth, Smile } from "lucide-react";
 
 interface Result {
   serviceName: string;
@@ -110,15 +110,18 @@ export default function ResultCard({
   const handleShare = async () => {
     if (navigator.share && resultImageUrl) {
       try {
+        const response = await fetch(resultImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], "result-image.png", { type: blob.type });
         await navigator.share({
-          title: "分享到Instagram",
-          url: resultImageUrl,
+          title: "",
+          files: [file],
         });
       } catch (error) {
         console.error("分享失敗:", error);
       }
     } else {
-      alert("您的瀏覽器不支持分享，請手動下載並上傳圖片到 Instagram。");
+      alert("您的瀏覽器不支持 Web 分享，請手動下載並上傳圖片到 Instagram。");
     }
   };
 
@@ -297,7 +300,7 @@ export default function ResultCard({
           </div>
         </div>
         <footer className="px-4 text-center text-gray-400">
-          <small className="mb-2 text-xs block">
+          <small className="mb-2 text-xs block font-cubic">
             &copy;AWS Educate 6th Ambassadors
           </small>
         </footer>
@@ -343,7 +346,7 @@ export default function ResultCard({
             <Earth size={12} />
             <small className="underline">
               <a href="https://aws.amazon.com/tw/education/awseducate/">
-                AWS Educate
+                註冊 AWS Educate
               </a>
             </small>
           </div>
@@ -351,10 +354,16 @@ export default function ResultCard({
             <Instagram size={12} />
             <small className="underline">
               <a href="https://www.instagram.com/awseducatestdambtw/">
-                awseducatestdamb
+                追蹤 AWS Educate Instagram
               </a>
             </small>
           </div>
+        </div>
+        <div className="flex justify-center items-center gap-1">
+          <Smile size={12} />
+          <small className="underline">
+            <a href="https://awscmd.tw/">9/28 AWS Community Day 報名中！</a>
+          </small>
         </div>
       </footer>
     </>
