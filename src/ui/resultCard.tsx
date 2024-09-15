@@ -5,7 +5,7 @@ import { Circle, Upload, X } from "lucide-react";
 import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
-import { Share, Mail, Instagram, Earth } from "lucide-react";
+import { Share, Mail, Instagram, Earth, Smile } from "lucide-react";
 
 interface Result {
   serviceName: string;
@@ -114,7 +114,7 @@ export default function ResultCard({
         const blob = await response.blob();
         const file = new File([blob], "result-image.png", { type: blob.type });
         await navigator.share({
-          title: "分享到Instagram",
+          title: "",
           files: [file],
         });
       } catch (error) {
@@ -346,7 +346,7 @@ export default function ResultCard({
             <Earth size={12} />
             <small className="underline">
               <a href="https://aws.amazon.com/tw/education/awseducate/">
-                AWS Educate
+                註冊 AWS Educate
               </a>
             </small>
           </div>
@@ -354,10 +354,16 @@ export default function ResultCard({
             <Instagram size={12} />
             <small className="underline">
               <a href="https://www.instagram.com/awseducatestdambtw/">
-                awseducatestdamb
+                追蹤 AWS Educate Instagram
               </a>
             </small>
           </div>
+        </div>
+        <div className="flex justify-center items-center gap-1">
+          <Smile size={12} />
+          <small className="underline">
+            <a href="https://awscmd.tw/">9/28 AWS Community Day 報名中！</a>
+          </small>
         </div>
       </footer>
     </>
