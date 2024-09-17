@@ -62,9 +62,9 @@ export default function App() {
         try {
           // console.log(JSON.stringify(data));
           console.log("Time spent:", totalSeconds);
-          // console.log(data);
+          console.log(data);
           const response = await fetch(
-            "https://snw6iw2c1e.execute-api.ap-northeast-1.amazonaws.com/Prod/submit-data",
+            "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
             {
               method: "POST",
               headers: {
@@ -206,7 +206,8 @@ export default function App() {
       console.log("start generating image");
       // console.log("requestBody", requestBody);
       const response = await fetch(
-        "https://api.psy.aws-educate.tw/prod/generate-image",
+        // "https://api.psy.aws-educate.tw/prod/generate-image",
+        "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
