@@ -11,9 +11,9 @@ const generateChat = async (
 ) => {
   try {
     const response = await fetch(
-      // "https://api.psy.aws-educate.tw/v1/insight/generate",
+      "https://api.psy.aws-educate.tw/v1/insight/generate",
       // "https://dhta1m0lbgo3d.cloudfront.net/v1/insight/generate",
-      "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/insight/generate",
+      // "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/insight/generate",
       {
         method: "POST",
         headers: {
@@ -102,6 +102,9 @@ export default function AiPage({
         const data = await response.json();
         console.log("Test quota:", data.remaining_test_count);
         setRemainQuota(data.remaining_test_count);
+        // if (data.remaining_test_count <= 0) {
+        //   console.log("Test quota is used up.");
+        // }
       }
     } catch (error) {
       console.error("Error getting test quota:", error);
@@ -166,7 +169,7 @@ export default function AiPage({
             onClick={showResultPageClick}
           >
             <div className="flex flex-col">
-              <p>生成專屬結果圖</p>
+              <p>獲取結果圖</p>
               <p className="text-xs">（專屬圖片剩下{remainQuota}張！）</p>
             </div>
             <MoveRight size={30} />

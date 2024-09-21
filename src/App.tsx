@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
 import ResultCard from "@/ui/resultCard";
+import SubResultCard from "@/ui/subResultCard";
 import AiPage from "@/ui/aiPage";
 import { resultData } from "@/lib/resultData";
 
@@ -41,51 +42,53 @@ export default function App() {
   const [remainQuota, setRemainQuota] = useState<number>(0);
   const [enoughQuota, setEnoughQuota] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   if (showResult && imageUrl !== "") {
-  //     const relatedServices = answers.map((answer, index) => {
-  //       const selectedIndex = multipleChoices[index].options.indexOf(answer);
-  //       return multipleChoices[index].services[selectedIndex];
-  //     });
+  const [showSubResult, setShowSubResult] = useState<boolean>(false);
 
-  //     const submitData = {
-  //       chooseService: relatedServices, // The services selected by the user
-  //       finalService: answerService, // Final selected service after calculating the result
-  //       imageUrl: imageUrl, // The generated image URL
-  //       totalSeconds: totalSeconds, // The total time spent on the test
-  //       // userIP: ipAddress, // The IP address of the user
-  //     };
-  //     const saveRDS = async (data: {
-  //       chooseService: string[];
-  //       finalService: string;
-  //       imageUrl: string;
-  //       totalSeconds: number;
-  //       // userIP: string;
-  //     }) => {
-  //       try {
-  //         // console.log(JSON.stringify(data));
-  //         console.log("Time spent:", totalSeconds);
-  //         console.log(data);
-  //         const response = await fetch(
-  //           "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
-  //           {
-  //             method: "POST",
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify(data),
-  //           }
-  //         );
-  //         if (response.ok) {
-  //           console.log("Data submitted successfully");
-  //         }
-  //       } catch (error) {
-  //         console.error("Error submitting data:", error);
-  //       }
-  //     };
-  //     saveRDS(submitData);
-  //   }
-  // }, [showResult, imageUrl]);
+  useEffect(() => {
+    if (showResult && imageUrl !== "") {
+      const relatedServices = answers.map((answer, index) => {
+        const selectedIndex = multipleChoices[index].options.indexOf(answer);
+        return multipleChoices[index].services[selectedIndex];
+      });
+
+      const submitData = {
+        chooseService: relatedServices, // The services selected by the user
+        finalService: answerService, // Final selected service after calculating the result
+        imageUrl: imageUrl, // The generated image URL
+        totalSeconds: totalSeconds, // The total time spent on the test
+        // userIP: ipAddress, // The IP address of the user
+      };
+      const saveRDS = async (data: {
+        chooseService: string[];
+        finalService: string;
+        imageUrl: string;
+        totalSeconds: number;
+        // userIP: string;
+      }) => {
+        try {
+          // console.log(JSON.stringify(data));
+          console.log("Time spent:", totalSeconds);
+          console.log(data);
+          const response = await fetch(
+            "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            }
+          );
+          if (response.ok) {
+            console.log("Data submitted successfully");
+          }
+        } catch (error) {
+          console.error("Error submitting data:", error);
+        }
+      };
+      saveRDS(submitData);
+    }
+  }, [showResult, imageUrl]);
 
   useEffect(() => {
     if (showAIPage) {
@@ -219,16 +222,33 @@ export default function App() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to generate image");
+        // throw new Error("Failed to generate image");
+        setShowSubResult(true);
+        console.log("Use substitute result image");
+
+        const data = await response.json();
+
+        if (answerService === "API gateway") {
+          setImageUrl(
+            "https://psy-test-images.s3.ap-northeast-1.amazonaws.com/sub_generated_images/API+gateway.png"
+          );
+        } else {
+          setImageUrl(
+            `https://psy-test-images.s3.ap-northeast-1.amazonaws.com/sub_generated_images/${answerService}.png`
+          );
+        }
+        setPutUrl(data.put_url);
+        setGetUrl(data.get_url);
       }
 
-      console.log("end generating image");
-      // console.log("response", response);
-      const data = await response.json();
-      setImageUrl(data.image_url);
-      setPutUrl(data.put_url);
-      setGetUrl(data.get_url);
-      // setImageBase64(data.image_base64);
+      if (response.ok) {
+        console.log("end generating image");
+        // console.log("response", response);
+        const data = await response.json();
+        setImageUrl(data.image_url);
+        setPutUrl(data.put_url);
+        setGetUrl(data.get_url);
+      }
     } catch (error) {
       console.error("Error generating image:", error);
     }
@@ -396,18 +416,33 @@ export default function App() {
                   />
                 ) : showResult ? (
                   <>
-                    <ResultCard
-                      isAIpage={showAIPage}
-                      user_name={userName}
-                      answerService={answerService}
-                      imageUrl={imageUrl}
-                      put_url={putUrl}
-                      get_url={getUrl}
-                      onComplete={() => {
-                        setStartTimer(false);
-                        setTotalSeconds(0);
-                      }}
-                    />
+                    {showSubResult ? (
+                      <SubResultCard
+                        isAIpage={showAIPage}
+                        user_name={userName}
+                        answerService={answerService}
+                        imageUrl={imageUrl}
+                        put_url={putUrl}
+                        get_url={getUrl}
+                        onComplete={() => {
+                          setStartTimer(false);
+                          setTotalSeconds(0);
+                        }}
+                      />
+                    ) : (
+                      <ResultCard
+                        isAIpage={showAIPage}
+                        user_name={userName}
+                        answerService={answerService}
+                        imageUrl={imageUrl}
+                        put_url={putUrl}
+                        get_url={getUrl}
+                        onComplete={() => {
+                          setStartTimer(false);
+                          setTotalSeconds(0);
+                        }}
+                      />
+                    )}
                   </>
                 ) : (
                   <>

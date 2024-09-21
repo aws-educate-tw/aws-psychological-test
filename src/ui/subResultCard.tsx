@@ -20,7 +20,7 @@ interface Result {
   serviceImg: string;
 }
 
-export default function ResultCard({
+export default function SubResultCard({
   isAIpage,
   user_name,
   answerService,
@@ -128,7 +128,19 @@ export default function ResultCard({
   return (
     <>
       <motion.div
-        className="relative flex flex-col bg-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
+        className="text-center text-lg font-cubic text-black pb-3"
+        animate={{ opacity: [0.3, 0.8, 0.3] }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.5,
+          ease: "linear",
+        }}
+      >
+        限量今天已經沒有了，明天再來吧！
+      </motion.div>
+      {/* bg-[#fbe2e2] bg-[#FAF5E7]*/}
+      <motion.div
+        className="relative flex flex-col bg-gradient-to-b from-[#ffd2d2] to-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
         ref={cardRef}
       >
         {resultImageUrl && (
