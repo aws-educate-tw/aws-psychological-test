@@ -206,8 +206,8 @@ export default function App() {
       console.log("start generating image");
       // console.log("requestBody", requestBody);
       const response = await fetch(
-        // "https://api.psy.aws-educate.tw/prod/generate-image",
-        "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
+        "https://api.psy.aws-educate.tw/prod/generate-image",
+        // "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),

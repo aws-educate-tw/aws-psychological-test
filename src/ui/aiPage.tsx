@@ -11,8 +11,8 @@ const generateChat = async (
 ) => {
   try {
     const response = await fetch(
-      // "https://api.psy.aws-educate.tw/v1/insight/generate",
-      "https://dhta1m0lbgo3d.cloudfront.net/v1/insight/generate",
+      "https://api.psy.aws-educate.tw/v1/insight/generate",
+      // "https://dhta1m0lbgo3d.cloudfront.net/v1/insight/generate",
       {
         method: "POST",
         headers: {
