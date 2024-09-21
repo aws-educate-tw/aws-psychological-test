@@ -30,11 +30,31 @@
             height: 400px;
             margin-top: 40px;
         }
+        .filter-section {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
 <h2>User Data</h2>
+
+<div class="filter-section">
+    <label for="startTime">Start Time:</label>
+    <input type="datetime-local" id="startTime">
+    
+    <label for="endTime">End Time:</label>
+    <input type="datetime-local" id="endTime">
+    
+    <button onclick="applyDateFilter()">Apply Date Filter</button>
+</div>
+
+<div class="filter-section">
+    <label for="secondsFilter">Total Seconds Filter (Show seconds greater than):</label>
+    <input type="number" id="secondsFilter" min="0" step="1">
+    
+    <button onclick="applySecondsFilter()">Apply Seconds Filter</button>
+</div>
 
 <div id="userData" class="loading">Loading data...</div>
 
@@ -44,27 +64,26 @@
 </div>
 
 <script>
-    // Sample data from the example
-    const servicesArray = ["Lambda", "API gateway", "ELB", "Cloudwatch", "IAM", "DynamoDB", "EC2", "S3"];
+    let originalData = [];
+    let filteredData = [];
+    let chartInstance = null; // Declare a variable to hold the chart instance
+    const servicesArray = ["Lambda", "API Gateway", "ELB", "CloudWatch", "IAM", "DynamoDB", "EC2", "S3"];
 
     // Function to count occurrences of each service
-// Function to count occurrences of each service
-function countServices(services) {
-    const serviceCount = {};
-    services.forEach(service => {
-        if (serviceCount[service]) {
-            serviceCount[service]++;
-        } else {
-            serviceCount[service] = 1;
-        }
-    });
-    return serviceCount;
-}
+    function countServices(services) {
+        const serviceCount = {};
+        services.forEach(service => {
+            if (serviceCount[service]) {
+                serviceCount[service]++;
+            } else {
+                serviceCount[service] = 1;
+            }
+        });
+        return serviceCount;
+    }
 
-// Fetch data from the API
-fetch('https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/user-data')
-    .then(response => response.json())
-    .then(data => {
+    // Function to display the data
+    function displayData(dataToDisplay) {
         // Display the data in a table
         const tableHTML = `
             <table>
@@ -73,16 +92,14 @@ fetch('https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/user-da
                         <th>Create Date</th>
                         <th>Final Service</th>
                         <th>Total Seconds</th>
-                        <th>User IP</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${data.map(item => `
+                    ${dataToDisplay.map(item => `
                         <tr>
                             <td>${new Date(item.createDate).toLocaleString()}</td>
                             <td>${item.finalService}</td>
                             <td>${item.totalSeconds}</td>
-                            <td>${item.userIp}</td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -92,13 +109,13 @@ fetch('https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/user-da
         // Insert the table into the div
         document.getElementById('userData').innerHTML = tableHTML;
 
-        // Extract services from the fetched data
-        const fetchedServices = data.map(item => item.finalService);
+        // Extract services from the filtered data
+        const fetchedServices = dataToDisplay.map(item => item.finalService);
 
         // Combine fetched services with predefined services without duplication
         const uniqueServices = [...new Set([...fetchedServices, ...servicesArray])];
         
-        // Count occurrences of services from fetched data
+        // Count occurrences of services from the filtered data
         const serviceCounts = countServices(fetchedServices);
 
         // Add predefined services if they are not already in the fetched data
@@ -112,9 +129,14 @@ fetch('https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/user-da
         const serviceLabels = Object.keys(serviceCounts);
         const serviceData = Object.values(serviceCounts);
 
+        // If a chart instance already exists, destroy it before creating a new one
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
         // Create the chart
         const ctx = document.getElementById('serviceChart').getContext('2d');
-        new Chart(ctx, {
+        chartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: serviceLabels,
@@ -134,11 +156,56 @@ fetch('https://uel67vn7kb.execute-api.ap-southeast-2.amazonaws.com/Stage/user-da
                 }
             }
         });
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-        document.getElementById('userData').innerHTML = '<p>Error loading data</p>';
-    });
+    }
+
+    // Fetch data from the API
+    fetch('https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/user-data')
+        .then(response => response.json())
+        .then(data => {
+            originalData = data;
+            filteredData = originalData; // Set the initial filtered data to the original data
+            displayData(filteredData); // Display the initial data
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            document.getElementById('userData').innerHTML = '<p>Error loading data</p>';
+        });
+
+    // Function to apply the date filter
+    function applyDateFilter() {
+        const startTime = new Date(document.getElementById('startTime').value);
+        const endTime = new Date(document.getElementById('endTime').value);
+
+        if (isNaN(startTime) || isNaN(endTime)) {
+            alert('Please select both start and end times.');
+            return;
+        }
+
+        // Filter the data based on the selected date range
+        filteredData = originalData.filter(item => {
+            const itemDate = new Date(item.createDate);
+            return itemDate >= startTime && itemDate <= endTime;
+        });
+
+        // Display the filtered data
+        displayData(filteredData);
+    }
+
+    // Function to apply the seconds filter
+    function applySecondsFilter() {
+        const secondsFilter = parseInt(document.getElementById('secondsFilter').value, 10);
+
+        if (isNaN(secondsFilter)) {
+            alert('Please enter a valid number for total seconds.');
+            return;
+        }
+
+        // Filter the data based on the selected total seconds
+        filteredData = originalData.filter(item => item.totalSeconds >= secondsFilter);
+
+        // Display the filtered data
+        displayData(filteredData);
+    }
 </script>
 
 </body>

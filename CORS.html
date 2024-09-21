@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API CORS Test</title>
+</head>
+<body>
+    <h1>Test API Endpoint for CORS</h1>
+    <form id="apiForm">
+        <label for="data">Enter some data:</label><br>
+        <input type="text" id="data" name="data" value="Test data"><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="response"></p>
+
+    <script>
+        document.getElementById('apiForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const data = {
+                chooseService: [
+                    "DynamoDB",
+                    "API gateway",
+                    "Lambda",
+                    "DynamoDB",
+                    "IAM",
+                    "Lambda",
+                    "EC2",
+                    "IAM"
+                ],
+                finalService: "Lambda",
+                imageUrl: "https://psy-test-images.s3.amazonaws.com/generated_images/97c90392-be42-4000-8a3a-6a52360434ad.png",
+                totalSeconds: 0
+            };
+
+            fetch('https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                // Check if the response is JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json(); // Parse JSON response
+                } else {
+                    return response.text(); // Handle non-JSON response
+                }
+            })
+            .then(data => {
+                // Handle either JSON or text response
+                if (typeof data === 'object') {
+                    document.getElementById('response').textContent = 'Success (JSON): ' + JSON.stringify(data);
+                } else {
+                    document.getElementById('response').textContent = 'Success (Text): ' + data;
+                }
+            })
+            .catch(error => {
+                document.getElementById('response').textContent = 'Error: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
