@@ -11,8 +11,9 @@ const generateChat = async (
 ) => {
   try {
     const response = await fetch(
-      "https://api.psy.aws-educate.tw/v1/insight/generate",
+      // "https://api.psy.aws-educate.tw/v1/insight/generate",
       // "https://dhta1m0lbgo3d.cloudfront.net/v1/insight/generate",
+      "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/insight/generate",
       {
         method: "POST",
         headers: {
@@ -63,6 +64,7 @@ export default function AiPage({
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState("算命師掐指一算...");
   const prevPromptQA = useRef({ userName, at_work, in_life });
+  const [remainQuota, setRemainQuota] = useState<number>(0);
 
   const fetchData = async () => {
     console.log("開始算命啦！");
@@ -90,6 +92,24 @@ export default function AiPage({
       fetchData();
     }
   }, [userName, at_work, in_life]);
+
+  const getTestQuota = async () => {
+    try {
+      const response = await fetch(
+        "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/test-quota"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Test quota:", data.remaining_test_count);
+        setRemainQuota(data.remaining_test_count);
+      }
+    } catch (error) {
+      console.error("Error getting test quota:", error);
+    }
+  };
+  useEffect(() => {
+    getTestQuota();
+  }, []);
 
   return (
     <div className="flex flex-col justify-end px-2 gap-4">
@@ -128,8 +148,11 @@ export default function AiPage({
             }}
             onClick={showResultPageClick}
           >
-            SKIP
-            <StepForward size={20} />
+            <div className="flex flex-col">
+              <p>SKIP</p>
+              <p className="text-xs">（專屬圖片剩下{remainQuota}張！）</p>
+            </div>
+            <StepForward size={30} />
           </motion.button>
         ) : (
           <motion.button
@@ -142,8 +165,11 @@ export default function AiPage({
             }}
             onClick={showResultPageClick}
           >
-            生成專屬結果圖
-            <MoveRight size={20} />
+            <div className="flex flex-col">
+              <p>生成專屬結果圖</p>
+              <p className="text-xs">（專屬圖片剩下{remainQuota}張！）</p>
+            </div>
+            <MoveRight size={30} />
           </motion.button>
         )}
       </div>

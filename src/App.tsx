@@ -39,52 +39,53 @@ export default function App() {
   const [showAIPage, setShowAIPage] = useState<boolean>(false);
 
   const [remainQuota, setRemainQuota] = useState<number>(0);
+  const [enoughQuota, setEnoughQuota] = useState<boolean>(true);
 
-  useEffect(() => {
-    if (showResult && imageUrl !== "") {
-      const relatedServices = answers.map((answer, index) => {
-        const selectedIndex = multipleChoices[index].options.indexOf(answer);
-        return multipleChoices[index].services[selectedIndex];
-      });
+  // useEffect(() => {
+  //   if (showResult && imageUrl !== "") {
+  //     const relatedServices = answers.map((answer, index) => {
+  //       const selectedIndex = multipleChoices[index].options.indexOf(answer);
+  //       return multipleChoices[index].services[selectedIndex];
+  //     });
 
-      const submitData = {
-        chooseService: relatedServices, // The services selected by the user
-        finalService: answerService, // Final selected service after calculating the result
-        imageUrl: imageUrl, // The generated image URL
-        totalSeconds: totalSeconds, // The total time spent on the test
-        // userIP: ipAddress, // The IP address of the user
-      };
-      const saveRDS = async (data: {
-        chooseService: string[];
-        finalService: string;
-        imageUrl: string;
-        totalSeconds: number;
-        // userIP: string;
-      }) => {
-        try {
-          // console.log(JSON.stringify(data));
-          console.log("Time spent:", totalSeconds);
-          console.log(data);
-          const response = await fetch(
-            "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            }
-          );
-          if (response.ok) {
-            console.log("Data submitted successfully");
-          }
-        } catch (error) {
-          console.error("Error submitting data:", error);
-        }
-      };
-      saveRDS(submitData);
-    }
-  }, [showResult, imageUrl]);
+  //     const submitData = {
+  //       chooseService: relatedServices, // The services selected by the user
+  //       finalService: answerService, // Final selected service after calculating the result
+  //       imageUrl: imageUrl, // The generated image URL
+  //       totalSeconds: totalSeconds, // The total time spent on the test
+  //       // userIP: ipAddress, // The IP address of the user
+  //     };
+  //     const saveRDS = async (data: {
+  //       chooseService: string[];
+  //       finalService: string;
+  //       imageUrl: string;
+  //       totalSeconds: number;
+  //       // userIP: string;
+  //     }) => {
+  //       try {
+  //         // console.log(JSON.stringify(data));
+  //         console.log("Time spent:", totalSeconds);
+  //         console.log(data);
+  //         const response = await fetch(
+  //           "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
+  //           {
+  //             method: "POST",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify(data),
+  //           }
+  //         );
+  //         if (response.ok) {
+  //           console.log("Data submitted successfully");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error submitting data:", error);
+  //       }
+  //     };
+  //     saveRDS(submitData);
+  //   }
+  // }, [showResult, imageUrl]);
 
   useEffect(() => {
     if (showAIPage) {
@@ -208,8 +209,9 @@ export default function App() {
       console.log("start generating image");
       // console.log("requestBody", requestBody);
       const response = await fetch(
-        "https://api.psy.aws-educate.tw/prod/generate-image",
+        // "https://api.psy.aws-educate.tw/prod/generate-image",
         // "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
+        "https://dev-generate-image-internal-api-psy.aws-educate.tw/dev/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -241,6 +243,10 @@ export default function App() {
         const data = await response.json();
         console.log("Test quota:", data.remaining_test_count);
         setRemainQuota(data.remaining_test_count);
+
+        if (data.remaining_test_count <= 0) {
+          setEnoughQuota(false);
+        }
       }
     } catch (error) {
       console.error("Error getting test quota:", error);
@@ -249,13 +255,14 @@ export default function App() {
 
   useEffect(() => {
     getTestQuota();
+    if (!startTest) {
+      const interval = setInterval(() => {
+        getTestQuota();
+      }, 4000);
 
-    const interval = setInterval(() => {
-      getTestQuota();
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [startTest]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
@@ -297,22 +304,28 @@ export default function App() {
                     >
                       ~ Ambassador day in community day ~
                     </motion.p>
-                    <p className="w-full text-center font-cubic text-sm text-black">
-                      &lt;&lt; 限量專屬圖片今天剩下
-                      <motion.strong
-                        className="text-[#FAF5E7] text-lg drop-shadow-[1px_1px_0_#000]"
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{
-                          repeat: Infinity,
-                          duration: 4,
-                          ease: "linear",
-                        }}
-                      >
-                        {" "}
-                        {remainQuota}{" "}
-                      </motion.strong>
-                      張喔 &gt;&gt;
-                    </p>
+                    {enoughQuota ? (
+                      <p className="w-full text-center font-cubic text-sm text-black">
+                        &lt;&lt; 限量專屬圖片今天剩下
+                        <motion.strong
+                          className="text-[#FAF5E7] text-lg drop-shadow-[1px_1px_0_#000]"
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 4,
+                            ease: "linear",
+                          }}
+                        >
+                          {" "}
+                          {remainQuota}{" "}
+                        </motion.strong>
+                        張喔 &gt;&gt;
+                      </p>
+                    ) : (
+                      <p className="w-full text-center font-cubic text-sm text-black">
+                        &lt;&lt; 暫時沒有獨特結果圖咯，還是可以玩！ &gt;&gt;
+                      </p>
+                    )}
                   </div>
                   <motion.div className="py-6 z-50">
                     <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
