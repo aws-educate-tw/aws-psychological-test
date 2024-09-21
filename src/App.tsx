@@ -38,6 +38,8 @@ export default function App() {
 
   const [showAIPage, setShowAIPage] = useState<boolean>(false);
 
+  const [remainQuota, setRemainQuota] = useState<number>(0);
+
   useEffect(() => {
     if (showResult && imageUrl !== "") {
       const relatedServices = answers.map((answer, index) => {
@@ -230,6 +232,31 @@ export default function App() {
     }
   };
 
+  const getTestQuota = async () => {
+    try {
+      const response = await fetch(
+        "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/test-quota"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Test quota:", data.remaining_test_count);
+        setRemainQuota(data.remaining_test_count);
+      }
+    } catch (error) {
+      console.error("Error getting test quota:", error);
+    }
+  };
+
+  useEffect(() => {
+    getTestQuota();
+
+    const interval = setInterval(() => {
+      getTestQuota();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
       <div className="w-full max-w-md min-w-[400px] max-h-[1100px] h-screen flex flex-col">
@@ -270,6 +297,22 @@ export default function App() {
                     >
                       ~ Ambassador day in community day ~
                     </motion.p>
+                    <p className="w-full text-center font-cubic text-sm text-black">
+                      &lt;&lt; 限量專屬圖片今天剩下
+                      <motion.strong
+                        className="text-[#FAF5E7] text-lg drop-shadow-[1px_1px_0_#000]"
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 4,
+                          ease: "linear",
+                        }}
+                      >
+                        {" "}
+                        {remainQuota}{" "}
+                      </motion.strong>
+                      張喔 &gt;&gt;
+                    </p>
                   </div>
                   <motion.div className="py-6 z-50">
                     <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
