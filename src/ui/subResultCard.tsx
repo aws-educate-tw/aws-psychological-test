@@ -136,7 +136,7 @@ export default function SubResultCard({
           ease: "linear",
         }}
       >
-        限量今天已經沒有了，明天再來吧！
+        限量圖片已經沒有了，明天再來吧！
       </motion.div>
       {/* bg-[#fbe2e2] bg-[#FAF5E7]*/}
       <motion.div

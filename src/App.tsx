@@ -68,7 +68,7 @@ export default function App() {
         try {
           // console.log(JSON.stringify(data));
           console.log("Time spent:", totalSeconds);
-          console.log(data);
+          // console.log(data);
           const response = await fetch(
             "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
             {
@@ -212,9 +212,9 @@ export default function App() {
       console.log("start generating image");
       // console.log("requestBody", requestBody);
       const response = await fetch(
-        // "https://api.psy.aws-educate.tw/prod/generate-image",
+        "https://api.psy.aws-educate.tw/prod/generate-image",
         // "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
-        "https://dev-generate-image-internal-api-psy.aws-educate.tw/dev/generate-image",
+        // "https://dev-generate-image-internal-api-psy.aws-educate.tw/dev/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -257,7 +257,7 @@ export default function App() {
   const getTestQuota = async () => {
     try {
       const response = await fetch(
-        "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/test-quota"
+        "https://api.psy.aws-educate.tw/v1/test-quota"
       );
       if (response.ok) {
         const data = await response.json();

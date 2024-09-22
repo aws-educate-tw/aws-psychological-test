@@ -96,7 +96,7 @@ export default function AiPage({
   const getTestQuota = async () => {
     try {
       const response = await fetch(
-        "https://prstyvksoed4knilqw2cnwf6nm0epkwz.lambda-url.us-east-1.on.aws/v1/test-quota"
+        "https://api.psy.aws-educate.tw/v1/test-quota"
       );
       if (response.ok) {
         const data = await response.json();
