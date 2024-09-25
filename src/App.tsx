@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
 import ResultCard from "@/ui/resultCard";
+import SubResultCard from "@/ui/subResultCard";
 import AiPage from "@/ui/aiPage";
 import { resultData } from "@/lib/resultData";
 
@@ -38,6 +39,11 @@ export default function App() {
 
   const [showAIPage, setShowAIPage] = useState<boolean>(false);
 
+  const [remainQuota, setRemainQuota] = useState<number>(0);
+  const [enoughQuota, setEnoughQuota] = useState<boolean>(true);
+
+  const [showSubResult, setShowSubResult] = useState<boolean>(false);
+
   useEffect(() => {
     if (showResult && imageUrl !== "") {
       const relatedServices = answers.map((answer, index) => {
@@ -62,7 +68,7 @@ export default function App() {
         try {
           // console.log(JSON.stringify(data));
           console.log("Time spent:", totalSeconds);
-          console.log(data);
+          // console.log(data);
           const response = await fetch(
             "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
             {
@@ -208,6 +214,7 @@ export default function App() {
       const response = await fetch(
         "https://api.psy.aws-educate.tw/prod/generate-image",
         // "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
+        // "https://dev-generate-image-internal-api-psy.aws-educate.tw/dev/generate-image",
         {
           method: "POST",
           body: JSON.stringify(requestBody),
@@ -215,20 +222,67 @@ export default function App() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to generate image");
+        // throw new Error("Failed to generate image");
+        setShowSubResult(true);
+        console.log("Use substitute result image");
+
+        const data = await response.json();
+
+        if (answerService === "API gateway") {
+          setImageUrl(
+            "https://psy-test-images.s3.ap-northeast-1.amazonaws.com/sub_generated_images/API+gateway.png"
+          );
+        } else {
+          setImageUrl(
+            `https://psy-test-images.s3.ap-northeast-1.amazonaws.com/sub_generated_images/${answerService}.png`
+          );
+        }
+        setPutUrl(data.put_url);
+        setGetUrl(data.get_url);
       }
 
-      console.log("end generating image");
-      // console.log("response", response);
-      const data = await response.json();
-      setImageUrl(data.image_url);
-      setPutUrl(data.put_url);
-      setGetUrl(data.get_url);
-      // setImageBase64(data.image_base64);
+      if (response.ok) {
+        console.log("end generating image");
+        // console.log("response", response);
+        const data = await response.json();
+        setImageUrl(data.image_url);
+        setPutUrl(data.put_url);
+        setGetUrl(data.get_url);
+      }
     } catch (error) {
       console.error("Error generating image:", error);
     }
   };
+
+  const getTestQuota = async () => {
+    try {
+      const response = await fetch(
+        "https://api.psy.aws-educate.tw/v1/test-quota"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Test quota:", data.remaining_test_count);
+        setRemainQuota(data.remaining_test_count);
+
+        if (data.remaining_test_count <= 0) {
+          setEnoughQuota(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error getting test quota:", error);
+    }
+  };
+
+  useEffect(() => {
+    getTestQuota();
+    if (!startTest) {
+      const interval = setInterval(() => {
+        getTestQuota();
+      }, 4000);
+
+      return () => clearInterval(interval);
+    }
+  }, [startTest]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
@@ -270,6 +324,28 @@ export default function App() {
                     >
                       ~ Ambassador day in community day ~
                     </motion.p>
+                    {enoughQuota ? (
+                      <p className="w-full text-center font-cubic text-sm text-black">
+                        &lt;&lt; 限量專屬圖片今天剩下
+                        <motion.strong
+                          className="text-[#FAF5E7] text-lg drop-shadow-[1px_1px_0_#000]"
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 4,
+                            ease: "linear",
+                          }}
+                        >
+                          {" "}
+                          {remainQuota}{" "}
+                        </motion.strong>
+                        張喔 &gt;&gt;
+                      </p>
+                    ) : (
+                      <p className="w-full text-center font-cubic text-sm text-black">
+                        &lt;&lt; 暫時沒有獨特結果圖咯，還是可以玩！ &gt;&gt;
+                      </p>
+                    )}
                   </div>
                   <motion.div className="py-6 z-50">
                     <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
@@ -340,18 +416,33 @@ export default function App() {
                   />
                 ) : showResult ? (
                   <>
-                    <ResultCard
-                      isAIpage={showAIPage}
-                      user_name={userName}
-                      answerService={answerService}
-                      imageUrl={imageUrl}
-                      put_url={putUrl}
-                      get_url={getUrl}
-                      onComplete={() => {
-                        setStartTimer(false);
-                        setTotalSeconds(0);
-                      }}
-                    />
+                    {showSubResult ? (
+                      <SubResultCard
+                        isAIpage={showAIPage}
+                        user_name={userName}
+                        answerService={answerService}
+                        imageUrl={imageUrl}
+                        put_url={putUrl}
+                        get_url={getUrl}
+                        onComplete={() => {
+                          setStartTimer(false);
+                          setTotalSeconds(0);
+                        }}
+                      />
+                    ) : (
+                      <ResultCard
+                        isAIpage={showAIPage}
+                        user_name={userName}
+                        answerService={answerService}
+                        imageUrl={imageUrl}
+                        put_url={putUrl}
+                        get_url={getUrl}
+                        onComplete={() => {
+                          setStartTimer(false);
+                          setTotalSeconds(0);
+                        }}
+                      />
+                    )}
                   </>
                 ) : (
                   <>

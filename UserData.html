@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Data and Chart Display</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
         }
         table {
             width: 100%;
@@ -21,6 +26,8 @@
         }
         th {
             background-color: #f4f4f4;
+            position: sticky;
+            top: 0;
         }
         .loading {
             color: #888;
@@ -32,6 +39,10 @@
         }
         .filter-section {
             margin-bottom: 20px;
+        }
+        #totalCount {
+            font-weight: bold;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -50,26 +61,29 @@
 </div>
 
 <div class="filter-section">
-    <label for="secondsFilter">Total Seconds Filter (Show seconds greater than):</label>
+    <label for="secondsFilter">Show seconds greater than（建議是21） :</label>
     <input type="number" id="secondsFilter" min="0" step="1">
     
     <button onclick="applySecondsFilter()">Apply Seconds Filter</button>
 </div>
 
-<div id="userData" class="loading">Loading data...</div>
-
 <h3>Service Usage Chart</h3>
 <div id="chartContainer">
+    <div id="totalCount"></div>
     <canvas id="serviceChart"></canvas>
+</div>
+
+
+<div class="table-container">
+    <div id="userData" class="loading">Loading data...</div>
 </div>
 
 <script>
     let originalData = [];
     let filteredData = [];
-    let chartInstance = null; // Declare a variable to hold the chart instance
+    let chartInstance = null;
     const servicesArray = ["Lambda", "API Gateway", "ELB", "CloudWatch", "IAM", "DynamoDB", "EC2", "S3"];
 
-    // Function to count occurrences of each service
     function countServices(services) {
         const serviceCount = {};
         services.forEach(service => {
@@ -82,9 +96,7 @@
         return serviceCount;
     }
 
-    // Function to display the data
     function displayData(dataToDisplay) {
-        // Display the data in a table
         const tableHTML = `
             <table>
                 <thead>
@@ -106,35 +118,29 @@
             </table>
         `;
 
-        // Insert the table into the div
         document.getElementById('userData').innerHTML = tableHTML;
 
-        // Extract services from the filtered data
         const fetchedServices = dataToDisplay.map(item => item.finalService);
-
-        // Combine fetched services with predefined services without duplication
         const uniqueServices = [...new Set([...fetchedServices, ...servicesArray])];
-        
-        // Count occurrences of services from the filtered data
         const serviceCounts = countServices(fetchedServices);
 
-        // Add predefined services if they are not already in the fetched data
         servicesArray.forEach(service => {
             if (!serviceCounts[service]) {
                 serviceCounts[service] = 0;
             }
         });
 
-        // Prepare data for the chart
         const serviceLabels = Object.keys(serviceCounts);
         const serviceData = Object.values(serviceCounts);
 
-        // If a chart instance already exists, destroy it before creating a new one
+        // Calculate total count
+        const totalCount = serviceData.reduce((sum, count) => sum + count, 0);
+        document.getElementById('totalCount').textContent = `Total Service Usage Count: ${totalCount}`;
+
         if (chartInstance) {
             chartInstance.destroy();
         }
 
-        // Create the chart
         const ctx = document.getElementById('serviceChart').getContext('2d');
         chartInstance = new Chart(ctx, {
             type: 'bar',
@@ -158,20 +164,18 @@
         });
     }
 
-    // Fetch data from the API
     fetch('https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/user-data')
         .then(response => response.json())
         .then(data => {
             originalData = data;
-            filteredData = originalData; // Set the initial filtered data to the original data
-            displayData(filteredData); // Display the initial data
+            filteredData = originalData;
+            displayData(filteredData);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
             document.getElementById('userData').innerHTML = '<p>Error loading data</p>';
         });
 
-    // Function to apply the date filter
     function applyDateFilter() {
         const startTime = new Date(document.getElementById('startTime').value);
         const endTime = new Date(document.getElementById('endTime').value);
@@ -181,17 +185,14 @@
             return;
         }
 
-        // Filter the data based on the selected date range
         filteredData = originalData.filter(item => {
             const itemDate = new Date(item.createDate);
             return itemDate >= startTime && itemDate <= endTime;
         });
 
-        // Display the filtered data
         displayData(filteredData);
     }
 
-    // Function to apply the seconds filter
     function applySecondsFilter() {
         const secondsFilter = parseInt(document.getElementById('secondsFilter').value, 10);
 
@@ -200,10 +201,8 @@
             return;
         }
 
-        // Filter the data based on the selected total seconds
         filteredData = originalData.filter(item => item.totalSeconds >= secondsFilter);
 
-        // Display the filtered data
         displayData(filteredData);
     }
 </script>
