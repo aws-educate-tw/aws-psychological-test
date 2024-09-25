@@ -248,7 +248,7 @@ export default function App() {
                   <img src="/CatCEO.png" alt="CatCEO" className="w-64" />
                 </motion.div>
                 <img
-                  src="/psy-test-background.png"
+                  src="/psy-test-background-2.png"
                   alt="background"
                   className="z-0 w-full absolute bottom-0 right-0 h-auto object-cover bg-cover bg-gradient-to-t from-[#ffffff6c] to-[#ffffff00]"
                 />
