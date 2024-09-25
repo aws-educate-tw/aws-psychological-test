@@ -31,6 +31,7 @@ export default function App() {
   const [showAIPage, setShowAIPage] = useState<boolean>(false);
 
   const [apiEndpoint, setApiEndpoint] = useState("");
+  const [apiEndpointUntrained, setApiEndpointUntrained] = useState("");
 
   useEffect(() => {
     if (showAIPage) {
@@ -65,7 +66,10 @@ export default function App() {
   }, [answerService]);
 
   const handlePrompt = () => {
-    const endpoint = window.prompt("Please enter the API endpoint:");
+    const endpoint = window.prompt("Please enter the trained API endpoint:");
+    const untrainedEndpoint = window.prompt(
+      "Please enter the untrained API endpoint:"
+    );
     if (endpoint) {
       setApiEndpoint(endpoint);
       setStartTest(true);
@@ -74,12 +78,15 @@ export default function App() {
       setShowResult(false);
       setShowAIPage(false);
     }
+    if (untrainedEndpoint) {
+      setApiEndpointUntrained(untrainedEndpoint);
+    }
   };
 
   const handleStart = () => {
     handlePrompt();
-    if (apiEndpoint) {
-    }
+    // if (apiEndpoint) {
+    // }
   };
 
   const handleEnd = () => {
@@ -138,8 +145,8 @@ export default function App() {
   const serviceResult = resultData.find(
     (result: Result) => result.serviceName === answerService
   );
-  const promptQAWork = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。`;
-  const promptQALife = `使用者的名字：${userName}。生活上的你：${serviceResult?.life_describe}`;
+  const promptQAWork = `使用者的名字：${userName}。${serviceResult?.work_describe}。`;
+  const promptQALife = `使用者的名字：${userName}。${serviceResult?.life_describe}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
@@ -239,6 +246,7 @@ export default function App() {
                 {showAIPage ? (
                   <AiPage
                     apiEndpoint={apiEndpoint}
+                    apiEndpointUntrained={apiEndpointUntrained}
                     promptQAWork={promptQAWork}
                     promptQALife={promptQALife}
                     userName={userName ? userName : "貓友"}

@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 
 export default function AiPage({
   apiEndpoint,
+  apiEndpointUntrained,
   promptQAWork,
   promptQALife,
   userName,
   answerService,
 }: {
   apiEndpoint: string;
+  apiEndpointUntrained: string;
   promptQAWork: string;
   promptQALife: string;
   userName: string;
@@ -15,30 +17,31 @@ export default function AiPage({
 }) {
   const [workResponse, setWorkResponse] = useState("算貓師幫你看看你的工作...");
   const [lifeResponse, setLifeResponse] = useState("算貓師在思考你的生活...");
+  const [workResponseUntrained, setWorkResponseUntrained] =
+    useState("未訓練算貓師幫你看看你工作...");
+  const [lifeResponseUntrained, setLifeResponseUntrained] =
+    useState("未訓練算貓師在思考你的生活...");
   const [prevWorkPrompt, setPrevWorkPrompt] = useState(promptQAWork);
   const [prevLifePrompt, setPrevLifePrompt] = useState(promptQALife);
+  const [useUntrained, setUseUntrained] = useState(false);
 
-  const llmEndpoint = apiEndpoint;
-
-  const generateDescribe = async (
+  const fetchResponse = async (
+    endpoint: string,
     prompt: string,
-    onUpdate: (newChunk: string) => void,
-    onComplete: (finalResponse: string) => void
+    onUpdate: (response: string) => void
   ) => {
     try {
-      const response = await fetch(llmEndpoint, {
+      const model = useUntrained
+        ? "anthropic.claude-3-sonnet-20240229-v1:0"
+        : "psy-1";
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "psy-1",
-          system: `
-                  你是一隻幽默的小貓咪占卜師，請先根據使用者姓名跟他打招呼，如果沒有使用者姓名，請使用「貓友」來代替。
-                  並切根據提供的資訊產生一段溫暖鼓勵的回應，請注意回應要簡短。
-  
-                  請生成回應：
-                `,
+          model: model,
+          system: "",
           messages: [{ role: "user", content: prompt }],
           max_tokens: 1024,
           temperature: 0.5,
@@ -61,67 +64,57 @@ export default function AiPage({
             break;
           }
           const chunk = decoder.decode(value, { stream: true });
-          accumulatedResponse += chunk; // Accumulate the chunks
-          onUpdate(accumulatedResponse); // Show the latest accumulated response
+          accumulatedResponse += chunk;
+          onUpdate(accumulatedResponse); // Update the response directly
         }
       }
-
-      onComplete(accumulatedResponse); // Notify when complete
     } catch (error) {
       console.error("Error fetching chat:", error);
       onUpdate("生成失敗，請稍後重試。");
     }
   };
 
-  const fetchWork = async () => {
-    console.log("開始算命啦！(工作)");
+  const fetchWorkResponses = async () => {
+    console.log("Fetching both work responses...");
     try {
-      await generateDescribe(
+      await fetchResponse(apiEndpoint, promptQAWork, setWorkResponse);
+      await fetchResponse(
+        apiEndpointUntrained,
         promptQAWork,
-        (chunk) => {
-          setWorkResponse(chunk); // Update the response directly with each chunk
-        },
-        (finalResponse) => {
-          setWorkResponse(finalResponse); // Final response after completion
-        }
+        setWorkResponseUntrained
       );
     } catch (error) {
-      console.error("Error fetching chat:", error);
-      setWorkResponse("生成失敗，請稍後重試。");
+      console.error("Error fetching work responses:", error);
     }
   };
 
-  const fetchLife = async () => {
-    console.log("開始算命啦！(生活)");
+  const fetchLifeResponses = async () => {
+    console.log("Fetching both life responses...");
     try {
-      await generateDescribe(
+      await fetchResponse(apiEndpoint, promptQALife, setLifeResponse);
+      await fetchResponse(
+        apiEndpointUntrained,
         promptQALife,
-        (chunk) => {
-          setLifeResponse(chunk); // Update the response directly with each chunk
-        },
-        (finalResponse) => {
-          setLifeResponse(finalResponse); // Final response after completion
-        }
+        setLifeResponseUntrained
       );
     } catch (error) {
-      console.error("Error fetching chat:", error);
-      setLifeResponse("生成失敗，請稍後重試。");
+      console.error("Error fetching life responses:", error);
     }
   };
 
-  // This useEffect handles the work-related response.
+  // This useEffect handles both work-related responses.
   useEffect(() => {
     if (promptQAWork !== prevWorkPrompt) {
       setPrevWorkPrompt(promptQAWork);
-      fetchWork();
+      fetchWorkResponses(); // Fetch both trained and untrained responses
     }
   }, [promptQAWork, prevWorkPrompt]);
 
-  // This useEffect handles the life-related response.
+  // This useEffect handles both life-related responses.
   useEffect(() => {
     if (promptQALife !== prevLifePrompt) {
       setPrevLifePrompt(promptQALife);
-      fetchLife();
+      fetchLifeResponses(); // Fetch both trained and untrained responses
     }
   }, [promptQALife, prevLifePrompt]);
 
@@ -148,23 +141,43 @@ export default function AiPage({
         </div>
         <p className="text-4xl font-cubic text-[#FAF5E7]">{answerService}</p>
       </div>
+
+      {/* Toggle for trained/untrained model */}
+      <div className="flex justify-center">
+        <label className="inline-flex items-center me-5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={useUntrained}
+            onChange={() => setUseUntrained(!useUntrained)}
+            className="sr-only peer"
+          />
+          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-300"></div>
+          <span className="ms-3 text-sm font-medium text-[#FAF5E7]">
+            {useUntrained ? "未訓練模型" : "已訓練模型"}
+          </span>
+        </label>
+      </div>
+
+      {/* Work Response */}
       <div>
         <p className="text-lg text-[#FAF5E7] font-cubic rounded-lg text-wrap p-2">
           職場上的你
         </p>
         <div className="min-h-24 bg-purple-300 bg-opacity-40 rounded-lg p-2">
           <p className="text-md text-[#FAF5E7] font-cubic rounded-lg text-wrap">
-            {workResponse}
+            {useUntrained ? workResponseUntrained : workResponse}
           </p>
         </div>
       </div>
+
+      {/* Life Response */}
       <div>
         <p className="text-lg text-[#FAF5E7] font-cubic rounded-lg text-wrap p-2">
           生活上的你
         </p>
         <div className="min-h-24 bg-purple-300 bg-opacity-30 rounded-lg p-2">
           <p className="text-md text-[#FAF5E7] font-cubic rounded-lg text-wrap">
-            {lifeResponse}
+            {useUntrained ? lifeResponseUntrained : lifeResponse}
           </p>
         </div>
       </div>
