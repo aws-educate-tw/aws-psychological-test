@@ -5,7 +5,7 @@ import { Circle, Upload, X } from "lucide-react";
 import { resultData } from "@/lib/resultData";
 import { motion } from "framer-motion";
 import * as htmlToImage from "html-to-image";
-import { Share, Mail, Instagram, Earth, Smile } from "lucide-react";
+import { Share, ArrowRight, Instagram, Earth, Smile, Cat } from "lucide-react";
 
 interface Result {
   serviceName: string;
@@ -340,32 +340,67 @@ export default function ResultCard({
           </motion.button>
         </div>
       )}
-      <footer className="flex flex-col justify-center items-center px-4 text-xs text-center text-gray-900 gap-1">
-        <div className="flex gap-3">
-          <div className="flex justify-center items-center gap-1">
-            <Earth size={12} />
-            <small className="underline">
-              <a href="https://aws.amazon.com/tw/education/awseducate/">
-                註冊 AWS Educate
-              </a>
-            </small>
+      <div className="flex flex-col py-3 px-2 gap-2 bg-[#FAF5E7] rounded-lg border-4 border-b-0 rounded-b-none border-black shadow-custom-5px">
+        <a
+          href="https://www.instagram.com/awseducatestdambtw/"
+          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#d27fe799] to-[#ffffff6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
+        >
+          <Instagram size={20} />
+          <div className="font-cubic">
+            <p>追蹤 AWS Educate Instagram</p>
           </div>
-          <div className="flex justify-center items-center gap-1">
-            <Instagram size={12} />
-            <small className="underline">
-              <a href="https://www.instagram.com/awseducatestdambtw/">
-                追蹤 AWS Educate Instagram
-              </a>
-            </small>
+        </a>
+
+        <a
+          href="https://awscmd.tw/"
+          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#d27fe799] to-[#ffffff6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
+        >
+          <Smile size={20} />
+          <div className="font-cubic">
+            <p>9/28 AWS Community Day 報名中！</p>
           </div>
-        </div>
-        <div className="flex justify-center items-center gap-1">
-          <Smile size={12} />
-          <small className="underline">
-            <a href="https://awscmd.tw/">9/28 AWS Community Day 報名中！</a>
-          </small>
-        </div>
-      </footer>
+        </a>
+
+        <a
+          href="https://aws.amazon.com/tw/education/awseducate/"
+          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#d27fe799] to-[#ffffff6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
+        >
+          <Earth size={20} />
+          <div className="font-cubic">
+            <p>註冊 AWS Educate</p>
+          </div>
+        </a>
+
+        <a
+          href="https://pages.awscloud.com/TW-CHT-Startup-Activate.html"
+          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#ffbca2d3] to-[#9cabab6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
+        >
+          <ArrowRight size={20} />
+          <div className="font-cubic">
+            <p>歡迎學生申請 Activate Program</p>
+          </div>
+        </a>
+
+        <a
+          href="https://pages.awscloud.com/tw-event-signup_Registration.html"
+          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#ffbca2d3] to-[#9cabab6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
+        >
+          <ArrowRight size={20} />
+          <div className="font-cubic">
+            <p>免費註冊 AWS 帳號拿贈品</p>
+          </div>
+        </a>
+
+        <a
+          href="https://pages.awscloud.com/2024-Summit-Claude-Model.html/"
+          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#ffbca2d3] to-[#9cabab6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
+        >
+          <ArrowRight size={20} />
+          <div className="font-cubic">
+            <p>限時免費體驗 Claude 3.5 模型</p>
+          </div>
+        </a>
+      </div>
     </>
   );
 }
