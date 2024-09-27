@@ -289,7 +289,7 @@ export default function App() {
       <div className="w-full max-w-md min-w-[400px] max-h-[1100px] h-screen flex flex-col">
         <Navbar />
         <div
-          className={`py-6 px-4 flex-grow ${
+          className={`py-6 px-4 pb-0 flex-grow ${
             !startTest
               ? "bg-container bg-center relative bg-[#95a3a3]"
               : "bg-cover bg-center relative"
@@ -403,7 +403,7 @@ export default function App() {
             </>
           ) : (
             <div>
-              <div className="mb-6">
+              <div className="">
                 {showAIPage ? (
                   <AiPage
                     userName={userName}
