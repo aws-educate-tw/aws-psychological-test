@@ -66,10 +66,16 @@ export default function App() {
   }, [answerService]);
 
   const handlePrompt = () => {
-    const endpoint = window.prompt("Please enter the trained API endpoint:");
+    // const endpoint = window.prompt(
+    //   "請輸入訓練很多資料的API endpoint (v1/chat/completions) :"
+    // );
+
+    const endpoint =
+      "https://workshop-api.psy.aws-educate.tw/v1/chat/completions";
     const untrainedEndpoint = window.prompt(
-      "Please enter the untrained API endpoint:"
+      "請輸入你們的API endpoint (/v1/chat/completions) :"
     );
+
     if (endpoint) {
       setApiEndpoint(endpoint);
       setStartTest(true);
@@ -229,7 +235,7 @@ export default function App() {
                     />
                     <motion.button
                       onClick={handleStart}
-                      className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf9855] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
+                      className="flex justify-center items-center gap-1 bg-white active:bg-gray-200 text-[#cf985] px-4 py-2 border-r-4 border-b-4 border-t-2 border-l-2 border-black font-black rounded-full font-cubic h-12 focus:bg-neutral-100 focus:outline-none"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.2 }}
@@ -260,7 +266,7 @@ export default function App() {
                 {showAIPage ? (
                   <AiPage
                     apiEndpoint={apiEndpoint}
-                    apiEndpointUntrained={apiEndpointUntrained}
+                    apiEndpointUntrained={`${apiEndpointUntrained}v1/chat/completions`}
                     promptQAWork={promptQAWork}
                     promptQALife={promptQALife}
                     userName={userName ? userName : "貓友"}

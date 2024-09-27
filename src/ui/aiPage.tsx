@@ -18,9 +18,9 @@ export default function AiPage({
   const [workResponse, setWorkResponse] = useState("算貓師幫你看看你的工作...");
   const [lifeResponse, setLifeResponse] = useState("算貓師在思考你的生活...");
   const [workResponseUntrained, setWorkResponseUntrained] =
-    useState("未訓練算貓師幫你看看你工作...");
+    useState("你們的算貓師幫你看看你工作...");
   const [lifeResponseUntrained, setLifeResponseUntrained] =
-    useState("未訓練算貓師在思考你的生活...");
+    useState("你們的算貓師在思考你的生活...");
   const [prevWorkPrompt, setPrevWorkPrompt] = useState(promptQAWork);
   const [prevLifePrompt, setPrevLifePrompt] = useState(promptQALife);
   const [useUntrained, setUseUntrained] = useState(false);
@@ -151,9 +151,9 @@ export default function AiPage({
             onChange={() => setUseUntrained(!useUntrained)}
             className="sr-only peer"
           />
-          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-300"></div>
+          <div className="relative w-11 h-6 bg-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-200"></div>
           <span className="ms-3 text-sm font-medium text-[#FAF5E7]">
-            {useUntrained ? "未訓練模型" : "已訓練模型"}
+            {useUntrained ? "你們的訓練模型" : "訓練很多資料的模型"}
           </span>
         </label>
       </div>
