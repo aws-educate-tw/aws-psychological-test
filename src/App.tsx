@@ -33,51 +33,47 @@ export default function App() {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [startTimer, setStartTimer] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (showResult && imageUrl !== "") {
-  //     const relatedServices = answers.map((answer, index) => {
-  //       const selectedIndex = multipleChoices[index].options.indexOf(answer);
-  //       return multipleChoices[index].services[selectedIndex];
-  //     });
+  useEffect(() => {
+    if (showResult && answerService) {
+      const relatedServices = answers.map((answer, index) => {
+        const selectedIndex = multipleChoices[index].options.indexOf(answer);
+        return multipleChoices[index].services[selectedIndex];
+      });
 
-  //     const submitData = {
-  //       chooseService: relatedServices, // The services selected by the user
-  //       finalService: answerService, // Final selected service after calculating the result
-  //       imageUrl: imageUrl, // The generated image URL
-  //       totalSeconds: totalSeconds, // The total time spent on the test
-  //       // userIP: ipAddress, // The IP address of the user
-  //     };
-  //     const saveRDS = async (data: {
-  //       chooseService: string[];
-  //       finalService: string;
-  //       imageUrl: string;
-  //       totalSeconds: number;
-  //       // userIP: string;
-  //     }) => {
-  //       try {
-  //         // console.log(JSON.stringify(data));
-  //         console.log("Time spent:", totalSeconds);
-  //         // console.log(data);
-  //         const response = await fetch(
-  //           "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
-  //           {
-  //             method: "POST",
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify(data),
-  //           }
-  //         );
-  //         if (response.ok) {
-  //           console.log("Data submitted successfully");
-  //         }
-  //       } catch (error) {
-  //         console.error("Error submitting data:", error);
-  //       }
-  //     };
-  //     saveRDS(submitData);
-  //   }
-  // }, [showResult, imageUrl]);
+      const submitData = {
+        chooseService: relatedServices, // The services selected by the user
+        finalService: answerService, // Final selected service after calculating the result
+        // imageUrl: imageUrl, // The generated image URL
+        totalSeconds: totalSeconds, // The total time spent on the test
+        // userIP: ipAddress, // The IP address of the user
+      };
+      const saveDynamoDB = async (data: {
+        chooseService: string[];
+        finalService: string;
+        // imageUrl: string;
+        totalSeconds: number;
+        // userIP: string;
+      }) => {
+        try {
+          // console.log(JSON.stringify(data));
+          // console.log("Time spent:", totalSeconds);
+          const response = await fetch(
+            "https://prod-save-user-data-api.aws-educate.tw/default/psy-user-data",
+            {
+              method: "POST",
+              body: JSON.stringify(data),
+            }
+          );
+          if (response.ok) {
+            console.log("Data save to DynamoDB successfully!");
+          }
+        } catch (error) {
+          console.error("Error submitting data:", error);
+        }
+      };
+      saveDynamoDB(submitData);
+    }
+  }, [showResult, answerService]);
 
   useEffect(() => {
     if (showResult) {

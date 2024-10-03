@@ -42,25 +42,12 @@ export default function PermanentResultCard({
           />
         </div>
       </div>
-      <motion.div
-        className="p-5 text-sm font-cubic text-[#23303F] flex flex-grow w-full justify-center items-center gap-2 h-16"
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{
-          repeat: Infinity,
-          duration: 2,
-          ease: "linear",
-        }}
-      >
-        <button
-          className="text-center text-lg font-cubic text-white"
-          onClick={handleShare}
-        >
+      <div className="w-full flex justify-center pt-4 pb-6 gap-1 text-lg font-cubic text-white">
+        <button className="flex items-center gap-2" onClick={handleShare}>
           長按上方儲存
+          <Share size={16} color="white" />
         </button>
-        <button onClick={handleShare}>
-          <Share size={14} className="" color="white" />
-        </button>
-      </motion.div>
+      </div>
       <motion.div
         className="flex flex-col py-3 px-2 gap-2 bg-[#FAF5E7] rounded-lg border-4 border-b-0 rounded-b-none border-black shadow-custom-3px"
         animate={{ opacity: [0, 1] }}
