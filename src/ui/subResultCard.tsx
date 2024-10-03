@@ -140,7 +140,7 @@ export default function SubResultCard({
       </motion.div>
       {/* bg-[#fbe2e2] bg-[#FAF5E7]*/}
       <motion.div
-        className="relative flex flex-col bg-gradient-to-b from-[#ffd2d2] to-[#FAF5E7] rounded-lg border-4 border-black shadow-custom-5px"
+        className="relative flex flex-col bg-gradient-to-b from-[#ffe0fa] to-[#FAF5E7] rounded-lg border-4 border-black "
         ref={cardRef}
       >
         {resultImageUrl && (

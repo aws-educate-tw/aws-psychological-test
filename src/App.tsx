@@ -3,9 +3,8 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Navbar from "@/ui/navbar";
 import { multipleChoices } from "@/lib/multipleChoices";
-import ResultCard from "@/ui/resultCard";
-import SubResultCard from "@/ui/subResultCard";
-import AiPage from "@/ui/aiPage";
+import PermanentResultCard from "@/ui/permanentResultCard";
+
 import { resultData } from "@/lib/resultData";
 
 interface Result {
@@ -27,98 +26,74 @@ export default function App() {
   const [startTest, setStartTest] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [answerService, setAnswerService] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [putUrl, setPutUrl] = useState<string>("");
-  const [getUrl, setGetUrl] = useState<string>("");
-  // const [imageBase64, setImageBase64] = useState<string>("");
+  const [permanentResultUrl, setPermanentResultUrl] = useState<string>("");
+
   const [userName, setUserName] = useState<string>("");
-  // const [ipAddress, setIpAddress] = useState<string>("");
 
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [startTimer, setStartTimer] = useState<boolean>(false);
 
-  const [showAIPage, setShowAIPage] = useState<boolean>(false);
+  // useEffect(() => {
+  //   if (showResult && imageUrl !== "") {
+  //     const relatedServices = answers.map((answer, index) => {
+  //       const selectedIndex = multipleChoices[index].options.indexOf(answer);
+  //       return multipleChoices[index].services[selectedIndex];
+  //     });
 
-  const [remainQuota, setRemainQuota] = useState<number>(0);
-  const [enoughQuota, setEnoughQuota] = useState<boolean>(true);
-
-  const [showSubResult, setShowSubResult] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (showResult && imageUrl !== "") {
-      const relatedServices = answers.map((answer, index) => {
-        const selectedIndex = multipleChoices[index].options.indexOf(answer);
-        return multipleChoices[index].services[selectedIndex];
-      });
-
-      const submitData = {
-        chooseService: relatedServices, // The services selected by the user
-        finalService: answerService, // Final selected service after calculating the result
-        imageUrl: imageUrl, // The generated image URL
-        totalSeconds: totalSeconds, // The total time spent on the test
-        // userIP: ipAddress, // The IP address of the user
-      };
-      const saveRDS = async (data: {
-        chooseService: string[];
-        finalService: string;
-        imageUrl: string;
-        totalSeconds: number;
-        // userIP: string;
-      }) => {
-        try {
-          // console.log(JSON.stringify(data));
-          console.log("Time spent:", totalSeconds);
-          // console.log(data);
-          const response = await fetch(
-            "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            }
-          );
-          if (response.ok) {
-            console.log("Data submitted successfully");
-          }
-        } catch (error) {
-          console.error("Error submitting data:", error);
-        }
-      };
-      saveRDS(submitData);
-    }
-  }, [showResult, imageUrl]);
+  //     const submitData = {
+  //       chooseService: relatedServices, // The services selected by the user
+  //       finalService: answerService, // Final selected service after calculating the result
+  //       imageUrl: imageUrl, // The generated image URL
+  //       totalSeconds: totalSeconds, // The total time spent on the test
+  //       // userIP: ipAddress, // The IP address of the user
+  //     };
+  //     const saveRDS = async (data: {
+  //       chooseService: string[];
+  //       finalService: string;
+  //       imageUrl: string;
+  //       totalSeconds: number;
+  //       // userIP: string;
+  //     }) => {
+  //       try {
+  //         // console.log(JSON.stringify(data));
+  //         console.log("Time spent:", totalSeconds);
+  //         // console.log(data);
+  //         const response = await fetch(
+  //           "https://uy517ntk1a.execute-api.ap-northeast-1.amazonaws.com/Stage/submit-data",
+  //           {
+  //             method: "POST",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify(data),
+  //           }
+  //         );
+  //         if (response.ok) {
+  //           console.log("Data submitted successfully");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error submitting data:", error);
+  //       }
+  //     };
+  //     saveRDS(submitData);
+  //   }
+  // }, [showResult, imageUrl]);
 
   useEffect(() => {
-    if (showAIPage) {
+    if (showResult) {
       calculateResult();
     }
-  }, [showAIPage]);
+  }, [showResult]);
 
   useEffect(() => {
-    const promptMap: { [key: string]: string } = {
-      EC2: "A cute cat being a salesperson in suit with a clean background",
-      S3: "A cute cat being a librarian with a clean background",
-      Lambda: "A cute cat being a scientist with a clean background",
-      IAM: "A cute cat being a security guard with a clean background",
-      Cloudwatch: "A cute cat being a company manager with a clean background",
-      DynamoDB: "A cute cat being a secretary with a clean background",
-      "API gateway": "Three cats playing together with a clean background",
-      ELB: "A cute cat being a traffic police officer with a clean background",
-    };
-
-    const prompt = promptMap[answerService];
-    // console.log("prompt", prompt);
-
-    if (prompt) {
-      const requestBody = {
-        data: {
-          model_id: "stability.stable-diffusion-xl-v1",
-          prompt: prompt,
-        },
-      };
-      generateImage(requestBody);
+    if (answerService === "API gateway") {
+      setPermanentResultUrl(
+        "https://psy-test-images.s3.ap-northeast-1.amazonaws.com/permanent_result_images/API+gateway.png"
+      );
+    } else {
+      setPermanentResultUrl(
+        `https://psy-test-images.s3.ap-northeast-1.amazonaws.com/permanent_result_images/${answerService}.png`
+      );
     }
   }, [answerService]);
 
@@ -143,13 +118,11 @@ export default function App() {
     setStep(0);
     setAnswers([]);
     setShowResult(false);
-    setShowAIPage(false);
     setStartTimer(true);
   };
 
   const handleEnd = () => {
-    setShowAIPage(true);
-    // setShowResult(true);
+    setShowResult(true);
   };
 
   const handleNext = (option: string) => {
@@ -203,86 +176,6 @@ export default function App() {
   const serviceResult = resultData.find(
     (result: Result) => result.serviceName === answerService
   );
-  // const promptQA = `使用者的名字：${userName}。職場上的你：${serviceResult?.work_describe}。生活上的你：${serviceResult?.life_describe}`;
-
-  const generateImage = async (requestBody: {
-    data: { model_id: string; prompt: string };
-  }) => {
-    try {
-      console.log("start generating image");
-      // console.log("requestBody", requestBody);
-      const response = await fetch(
-        "https://api.psy.aws-educate.tw/prod/generate-image",
-        // "https://dhta1m0lbgo3d.cloudfront.net/prod/generate-image",
-        // "https://dev-generate-image-internal-api-psy.aws-educate.tw/dev/generate-image",
-        {
-          method: "POST",
-          body: JSON.stringify(requestBody),
-        }
-      );
-
-      if (!response.ok) {
-        // throw new Error("Failed to generate image");
-        setShowSubResult(true);
-        console.log("Use substitute result image");
-
-        const data = await response.json();
-
-        if (answerService === "API gateway") {
-          setImageUrl(
-            "https://psy-test-images.s3.ap-northeast-1.amazonaws.com/sub_generated_images/API+gateway.png"
-          );
-        } else {
-          setImageUrl(
-            `https://psy-test-images.s3.ap-northeast-1.amazonaws.com/sub_generated_images/${answerService}.png`
-          );
-        }
-        setPutUrl(data.put_url);
-        setGetUrl(data.get_url);
-      }
-
-      if (response.ok) {
-        console.log("end generating image");
-        // console.log("response", response);
-        const data = await response.json();
-        setImageUrl(data.image_url);
-        setPutUrl(data.put_url);
-        setGetUrl(data.get_url);
-      }
-    } catch (error) {
-      console.error("Error generating image:", error);
-    }
-  };
-
-  const getTestQuota = async () => {
-    try {
-      const response = await fetch(
-        "https://api.psy.aws-educate.tw/v1/test-quota"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Test quota:", data.remaining_test_count);
-        setRemainQuota(data.remaining_test_count);
-
-        if (data.remaining_test_count <= 0) {
-          setEnoughQuota(false);
-        }
-      }
-    } catch (error) {
-      console.error("Error getting test quota:", error);
-    }
-  };
-
-  useEffect(() => {
-    getTestQuota();
-    if (!startTest) {
-      const interval = setInterval(() => {
-        getTestQuota();
-      }, 4000);
-
-      return () => clearInterval(interval);
-    }
-  }, [startTest]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
@@ -294,15 +187,12 @@ export default function App() {
               ? "bg-container bg-center relative bg-[#95a3a3]"
               : "bg-cover bg-center relative"
           } ${
-            showResult && !showAIPage
+            showResult
               ? "bg-container bg-center relative bg-gradient-to-b from-[#BACBCB] to-[#95a3a3]"
               : ""
-          } ${showAIPage ? "bg-gradient-to-b from-[#674588] to-[#95a3a3]" : ""}
-          `}
+          }`}
           style={
             !startTest || showResult
-              ? { backgroundImage: "" }
-              : showAIPage
               ? { backgroundImage: "" }
               : { backgroundImage: "url('/Office.png')" }
           }
@@ -322,30 +212,8 @@ export default function App() {
                         ease: "linear",
                       }}
                     >
-                      ~ Ambassador day in community day ~
+                      ~ AWS Educate 6th Ambassdors ~
                     </motion.p>
-                    {enoughQuota ? (
-                      <p className="w-full text-center font-cubic text-sm text-black">
-                        &lt;&lt; 限量專屬圖片今天剩下
-                        <motion.strong
-                          className="text-[#FAF5E7] text-lg drop-shadow-[1px_1px_0_#000]"
-                          animate={{ opacity: [0, 1, 0] }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 4,
-                            ease: "linear",
-                          }}
-                        >
-                          {" "}
-                          {remainQuota}{" "}
-                        </motion.strong>
-                        張喔 &gt;&gt;
-                      </p>
-                    ) : (
-                      <p className="w-full text-center font-cubic text-sm text-black">
-                        &lt;&lt; 暫時沒有獨特結果圖咯，還是可以玩！ &gt;&gt;
-                      </p>
-                    )}
                   </div>
                   <motion.div className="py-6 z-50">
                     <p className="text-center font-cubic text-3xl text-white drop-shadow-[3px_3px_0_#000] py-2 z-50">
@@ -404,45 +272,12 @@ export default function App() {
           ) : (
             <div>
               <div className="">
-                {showAIPage ? (
-                  <AiPage
-                    userName={userName}
-                    at_work={serviceResult?.work_describe || "工作描述未提供"}
-                    in_life={serviceResult?.life_describe || "生活描述未提供"}
-                    showResultPageClick={() => {
-                      setShowAIPage(false);
-                      setShowResult(true);
-                    }}
-                  />
-                ) : showResult ? (
+                {showResult ? (
                   <>
-                    {showSubResult ? (
-                      <SubResultCard
-                        isAIpage={showAIPage}
-                        user_name={userName}
-                        answerService={answerService}
-                        imageUrl={imageUrl}
-                        put_url={putUrl}
-                        get_url={getUrl}
-                        onComplete={() => {
-                          setStartTimer(false);
-                          setTotalSeconds(0);
-                        }}
-                      />
-                    ) : (
-                      <ResultCard
-                        isAIpage={showAIPage}
-                        user_name={userName}
-                        answerService={answerService}
-                        imageUrl={imageUrl}
-                        put_url={putUrl}
-                        get_url={getUrl}
-                        onComplete={() => {
-                          setStartTimer(false);
-                          setTotalSeconds(0);
-                        }}
-                      />
-                    )}
+                    <PermanentResultCard
+                      permanentResultUrl={permanentResultUrl}
+                      user_name={userName}
+                    />
                   </>
                 ) : (
                   <>
