@@ -56,7 +56,7 @@ export default function App() {
       }) => {
         try {
           // console.log(JSON.stringify(data));
-          // console.log("Time spent:", totalSeconds);
+          console.log("Time spent:", totalSeconds);
           const response = await fetch(
             "https://prod-save-user-data-api.aws-educate.tw/default/psy-user-data",
             {
@@ -208,7 +208,7 @@ export default function App() {
                         ease: "linear",
                       }}
                     >
-                      ~ AWS Educate 6th Ambassdors ~
+                      ~ AWS Educate 6th Ambassadors ~
                     </motion.p>
                   </div>
                   <motion.div className="py-6 z-50">
