@@ -67,16 +67,6 @@ export default function PermanentResultCard({
         </a>
 
         <a
-          href="https://awscmd.tw/"
-          className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#d27fe799] to-[#ffffff6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
-        >
-          <Smile size={20} />
-          <div className="font-cubic">
-            <p>9/28 AWS Community Day 報名中！</p>
-          </div>
-        </a>
-
-        <a
           href="https://aws.amazon.com/tw/education/awseducate/"
           className="flex justify-start w-full items-center gap-2 bg-gradient-to-bl from-[#d27fe799] to-[#ffffff6b] active:bg-gradient-to-tl rounded-md p-1 border-2 border-black"
         >
